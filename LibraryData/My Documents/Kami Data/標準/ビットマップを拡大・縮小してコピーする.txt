@@ -1,0 +1,56 @@
+
+--------------------------------------------------------------------------------
+ 
+
+書式
+StretchBlt(hdcDest, nXOriginDest, nYOriginDest, nWindowDest, nHeightDest, 
+           hdcSrc, nXOriginSrc, nYOriginSrc, nWidthSrc, nHeightSrc, dwRop)
+
+hdcDest         コピー先のデバイスコンテキストハンドル
+nXOriginDest    コピー先の選択矩形の左上隅のX座標
+nYOriginDest    同Y座標
+nWindowDest     コピー先の選択矩形の幅
+nHeightDest     同高さ
+hdcSrc          コピー元のデバイスコンテキストハンドル
+nXOriginSrc     コピー元の選択矩形の左上隅のX座標
+nYOriginSrc     同Y座標
+nWidthSrc       コピー元の選択矩形の幅
+nHeightSrc      同高さ
+dwRop           ラスタ操作コード
+
+dwRop の値はAPI BitBltのdwRopに準ずる。
+
+戻り値  ：  正常終了    0以外   ：  異常終了    ：  0
+
+
+procedure TForm1.Button1Click(Sender: TObject);
+var
+   rc:          Boolean;// リザルトコード 
+   C:           integer;// 縮小率 
+   w, h:  integer;// コピー先の座標 
+begin
+   C := UpDown1.Position;
+   w := (Image1.Width * C) div 100;     // 百分率計算 
+   h := (Image1.Height * C) div 100;    // 百分率計算 
+   Image2.Width := w;                   // オブジェクトの幅を合わせる 
+   Image2.Height := h;                  // オブジェクトの高さを合わせる 
+
+   rc := StretchBlt(Image2.Canvas.Handle, 0, 0, Image2.Width, Image2.Height,
+                    Image1.Canvas.Handle, 0, 0, Image1.Width, Image1.Height,
+                    SRCCOPY);
+end;
+
+// 縮小率の設定 
+procedure TForm1.UpDown1Click(Sender: TObject; Button: TUDBtnType);
+begin
+   Edit1.Text := IntToStr(UpDown1.Position);
+end;
+
+// 縮小率の設定 
+procedure TForm1.Edit1Change(Sender: TObject);
+begin
+   if Edit1.Text <> '' then
+   begin
+      UpDown1.Position := StrToInt(Edit1.Text);
+   end;
+end; 

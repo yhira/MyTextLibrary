@@ -1,0 +1,23 @@
+procedure TMainForm.FormClose(Sender: TObject; var Action: TCloseAction);
+var
+  Node:TTreeNode;
+  strTitle,strURL:string;
+  SL1:TStringList;
+begin
+  SL1 := TStringList.Create;
+  try
+    Node := TreeView1.Items.GetFirstNode;
+    while Node <> nil do
+    begin
+      strTitle := Node.Text;
+      strURL := PBookMarkItem(Node.Data)^.URL;
+      Dispose(Node.Data);
+      SL1.Append(IntToStr(Node.Level)+','+strTitle+','+strURL);
+      Node := Node.GetNext;
+    end;
+    SL1.SaveToFile('BookMark.txt');
+  finally
+    SL1.Free;
+  end;
+  Action := caFree;
+end;

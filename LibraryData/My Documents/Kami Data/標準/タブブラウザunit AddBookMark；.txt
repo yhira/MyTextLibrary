@@ -1,0 +1,72 @@
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, ComCtrls;
+
+type
+  TAddBookMarkForm = class(TForm)
+    Edit1: TEdit;
+    Edit2: TEdit;
+    Button1: TButton;
+    Button2: TButton;
+    Label1: TLabel;
+    Label2: TLabel;
+    procedure Button1Click(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure Button2Click(Sender: TObject);
+  private
+    { Private êÈåæ }
+  public
+    { Public êÈåæ }
+  end;
+
+var
+  AddBookMarkForm: TAddBookMarkForm;
+
+implementation
+
+{$R *.dfm}
+
+uses
+  MAIN, CHILDWIN;
+
+procedure TAddBookMarkForm.Button1Click(Sender: TObject);
+var
+  P:PBookMarkItem;
+  Node:TTreeNode;
+begin
+  if (Edit1.Text <> '') and (Edit2.Text <> '') then
+  begin
+    New(P);
+    P^.URL := Edit2.Text;
+    Node := MainForm.TreeView1.Items.AddObject(MainForm.TreeView1.Selected,Edit1.Text,P);
+    Self.Close;
+  end;
+end;
+
+procedure TAddBookMarkForm.FormShow(Sender: TObject);
+begin
+  if MainForm.MDIChildCount > 0 then
+  begin
+    Edit1.Text := TIEWindow(MainForm.ActiveMDIChild).WebBrowser1.LocationName;
+    Edit2.Text := TIEWindow(MainForm.ActiveMDIChild).WebBrowser1.LocationURL;
+  end;
+end;
+
+procedure TAddBookMarkForm.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  Edit1.Text := '';
+  Edit2.Text := '';
+  Action := caHide;
+end;
+
+procedure TAddBookMarkForm.Button2Click(Sender: TObject);
+begin
+  Self.Close;
+end;
+
+end.

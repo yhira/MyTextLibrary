@@ -1,0 +1,55 @@
+unit Unit1;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  ExtCtrls, StdCtrls, Buttons;
+
+type
+  TForm1 = class(TForm)
+    Panel1: TPanel;
+    BitBtn1: TBitBtn;
+    SpeedButton1: TSpeedButton;
+    RadioGroup1: TRadioGroup;
+    Image1: TImage;
+    procedure RadioGroup1Click(Sender: TObject);
+    procedure SpeedButton1Click(Sender: TObject);
+  private
+    { Private êÈåæ }
+  public
+    { Public êÈåæ }
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+{$R *.DFM}
+
+procedure TForm1.RadioGroup1Click(Sender: TObject);
+begin
+  case RadioGroup1.ItemIndex of
+    0 : Image1.Picture.LoadFromFile('C:\Program Files\Common Files\Borland Shared\Images\Splash\256Color\chemical.bmp');
+    1 : Image1.Picture.LoadFromFile('C:\Program Files\Common Files\Borland Shared\Images\Splash\256Color\factory.bmp');
+    2 : Image1.Picture.LoadFromFile('C:\Program Files\Common Files\Borland Shared\Images\Splash\256Color\finance.bmp');
+    3 : Image1.Picture.LoadFromFile('C:\Program Files\Common Files\Borland Shared\Images\Splash\256Color\handshak.bmp');
+    4 : Image1.Picture.LoadFromFile('C:\Program Files\Common Files\Borland Shared\Images\Splash\256Color\shipping.bmp');
+  end;
+end;
+
+procedure TForm1.SpeedButton1Click(Sender: TObject);
+var
+  ARect : TRect;
+begin
+  with Image1.Canvas do
+  begin
+    CopyMode := cmWhiteness;
+    ARect := Rect(0,0,Image1.Width,Image1.Height);
+    CopyRect(ARect,Image1.Canvas,ARect);
+    CopyMode := cmSrcCopy;
+  end;
+end;
+
+end.

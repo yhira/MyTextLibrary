@@ -1,0 +1,71 @@
+unit Unitlist;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls;
+
+type
+  TForm1 = class(TForm)
+    ListBox1: TListBox;
+    Edit1: TEdit;
+    btnAddItem: TButton;
+    btnDeleteItem: TButton;
+    btnCleaItem: TButton;
+    btnExit: TButton;
+    procedure btnExitClick(Sender: TObject);
+    procedure btnAddItemClick(Sender: TObject);
+    procedure btnDeleteItemClick(Sender: TObject);
+    procedure btnCleaItemClick(Sender: TObject);
+    procedure Edit1KeyPress(Sender: TObject; var Key: Char);
+
+  private
+    { Private êÈåæ }
+  public
+    { Public êÈåæ }
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+{$R *.dfm}
+
+procedure TForm1.btnExitClick(Sender: TObject);
+begin
+    Close;
+end;
+
+procedure TForm1.btnAddItemClick(Sender: TObject);
+begin
+    if Edit1.Text <> '' then
+    begin
+        ListBox1.Items.Add(Edit1.Text)
+    end;
+    Edit1.SetFocus;
+
+end;
+
+procedure TForm1.btnDeleteItemClick(Sender: TObject);
+begin
+    ListBox1.Items.Delete(ListBox1.ItemIndex);
+end;
+
+procedure TForm1.btnCleaItemClick(Sender: TObject);
+begin
+    ListBox1.Items.Clear;
+end;
+
+
+procedure TForm1.Edit1KeyPress(Sender: TObject; var Key: Char);
+begin
+   if key =#13 then
+   begin
+   ListBox1.Items.Add(Edit1.Text);
+   key := #0;
+   end;
+end;
+
+end.

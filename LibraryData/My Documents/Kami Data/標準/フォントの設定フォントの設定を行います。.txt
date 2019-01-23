@@ -1,0 +1,21 @@
+
+
+procedure TForm1.mnuFontClick(Sender: TObject);
+begin
+  if FontDialog1.Execute then
+  begin
+     Memo1.Font.Name := FontDialog1.Font.Name ;
+     Memo1.Font.Size := FontDialog1.Font.Name ;
+     Memo1.Font.Style := FontDialog1.Font.Style ;
+  end ;
+end;
+でできますが、面倒でしたら、次のようにしても構わないでしょう。
+
+
+procedure TForm1.mnuFontClick(Sender: TObject);
+begin
+  if FontDialog1.Execute then Memo1.Font := FontDialog1.Font ;
+end;
+「Font」というものの中には、「Name」（フォント名）、「Size」（サイズ）、「Style」（スタイル：太字とか、イタリックとか…）という種類があります。 一個一個指定したい時もあるのでそういう場合には、前者の方法がベストです。 例えば、「フォントを大きくする」というメニューを見かけた事あると思いますが、 そういう時には、「Size」を大きくするワケです。 後者の方ですと、そういう場合には不便です。今はまだあまり気にしなくてもいいですが、
+
+例えば、メモ帳を「太字」「イタリック」などに設定できなくするには、 後者の方法ではできませんので前者で「Name」と「Size」だけ指定するようにします。 詳しくはヘルプ見るといいですが、 結構見たら最初からはちょっと難しいようなコードですね（「Delphi5」の場合ですけど…）。 以上が「編集」の操作でした。「ファイル」に比べたら決まりなので簡単だとは思いますが…（笑）

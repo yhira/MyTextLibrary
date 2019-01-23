@@ -1,0 +1,28 @@
+Create メソッドは，TFileStream のインスタンスを作成します。
+
+constructor Create(const FileName: string; Mode: Word); overload;
+constructor Create(const FileName: string; Mode: Word; Rights: Cardinal); overload; 
+
+説明
+
+Create メソッドを呼び出すと，指定したファイルを読み書きするためにファイルストリームをインスタンス化できます。ファイル名およびファイルを開く方法をパラメータとして指定します。
+ファイルを開くモードは，Mode パラメータで指定します。Mode パラメータには，オープンモードと共有モードを表す識別子を or で結んで指定します。オープンモードには次のいずれかの値を指定します。
+
+値	意味
+
+fmCreate	指定した名前でファイルを作成する。指定した名前のファイルがすでに存在する場合は，fmOpenWrite と同じ動作を行う
+fmOpenRead	読み出し用にファイルを開く
+fmOpenWrite	書き込み用にファイルを開く。既存のファイルを開いた場合，古い内容は破棄される
+fmOpenReadWrite	ファイルを開き，内容に変更を加える。古い内容は維持される
+
+共有モードには次のいずれかの値を指定します。
+
+値	意味
+
+fmShareCompat	FCB によりファイルを開く方法と互換性がある
+fmShareExclusive	他のアプリケーションはファイルを開くことができない
+fmShareDenyWrite	他のアプリケーションは読み出し用にファイルを開くことはできるが，書き込み用に開くことはできない
+fmShareDenyRead	他のアプリケーションは書き込み用にファイルを開くことはできるが，読み出し用に開くことはできない
+fmShareDenyNone	他のアプリケーションからのファイルの読み出しおよび書き込みを妨げる処理は行われない
+
+ファイルを開くことができない場合，Create メソッドは例外を生成します。

@@ -1,0 +1,14 @@
+
+[Ａ] 
+マルチメディアＡＰＩを使います。
+uses節に 「MMSystem」を追加して、sndPlaySound関数を実行します。
+
+sndPlaySound関数
+    function sndPlaySound(lpszSoundName: PChar; uFlags: Word): Bool;
+[例] 
+uses Sysutils,WinTypes,...,MMSystem,..;
+                           ^^^^^^^^これを追加
+
+begin
+  sndPlaySound('SAMPL.WAV', SND_ASYNC + SND_LOOP);
+end;

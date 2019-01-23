@@ -1,0 +1,21 @@
+　問題：Ctrl + Vキーがペーストとは限らない。
+
+    Clipboard.AsText := Edit_KeyText.Text  ;
+    SetForeGroundWindow(Hhan);//Hhan:ペーストしたいWindowsハンドル
+
+      keybd_event( VK_CONTROL, 0, 0 , 0 );
+      keybd_event( $56, 0, 0 , 0 );			//V Key
+      keybd_event( $56, 0, KEYEVENTF_KEYUP , 0 );
+      keybd_event( VK_CONTROL, 0, KEYEVENTF_KEYUP , 0 );
+
+【試した】
+　方法：ペーストにSendMessageを送る
+　問題：まだ、MS-Wordに貼り付けられてません。
+　　　　　（下記のHhanCapの取り方に問題か・・）
+
+    Clipboard.AsText := Edit_KeyText.Text  ;
+    SetForeGroundWindow(Hhan);//Hhan:ペーストしたいWindowsハンドル
+
+    hWindow := GetWindow(FindWindow(nil,HhanCap),GW_CHILD);//'HhanCap：ペーストしたいWindows名
+    if hWindow <> 0 then
+    SendMessage(hWindow, WM_PASTE, 0, 0);

@@ -1,0 +1,10 @@
+//Selectedは現在選択されているノード
+procedure TForm1.btnAddSubItemClick(Sender: TObject);
+var
+  trnd: TTreeNode;
+begin
+  if tv1.Selected <> nil then
+    trnd := tv1.Items.AddChild(tv1.Selected, Edit2.Text)
+  else
+    ShowMessage('ノードが選択されていません。');
+end;

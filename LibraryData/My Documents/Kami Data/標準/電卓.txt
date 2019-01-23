@@ -1,0 +1,199 @@
+unit dentaku;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, ExtCtrls;
+
+type
+  TForm1 = class(TForm)
+    Edit1: TEdit;
+    btn7: TButton;
+    btn8: TButton;
+    btn9: TButton;
+    btnA: TButton;
+    btn4: TButton;
+    btn5: TButton;
+    btn6: TButton;
+    btnB: TButton;
+    btn1: TButton;
+    btn2: TButton;
+    btn3: TButton;
+    btnC: TButton;
+    btbClear: TButton;
+    btnpoint: TButton;
+    btn0: TButton;
+    btnD: TButton;
+    btnAllClear: TButton;
+    btnI: TButton;
+    Label1: TLabel;
+    Panel1: TPanel;
+    bb: TBevel;
+    procedure btn0Click(Sender: TObject);
+    procedure btn1Click(Sender: TObject);
+    procedure btn2Click(Sender: TObject);
+    procedure btn3Click(Sender: TObject);
+    procedure btn4Click(Sender: TObject);
+    procedure btn5Click(Sender: TObject);
+    procedure btn6Click(Sender: TObject);
+    procedure btn7Click(Sender: TObject);
+    procedure btn8Click(Sender: TObject);
+    procedure btn9Click(Sender: TObject);
+    procedure btnpointClick(Sender: TObject);
+    procedure btnAClick(Sender: TObject);
+    procedure btnBClick(Sender: TObject);
+    procedure btnCClick(Sender: TObject);
+    procedure btnDClick(Sender: TObject);
+    procedure btnIClick(Sender: TObject);
+    procedure btbClearClick(Sender: TObject);
+    procedure btnAllClearClick(Sender: TObject);
+  private
+    { Private êÈåæ }
+    value:Extended ;
+    ope:Char ;
+
+  public
+    { Public êÈåæ }
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+{$R *.dfm}
+
+procedure TForm1.btn0Click(Sender: TObject);
+
+begin
+
+    if Edit1.Text<>'0' then Edit1.Text:=Edit1.Text +'0'
+    else Edit1.Text:= '0'
+
+end;
+
+procedure TForm1.btn1Click(Sender: TObject);
+begin
+
+    if Edit1.Text<>'0' then Edit1.Text:=Edit1.Text +'1'
+    else Edit1.Text:= '1' ;
+
+end;
+
+procedure TForm1.btn2Click(Sender: TObject);
+begin
+      if Edit1.Text<>'0' then Edit1.Text:=Edit1.Text +'2'
+    else Edit1.Text:= '2'
+end;
+
+procedure TForm1.btn3Click(Sender: TObject);
+begin
+     if Edit1.Text<>'0' then Edit1.Text:=Edit1.Text +'3'
+    else Edit1.Text:= '3'
+end;
+
+procedure TForm1.btn4Click(Sender: TObject);
+begin
+      if Edit1.Text<>'0' then Edit1.Text:=Edit1.Text +'4'
+    else Edit1.Text:= '4'
+end;
+
+procedure TForm1.btn5Click(Sender: TObject);
+begin
+     if Edit1.Text<>'0' then Edit1.Text:=Edit1.Text +'5'
+    else Edit1.Text:= '5'
+end;
+
+procedure TForm1.btn6Click(Sender: TObject);
+begin
+     if Edit1.Text<>'0' then Edit1.Text:=Edit1.Text +'6'
+    else Edit1.Text:= '6'
+end;
+
+procedure TForm1.btn7Click(Sender: TObject);
+begin
+      if Edit1.Text<>'0' then Edit1.Text:=Edit1.Text +'7'
+    else Edit1.Text:= '7'
+end;
+
+procedure TForm1.btn8Click(Sender: TObject);
+begin
+     if Edit1.Text<>'0' then Edit1.Text:=Edit1.Text +'8'
+    else Edit1.Text:= '8'
+end;
+
+procedure TForm1.btn9Click(Sender: TObject);
+begin
+     if Edit1.Text<>'0' then Edit1.Text:=Edit1.Text +'9'
+    else Edit1.Text:= '9'
+end;
+
+procedure TForm1.btnpointClick(Sender: TObject);
+begin
+    if Pos('.',Edit1.Text)=0 then
+    Edit1.Text:=Edit1.Text+'.';
+end;
+
+procedure TForm1.btnAClick(Sender: TObject);
+begin
+    ope:='+';
+    Panel1.Caption:='+';
+    value:=value+StrToFloat(Edit1.Text);
+    Edit1.Clear;
+
+end;
+
+procedure TForm1.btnBClick(Sender: TObject);
+begin
+    Panel1.Caption:='-';
+    ope:='-';
+    value:=value-StrToFloat(Edit1.Text);
+    Edit1.Text:='';
+
+end;
+
+procedure TForm1.btnCClick(Sender: TObject);
+
+begin
+    Panel1.Caption:='Å~';
+    ope:='*';
+    value:=StrToFloat(Edit1.Text);
+    Edit1.Text:='';
+end;
+
+procedure TForm1.btnDClick(Sender: TObject);
+begin
+    Panel1.Caption:='ÅÄ';
+    ope:='/';
+    value:=StrToFloat(Edit1.Text);
+    Edit1.Text:='';
+end;
+
+procedure TForm1.btnIClick(Sender: TObject);
+begin
+    case ope of
+    '+':value:=value+StrToFloat(Edit1.Text) ;
+    '-':value:=value-StrToFloat(Edit1.Text);
+    '*':value:=value*StrToFloat(Edit1.Text);
+    '/':value:=value/StrToFloat(Edit1.Text);
+    end;
+
+    Edit1.Text:=FloatToStr(value);
+end;
+
+procedure TForm1.btbClearClick(Sender: TObject);
+begin
+     Panel1.Caption:='';
+     ope:='0';
+end;
+
+procedure TForm1.btnAllClearClick(Sender: TObject);
+begin
+     Panel1.Caption:='';
+     ope:='0';
+     Edit1.Text:='0';
+     value:=0;
+end;
+
+end.

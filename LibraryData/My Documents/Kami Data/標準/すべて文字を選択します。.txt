@@ -1,0 +1,10 @@
+
+
+procedure TForm1.mnuSelectAllClick(Sender: TObject);
+begin
+  with Memo1 do
+  begin
+     if SelLength = GetTextLen then
+        SelLength := 0 else SelectAll ;
+  end ;
+end;

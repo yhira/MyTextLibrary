@@ -1,0 +1,39 @@
+
+--------------------------------------------------------------------------------
+ 
+以下の例では、タイマーコンポーネントを使わずにアニメーションを実現しています。このようにすると、アイドル状態には必ず描画しなおしますので、可能な限り高速なアニメーションになります。
+
+////////// 
+var
+  Form028: TForm028;
+  I, iwidth, iheight, itop: Integer;
+
+implementation
+
+{$R *.DFM} 
+
+procedure TForm028.MainLoop(Sender:Tobject; var Done: Boolean);
+begin
+  Done := False;
+  if I + I width < screen1.Width then
+  begin
+    BitBlt(screen1.Canvas.Handle, 0, 0, screen1.Width, screen1.Height,
+           backimg.Canvas.Handle, 0, 0, cmSrcCopy);
+    BitBlt(screen1.Canvas.Handle, I, itop, iwidth, iheight,
+           animobj.Canvas.Handle, iwidth, 0, cmSrcErase);
+    BitBlt(screen1.Canvas.Handle, I, itop, iwidth, iheight,
+           animobj.Canvas.Handle, 0, 0, cmSrcErase);
+    screen1.Refresh;
+  end;
+  I := I + 2;
+end;
+
+procedure TForm028.FormCreate(Sender: Tobject);
+begin
+  I := 0;
+  iwidth := animobj.Width div 2;
+  iheight := animobj.Height;
+  itop := 40;
+  Application.OnIdle := MainLoop;
+end;
+///////// 

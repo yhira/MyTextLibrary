@@ -1,0 +1,37 @@
+
+--------------------------------------------------------------------------------
+ 
+GlobalMemoryStatus関数を使用します。この関数によりTMemoryStatus構造体に現在のメモリの状態が代入されますので、以下のようにしてその情報を取得します。
+
+procedure TForm1.Button1Click(Sender: TObject);
+var
+  MemStatus : TMemoryStatus;
+begin
+  GlobalMemoryStatus(MemStatus);
+  with MemStatus do
+  begin
+    // 構造体のサイズ 
+    Edit1.Text := IntToStr(MemStatus.dwLength);
+
+    // メモリ使用率 
+    Edit2.Text := IntToStr(MemStatus.dwMemoryLoad);
+
+    // 物理メモリ容量 
+    Edit3.Text := IntToStr(MemStatus.dwTotalPhys);
+
+    // 空きメモリ容量 
+    Edit4.Text := IntToStr(MemStatus.dwAvailPhys);
+
+    // ページングファイルのサイズ 
+    Edit5.Text := IntToStr(MemStatus.dwTotalPageFile);
+
+    // 使用可能なページングファイルのサイズ 
+    Edit6.Text := IntToStr(MemStatus.dwAvailPageFile);
+
+    // ユーザーが使用可能な仮想メモリサイズ 
+    Edit7.Text := IntToStr(MemStatus.dwTotalVirtual);
+
+    // ユーザーが使用可能な未使用メモリサイズ 
+    Edit8.Text := IntToStr(MemStatus.dwAvailVirtual);
+  end;
+end; 

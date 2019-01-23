@@ -1,0 +1,127 @@
+unit rep;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, ExtCtrls, StdCtrls, Buttons;
+
+type
+  TMainForm = class(TForm)
+    SelectBtn: TBitBtn;
+    OpenDialog1: TOpenDialog;
+    FileList: TListBox;
+    PathEdit: TEdit;
+    SerchEdit: TLabeledEdit;
+    ReplaceEdit: TLabeledEdit;
+    BuckupChk: TCheckBox;
+    ExtEdit: TLabeledEdit;
+    Panel1: TPanel;
+    GoBtn: TBitBtn;
+    procedure GoBtnClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure SelectBtnClick(Sender: TObject);
+    procedure BuckupChkClick(Sender: TObject);
+  private
+    { Private 宣言 }
+    procedure check;
+  public
+    { Public 宣言 }
+  end;
+
+var
+  MainForm: TMainForm;
+
+implementation
+
+{$R *.dfm}
+procedure TMainForm.check;
+begin
+    if FileList.Items.Count = 0 then
+    begin
+        Application.MessageBox('ファイルを選択してください',pchar(Application.Title),MB_ICONINFORMATION);
+        SelectBtn.SetFocus;
+        Abort;
+    end;
+
+    if SerchEdit.Text = '' then
+    begin
+        Application.MessageBox('検索文字列を指定してください',pchar(Application.Title),MB_ICONINFORMATION);
+        SerchEdit.SetFocus;
+        Abort;
+    end;
+
+    if BuckupChk.Checked and (Trim(ExtEdit.Text) = '') then
+    begin
+        Application.MessageBox('拡張子を入力してください',pchar(Application.Title),MB_ICONINFORMATION);
+        ExtEdit.SetFocus;
+        Abort;
+    end;
+
+
+end;
+
+
+procedure TMainForm.GoBtnClick(Sender: TObject);
+var ii : Integer;
+    sl :TStringList;
+    BuckupFile : string ;
+begin
+    check;
+    sl := nil;
+    try
+
+    sl := TStringList.Create;
+    for ii := 0 to FileList.Items.Count -1 do
+    begin
+    sl.LoadFromFile(PathEdit.Text+FileList.Items[ii]);
+
+    if BuckupChk.Checked then
+    begin
+        BuckupFile := ChangeFileExt(FileList.Items[ii],ExtEdit.Text);
+        sl.SaveToFile(PathEdit.Text + BuckupFile);
+    end;
+
+    sl.Text := StringReplace(sl.Text,SerchEdit.Text,ReplaceEdit.Text,[rfreplaceall]);
+    sl.SaveToFile(PathEdit.Text + FileList.Items[ii]);
+    end;
+[[    Application.MessageBox('置換が終了しました',pchar(Application.Title),MB_ICONINFORMATION);]]
+
+    finally
+        sl.Free;
+    end;
+
+end;
+
+procedure TMainForm.FormCreate(Sender: TObject);
+begin
+    OpenDialog1.InitialDir := ExtractFileDir(Application.ExeName) ;
+end;
+
+procedure TMainForm.SelectBtnClick(Sender: TObject);
+var ii: integer;
+begin
+    PathEdit.Text:= '';
+    FileList.Items.Clear;
+
+    if OpenDialog1.Execute then
+    begin
+    PathEdit.Text := IncludeTrailingPathDelimiter(ExtractFileDir(OpenDialog1.Files[0]));
+
+    for ii := 0 to OpenDialog1.Files.Count -1 do
+    begin
+    FileList.Items.Add(ExtractFileName(OpenDialog1.Files[ii]));
+    end;
+
+
+    end;
+
+
+end;
+
+procedure TMainForm.BuckupChkClick(Sender: TObject);
+begin
+    ExtEdit.Enabled := BuckupChk.Checked;
+end;
+
+end.

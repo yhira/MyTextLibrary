@@ -1,0 +1,24 @@
+　
+　
+　Windows APIのGlobalMemoryStatusを使います。 
+{メモリ情報の取得}
+procedure TForm1.Button1Click(Sender: TObject);
+var
+ MemStat:TMemoryStatus;
+ TotalMemory,AvailMemory:string;
+begin
+
+ {メモリ情報を得る}
+ MemStat.dwLength:=SizeOf(TMemoryStatus);
+ GlobalMemoryStatus(MemStat);
+
+ {メモリの計算}
+ TotalMemory:= FormatFloat('#,##0KB',Round(MemStat.dwTotalPhys/1024));
+ AvailMemory:= FormatFloat('#,##0KB',Round(MemStat.dwAvailPhys/1024));
+
+ Label1.Caption:='全メモリ：'+TotalMemory;
+ Label2.Caption:='空きメモリ：'+AvailMemory;
+end;
+
+※FormatFloat('#,##0')は、3ケタごとに「,」で区切るのに使います。
+※Roundは、小数点以下を丸めた値を返します。 

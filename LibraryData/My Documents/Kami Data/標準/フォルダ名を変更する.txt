@@ -1,0 +1,19 @@
+
+--------------------------------------------------------------------------------
+ 
+フォルダ名の変更はWindowsAPIのMoveFile関数で実現できます。
+実際のプログラミングでは、フォルダ名の確認等が必要になるでしょう。
+
+Procedure TForm1.Button1Click(Sender: Tobject);
+var
+  OldDir, NewDir: String;
+begin
+  if (Edit1.Text = '') or (Edit2.Text = '') then Exit;
+
+  OldDir := Edit1.Text;
+  NewDir := Edit2.Text;
+  if MoveFile(Pchar(OldDir), Pchar(NewDir)) then
+    ShowMessage('変更完了')
+  else
+    ShowMessage('変更できませんでした');
+end; 

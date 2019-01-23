@@ -1,0 +1,23 @@
+
+
+文字数を調べるのに Length関数は使えません。文字列が半角のみである場合は Length関数でも正しい結果を返しますが、全角文字が混在した場合は実際の文字数より多い値を返します。それは Length関数は文字数ではなくバイト数を返す関数だからです。例えば「あ」は一文字でも2バイトなので２を返します。これを１で数える、要するに文字の数を調べるには ByteToCharLen関数を使用します。この関数には２つの引数が必要です。最初に調べる文字列、次に調べる長さです。通常は Length(調べる文字列)でいいと思います。もうちょっと簡単な方法では文字列を WideString型にキャストしてその結果の Lengthを調べる方法です。
+
+■ 文字数を調べる例 ByteToCharLen関数の場合 
+begin
+  strData         :=    'Delphiデルファイ';
+  { バイト数 }
+  Label1.Caption  :=    IntToStr(  Length(strData)   );
+  { 文字数 }
+  Label2.Caption  :=    IntToStr(  ByteToCharLen(strData, Length(strData))   );
+end; 
+
+
+■ 文字数を調べる例 WideStringにキャストした場合 
+begin
+  strData         :=    'Delphiデルファイ';
+  { バイト数 }
+  Label1.Caption  :=    IntToStr(  Length(strData)   );
+  { 文字数 }
+  Label2.Caption  :=    IntToStr(  Length( WideString(strData))   );
+end; 
+

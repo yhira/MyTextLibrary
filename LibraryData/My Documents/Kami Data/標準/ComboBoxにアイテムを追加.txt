@@ -1,0 +1,23 @@
+
+procedure TMainForm.AddressAdd(FileName: String);
+var
+  i, ii: Integer;
+const
+  MAX_ADD_HISTORY = 20;
+begin
+  if AddressComboBox.Items.IndexOf(FileName) <> -1 then
+  begin
+    ii := AddressComboBox.Items.IndexOf(FileName);
+    AddressComboBox.Items.Delete(ii);
+    AddressComboBox.Items.Insert(0, FileName);
+  end
+  else
+  begin
+    AddressComboBox.Items.Insert(0, FileName);
+    if (AddressComboBox.Items.Count -1) > MAX_ADD_HISTORY then
+      for i := AddressComboBox.Items.Count -1 downto MAX_ADD_HISTORY do
+        AddressComboBox.Items.Delete(i);
+  end;             
+  AddressComboBox.Text := FileName;
+
+end;

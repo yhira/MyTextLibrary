@@ -1,0 +1,29 @@
+ます。これも既存の手続きが用意されております。
+
+
+procedure TForm1.mnuWordWrapClick(Sender: TObject);
+begin
+  if mnuWordWrap.Checked then
+  begin
+     {もし、右端折り返しになっていたら…}
+     mnuWordWrap.Checked := False ;
+     Memo1.WordWrap := False ;
+  end else
+  begin
+     {もし、右端折り返しになっていなかったら…}
+     mnuWordWrap.Checked := True ;
+     Memo1.WordWrap := True ;     
+  end ;
+end;
+「右端に折り返し」になっているかどうかは、 「WordWrap」というものが使えます。 「Memo1」の「オブジェクトインスペクタ」で「Lines」の所で適当に横に長い文章を編集して見て下さい。 そして、「WordWrap」の所を切り替えたりしてみると良く分かります（＾＾）。 というので、あまり詳しくは説明しません。
+
+メニューにチェックを入れたい時には、 「mnuWordWrap.Checked := True ;」のようにすると、チェックが入ります。 「オブジェクトインスペクタ」で「Checked」の所を変えて見て下さい。これも良く分かると思います。 そして、今回はもっと簡単にプログラムを書けないか？というものですが、自分は次のように書いています。
+
+
+procedure TForm1.mnuWordWrapClick(Sender: TObject);
+begin
+  mnuWordWrap.Checked := not mnuWordWrap.Checked ;
+  Memo1.WordWrap := mnuWordWrap.Checked ;
+end;
+「Checked」というのは「チェックが入っているか（True）」「入っていないか（False）」というBoolean型（ブーリヤン型）です。 これに、「not」を付ける事で、切り替えができるようになります。 つまり、「not True」→「False」、「not False」→「True」ですので… これをうまく利用します。
+

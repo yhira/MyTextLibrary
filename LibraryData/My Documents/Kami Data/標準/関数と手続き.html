@@ -1,0 +1,88 @@
+<HTML><HEAD><meta http-equiv="content-type" content="text/html;charset=Shift_JIS">
+<TITLE>第5回　Pascalの基礎</TITLE></HEAD>
+
+<BODY>
+<P><B><U><FONT 
+size=+1>関数と手続き</FONT></U></B><BR><BR>　関数、手続きはルーチンと呼ばれることもあります。この関数や手続きがいくつも集まって、一つのプログラムを作っています。<BR>　関数はfunctionで始まり、手続きはprocedureで始まります。関数と手続きは、次の書式で宣言できます。</P><PRE>  関数の場合
+　　　function 関数名(パラメータ: データ型; パラメータ: データ型): 戻り値の型;
+
+  手続きの場合
+      procedure 手続き名(パラメータ: データ型; パラメータ: データ型);</PRE>
+<P>　関数と手続きの違いは、戻り値があるかないかです。<BR>　次の例は、2つの数の平均値を求める関数です。</P><PRE>  function Avg(X: Integer; Y: Integer): Integer;
+  begin
+    Result := (X + Y) div 2;
+  end;</PRE>
+<P>　Avgが関数の名前です。X,Yはそれぞれ整数型のパラメータで、戻り値も整数型です。functionで関数宣言をしたあと、begin、endでその内容を記述します。<BR>　Resultは、関数のときだけ使える特別な変数で、戻り値をResultの中に入れます。パラメータは変数の一種で、この関数の中だけで使えます(スコープが関数の中)。<BR>　この関数は、次のように使います。</P><PRE>  var
+    Ans: Integer;
+    A, B: Integer;
+  begin
+    A := 50;
+    B := 100;
+    Ans := Avg(A, B);  { ここで関数を呼び出している }
+  end;</PRE>
+<P>　Avg(A, 
+B)で、Avg関数を呼び出しています。このとき、AとBの値が関数のパラメータX、Yに代入されます。関数の中で、XとYの平均値が計算され、その戻り値がAnsに代入される仕組みです。<BR><BR>　関数と手続きのパラメータは、値を変更しても元の値は変わりません。次の手続きを例に取ります。</P><PRE>  procedure Change(X: Integer);
+  begin
+    X := X * 100;
+  end;</PRE>
+<P>　パラメータXの値を100倍にする手続きです。これを呼び出すには、次のようにします。</P><PRE>  var
+    A: Integer;
+  begin
+    A := 2;
+    Change(A);  { 手続きの呼び出し、Aの値は2のまま }
+  end;</PRE>
+<P>　変数AをChange手続きに渡しています。Changeではこれを100倍しています。ところが手続きを呼び出したあとも、Aは2のままです。パラメータXをいくら変更しても、元の変数Aの値は変わらないのです。<BR>　パラメータを変えると、元の変数も変わるようにしたいときは、変数パラメータを使用します。変数パラメータは、パラメータの前にvarを付けます。</P><PRE>  procedure Change(var X: Integer);
+  begin
+    X := X * 100;
+  end;</PRE>
+<P>　上記のように、パラメータXの前にvarを付けることで、Xは変数パラメータになります。これを、以下のように呼び出すと、変数Aの値は200になります。</P><PRE>  var
+    A: Integer;
+  begin
+    A := 2;
+    Change(A);  { この手続きを呼び出したあと、変数Aは200になる }
+  end;</PRE>
+<P><BR>　さて、変数にはスコープがあることは何度も説明しました。関数や手続きの中で変数宣言すると、その変数のスコープは宣言した関数や手続きの中だけになります。</P><PRE>  fuction Sum(Total: Integer): Integer;
+  var
+    I: Integer;
+  begin
+    Result := 0;
+    for I := 1 to Total do
+      Result := Result + I;
+  end;</PRE>
+<P>　関数や手続きで変数宣言するときは、上記のように関数宣言(手続き宣言)の下で変数宣言を行います。<BR>　上記の例で変数 I 
+は、このSum関数の中だけで使えます(スコープがSum関数の中だけ)。<BR><BR>　変数にスコープがあるように、関数や手続きにもスコープがあります。interface部で宣言した関数や手続きは、ほかのユニットからも呼び出せます。<BR>　implementation部で宣言した関数や手続きは、そのユニットの中だけで使えます。<BR>　interface部で宣言するときは、次のように行います。</P><PRE>  interface
+
+    function Avg(X: Integer; Y: Integer): Integer;
+
+  implementation
+
+    function Avg(X: Integer; Y: Integer): Integer;
+    begin
+      Result := (X + Y) div 2;
+    end;</PRE>
+<P>　interface部では宣言だけ行います。実際のプログラムは、implementation部に記述します。<BR><BR>　implementation部だけで宣言するときは、宣言の順番も重要です。宣言した行から後ろの行が、スコープになるからです。次の例を見てください。</P><PRE>  implementation
+
+    function Avg(X: Integer; Y: Integer): Integer;
+    begin
+      X := Sum(X);  { ここでエラー、この時点ではまだSum関数が宣言されていないため }
+      Y := Sum(Y);  { ここでもエラー }
+      Result := (X + Y) div 2;
+    end;
+
+    function Sum(Total: Integer): Integer;
+    var
+      I: Integer;
+    begin
+      Result := 0;
+      for I := 1 to Total do
+        Result := Result + I;
+    end;</PRE>
+<P>　上記の例はエラーになります。Avg関数の中でSumを呼び出しています。しかし、この時点ではまだSum関数は宣言されていないため、エラーになるのです。<BR>　正しく実行できるようにするには、Sum関数を先に宣言して、そのあとにAvg関数を宣言します。</P>
+<P><BR></P><BR>
+<FONT SIZE="-1">
+TITLE:第5回　Pascalの基礎<BR>
+DATE:2002/12/29 17:03<BR>
+URL:<A HREF="http://wblue.hp.infoseek.co.jp/prog/c2_05.htm" TARGET="_blank">http://wblue.hp.infoseek.co.jp/prog/c2_05.htm</A><BR>
+</FONT>
+</BODY>
+</HTML>

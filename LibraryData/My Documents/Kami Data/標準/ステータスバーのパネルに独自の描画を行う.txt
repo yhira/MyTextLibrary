@@ -1,0 +1,36 @@
+
+--------------------------------------------------------------------------------
+ 
+TStatusBarにはOnDrawPanelというイベントがあります。
+これをアサインすると、ステータスバーの各パネルにアクセスできるPanelオブジェクトが引数に入ってきます。
+これと、PanelのStyleプロパティのpsOwnerDrawを利用して、独自の描画ルーチンを構築できます。
+
+Procedure TForm1.StatusBar1DrawPanel(StatusBar: TStatusBar;
+  Panel: TStatusPanel; const Rect: Trect);
+const
+  Alignments: array[Talignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);
+var
+  TempRect: Trect;
+begin
+  TempRect := Rect;
+  if Panel.ID = 0 then begin
+    with StatusBar1.Canvas do begin
+      Pen.Color := clRed;
+      Brush.Color := clRed;
+      RectAngle(Rect.Left + 1, Rect.Top + 1,
+                Rect.Right - 1, Rect.Bottom - 1);
+      DrawText(Handle, Pchar(Panel.Text), -1, TempRect,
+                       Alignments[Panel.Alignment]);
+    end;
+  end
+  else begin
+    with StatusBar1.Canvas do begin
+      Pen.Color := StatusBar1.Color;
+      Brush.Color := StatusBar1.Color;
+      RectAngle(Rect.Left + 1, Rect.Top + 1,
+                Rect.Right - 1, Rect.Bottom - 1);
+      DrawText(Handle, Pchar(Panel.Text), -1, TempRect,
+                         Alignments[Panel.Alignment]);
+    end;
+  end;
+end; 

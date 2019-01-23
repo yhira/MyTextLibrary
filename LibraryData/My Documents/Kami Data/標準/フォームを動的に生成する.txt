@@ -1,0 +1,54 @@
+
+--------------------------------------------------------------------------------
+ 
+Delphiはほとんどのオブジェクトを動的に生成できます。
+フォームも例に漏れず動的に生成することができます。
+フォームを生成させる時のポイントは。
+1.親はTapplicationオブジェクトになる。
+2.フォーム名の重複に気を付ける。
+3.コンポーネントの大きさはすべて明示的に設定する。
+4.動的生成したフォームを閉じる時には、Freeメソッドで開放するようにする。
+以上のようなことが最低限あげられます。
+
+Type
+  TForm1 = class(Tform)
+    Button1: Tbutton;
+    procedure Button1Click(Sender: Tobject);
+  private
+    { Private 宣言 } 
+    NewForm: Tform;
+    procedure ButtonClick(Sender: Tobject);
+
+(中略)
+
+procedure TForm1.Button1Click(Sender: Tobject);
+var
+  NewButton: Tbutton;
+begin
+  if FindWindow(nil, 'DynForm') <> 0 then Exit;
+  Newform := Tform.Create(Application);
+  with NewForm do begin
+    Top := 10;
+    Left := 10;
+    Width := 100;
+    Height := 100;
+    Name := 'DynForm';
+    Caption := Name;
+  end;
+  NewButton := Tbutton.Create(NewForm);
+  with NewButton do begin
+    Parent := NewForm;
+    top := 0;
+    Left := 0;
+    Width := 50;
+    Height := 25;
+    Caption := '閉じる';
+    OnClick := ButtonClick;
+  end;
+  NewForm.Show;
+end;
+
+procedure TForm1.ButtonClick(Sender: Tobject);
+begin
+  NewForm.Free;
+end; 

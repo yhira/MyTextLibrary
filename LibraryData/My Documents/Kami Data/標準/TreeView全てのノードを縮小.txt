@@ -1,0 +1,4 @@
+procedure TForm1.btnFullCollapseClick(Sender: TObject);
+begin
+  tv1.FullCollapse;
+end;

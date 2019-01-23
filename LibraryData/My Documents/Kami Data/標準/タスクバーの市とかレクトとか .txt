@@ -1,0 +1,133 @@
+   
+1　 Delなﾌｻｷﾞｺ　 2002/11/27(Wed) 21:39 
+
+　　　　　　　　　　　＿＿＿＿＿＿＿＿＿＿＿＿
+　　 ∧,,∧　　　 ／
+　　ミ,,ﾟДﾟ彡　＜　タスクバー関連の
+　　 U　　つ∀　＼コードをあげときますよ。
+　～ﾐ　　ﾐ　┴　　 ￣￣￣￣￣￣￣￣￣￣￣￣
+　　 ∪''∪　
+　　　　　　　　ＭｉｄＮｉｇｈｔはワインでも
+
+
+
+2　 Delなﾌｻｷﾞｺ　 2002/11/27(Wed) 21:39 
+
+　 ∧,,∧　　うけとって。
+　ミ,,ﾟДﾟ彡
+　ﾐつ[醤油］). 
+～ﾐ　　 ﾐ 
+　 ∪''∪
+
+type
+　TTaskBarPosition = (tpLeft, tpTop, tpRight, tpBottom);
+
+//タスクバーのRectを返します
+//『タスクバーを自動で隠すOn/Off』や
+//『常に手前に表示On/Off』のプロパティは影響しません
+function TaskBarRect: TRect;
+var
+　apbData : TAPPBARDATA;
+begin
+　apbData.cbSize := SizeOf(TAPPBARDATA);
+　SHAppBarMessage(ABM_GETTASKBARPOS, apbData);
+　Result := apbData.rc;
+end;
+
+//タスクバーが上下左右どこにあるかを決定します
+function TaskBarPosition: TTaskBarPosition;
+var
+　i: Integer;
+　TaskRect: TRect;
+　DecisionFlag: Boolean;
+const
+　ErrCaption: String = 'タスクバーの方向が決められませんでした';
+begin
+　TaskRect := TaskBarRect;
+
+　Result := tpLeft;
+　DecisionFlag := False; 
+
+　for i := Ord(Low(TTaskBarPosition)) to Ord(High(TTaskBarPosition)) do
+　begin
+　　case i of
+　　 ord(tpLeft):
+　　　if not (TaskRect.Left <= 0) then
+　　　begin
+　　　　Result := tpRight;
+　　　　if DecisionFlag then
+　　　　　raise Exception.Create(ErrCaption)
+　　　　else
+　　　　　DecisionFlag := true;
+　　　end;
+
+　　 ord(tpTop):
+　　　if not (TaskRect.Top <= 0) then
+　　　begin
+　　　　Result := tpBottom;
+　　　　if DecisionFlag then
+　　　　　raise Exception.Create(ErrCaption)
+　　　　else
+　　　　　DecisionFlag := true;
+　　　end;
+
+　　 ord(tpRight):
+　　　if not (Screen.Width <= TaskRect.Right) then
+　　　begin
+　　　　Result := tpLeft;
+　　　　if DecisionFlag then
+　　　　　raise Exception.Create(ErrCaption)
+　　　　else
+　　　　　DecisionFlag := true;
+　　　end;
+
+　　 ord(tpBottom):
+　　　if not (Screen.Height<= TaskRect.Bottom) then
+　　　begin
+　　　　Result := tpTop;
+　　　　if DecisionFlag then
+　　　　　raise Exception.Create(ErrCaption)
+　　　　else
+　　　　　DecisionFlag := true;
+　　　end;
+　　end; 
+　end; 
+
+　if DecisionFlag = false then
+　　raise Exception.Create(ErrCaption);
+end;
+
+//タスクバーの高さを決めます。
+function TaskBarHeight: Integer;
+begin
+　Result := 0;
+　case TaskBarPosition of
+　　tpTop, tpBottom:
+　　　Result := TaskBarRect.Bottom - TaskBarRect.Top -2;
+　　tpLeft, tpRight:
+　　　Result := TaskBarRect.Bottom - TaskBarRect.Top -4;
+　end;
+end;
+
+//タスクバーの幅を決めます。
+function TaskBarWidth: Integer;
+begin
+　Result := 0;
+　case TaskBarPosition of
+　　tpLeft, tpRight:
+　　　Result := TaskBarRect.Bottom - TaskBarRect.Top -2;
+　　tpTop, tpBottom:
+　　　Result := TaskBarRect.Bottom - TaskBarRect.Top -4;
+　end;
+end;
+
+
+
+
+3　 Delなﾌｻｷﾞｺ　 2002/11/27(Wed) 21:42 
+
+　 ∧,,∧　　
+　ミ,,ﾟДﾟ彡
+　ﾐつ[醤油］). uses
+～ﾐ　　 ﾐ 　　　ShellAPI
+　 ∪''∪　　　にソーッスかけて召し上がれ

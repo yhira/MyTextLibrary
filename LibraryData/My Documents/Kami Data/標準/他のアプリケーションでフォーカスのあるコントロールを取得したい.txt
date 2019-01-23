@@ -1,0 +1,17 @@
+
+GetFocus単独では、他のアプリの場合常に 0 が返りますし、GetForegroundWindowではトップウィンドウしかわかりません。AttachThreadInputも使って、次のようにする必要があります。
+
+
+function GetFocusInAnotherProcess: HWND;
+var hWin: HWND;
+    TID, PID, MyID: Integer;
+begin
+     MyID := GetCurrentThreadID;
+     hWin := GetForegroundWindow;
+     TID := GetWindowThreadProcessID(hWin, @PID);
+     if AttachThreadInput(TID, MyID, True) then begin
+          SetForegroundWindow(hWin);
+          Result := GetFocus;
+          AttachThreadInput(TID, MyID, False);
+     else Result := 0;
+end;

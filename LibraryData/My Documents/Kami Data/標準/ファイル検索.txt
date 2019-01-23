@@ -1,0 +1,25 @@
+
+procedure TFileInfo.SearchChild(FolderName: String);
+var
+  SR: TSearchRec;
+  Found: Integer;
+  NewFile: TFileInfo;
+begin
+  Found := FindFirst(FolderName + '\*.*', faAnyFile, SR);
+  try
+    while Found = 0 do
+    begin
+      if (SR.Name <> '..') and (SR.Name <> '.') then
+      begin
+        NewFile := Add(SR.Name, SR.Time, SR.Attr);
+        if (SR.Attr and faDirectory > 0) then
+          NewFile.SearchChild(FolderName + '\' + SR.Name);
+      end;
+      Found := FindNext(SR);
+    end;
+
+  finally
+    SysUtils.FindClose(SR);
+  end;
+
+end;

@@ -1,0 +1,26 @@
+
+
+ファイルの存在チェックには FileExists 関数を使用します。
+引数にパス＋ファイル名を渡します。ファイルが存在する場合は True、無い場合は Falseが返ってきます。
+フォルダの存在チェックには DirectoryExists 関数を使用します。
+引数にパスを渡します。フォルダが存在する場合は True、無い場合は Falseが返ってきます。uses節に FileCtrlユニット を追加する必要があります。
+
+■ ファイルの存在チェックの例 
+  procedure TForm1.Button1Click(Sender: TObject);
+  begin
+    if  not FileExists('d:\borland\delphi 3\bin\delphi32.exe')  then
+    begin
+      MessageDlg('重要なファイルが見つかりません。',mtError,[mbOk],0);  
+    end;
+  end; 
+
+
+■ フォルダの存在チェックの例 
+  procedure TForm1.Button1Click(Sender: TObject);
+  begin
+    if  not DirectoryExists('d:\borland\delphi 3\')  then
+    begin
+      MessageDlg('重要なフォルダが見つかりません。',mtError,[mbOk],0);  
+    end;
+  end; 
+

@@ -1,0 +1,10 @@
+
+
+        Msg := '"' + Node.Text + '"‚ğíœ‚µ‚Ä‚à‚¢‚¢‚Å‚·‚©H';
+        if MessageDlg(Msg, mtConfirmation, [mbYes, mbCancel], 0) = mrYes	 then
+        begin
+          Node.Parent.Expand(True); 
+          Node.Delete;
+        end
+        else
+          Exit;

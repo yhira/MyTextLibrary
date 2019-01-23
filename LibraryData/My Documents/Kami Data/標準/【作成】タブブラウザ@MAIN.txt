@@ -1,0 +1,164 @@
+unit MAIN;
+
+interface
+
+uses Windows, SysUtils, Classes, Graphics, Forms, Controls, Menus,
+  StdCtrls, Dialogs, Buttons, Messages, ExtCtrls, ComCtrls, StdActns,
+  ActnList, ToolWin, ImgList;
+
+type
+  TMainForm = class(TForm)
+    OpenDialog: TOpenDialog;
+    ActionList1: TActionList;
+    HelpAbout1: TAction;
+    ImageList1: TImageList;
+    CoolBar1: TCoolBar;
+    ToolBar1: TToolBar;
+    ToolBar2: TToolBar;
+    BuckButton: TToolButton;
+    FowardButton: TToolButton;
+    HomeButton: TToolButton;
+    RefleshButton: TToolButton;
+    StopButton: TToolButton;
+    NavigateButton: TToolButton;
+    Edit2: TEdit;
+    BackAction: TAction;
+    NextAction: TAction;
+    HomeAction: TAction;
+    RefleahAction: TAction;
+    StopAction: TAction;
+    NavigateAction: TAction;
+    Panel1: TPanel;
+    TabControl1: TTabControl;
+    procedure FileOpen1Execute(Sender: TObject);
+    procedure HelpAbout1Execute(Sender: TObject);
+    procedure FileExit1Execute(Sender: TObject);
+    procedure ToolBar2Resize(Sender: TObject);
+    procedure BackActionExecute(Sender: TObject);
+    procedure NextActionExecute(Sender: TObject);
+    procedure HomeActionExecute(Sender: TObject);
+    procedure RefleahActionExecute(Sender: TObject);
+    procedure StopActionExecute(Sender: TObject);
+    procedure NavigateActionExecute(Sender: TObject);
+    procedure TabControl1MouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+  private
+    { Private 宣言 }
+    procedure CreateMDIChild(const URL: string);
+  public
+    { Public 宣言 }
+  end;
+
+var
+  MainForm: TMainForm;
+
+implementation
+
+{$R *.dfm}
+
+uses CHILDWIN, about;
+
+procedure TMainForm.CreateMDIChild(const URL: string);
+var
+  Child: TMDIChild;
+begin
+  { MDI 子ウィンドウを作成する }
+  Child := TMDIChild.Create(Application);
+  Child.WebBrowser1.Navigate(URL);
+end;
+
+
+procedure TMainForm.FileOpen1Execute(Sender: TObject);
+begin
+  if OpenDialog.Execute then
+    CreateMDIChild(OpenDialog.FileName);
+end;
+
+procedure TMainForm.HelpAbout1Execute(Sender: TObject);
+begin
+  AboutBox.ShowModal;
+end;
+
+procedure TMainForm.FileExit1Execute(Sender: TObject);
+begin
+  Close;
+end;
+
+procedure TMainForm.ToolBar2Resize(Sender: TObject);
+begin
+  Edit2.Width := ToolBar2.Width - 25;
+end;
+
+procedure TMainForm.BackActionExecute(Sender: TObject);
+begin
+  TMDIChild(ActiveMDIChild).WebBrowser1.GoBack;
+end;
+
+procedure TMainForm.NextActionExecute(Sender: TObject);
+begin
+  TMDIChild(ActiveMDIChild).WebBrowser1.GoForward;
+end;
+
+procedure TMainForm.HomeActionExecute(Sender: TObject);
+var
+  Child: TMDIChild;
+begin
+  Child := TMDIChild.Create(Application);
+  Child.WebBrowser1.GoHome;
+end;
+
+procedure TMainForm.RefleahActionExecute(Sender: TObject);
+begin
+  if (MDIChildCount > 0) and (TMDIChild(ActiveMDIChild).WebBrowser1.Document <> nil) then
+  begin
+    TMDIChild(ActiveMDIChild).WebBrowser1.Refresh;
+  end;
+
+end;
+
+procedure TMainForm.StopActionExecute(Sender: TObject);
+begin
+  if (MDIChildCount > 0) and (TMDIChild(ActiveMDIChild).WebBrowser1.Busy = True) then
+  begin
+    TMDIChild(ActiveMDIChild).WebBrowser1.Stop;
+  end;
+
+end;
+
+procedure TMainForm.NavigateActionExecute(Sender: TObject);
+var
+  URL: String;
+begin
+  if Edit2.Text = '' then
+  begin
+    Edit2.Text := 'about:blank';
+  end;
+  URL := Edit2.Text;
+  CreateMDIChild(URL);
+end;
+
+procedure TMainForm.TabControl1MouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  i: Integer;
+  Child: TMDIChild;
+begin
+  i := TabControl1.IndexOfTabAt(X, Y);
+  if (i > -1) and (Button = mbLeft) then
+  begin
+    if ssDouble	in Shift then
+    begin
+      Child := TMDIChild(TabControl1.Tabs.Objects[i]);
+      Child.Close;
+    end
+    else
+    begin
+      Child := TMDIChild(TabControl1.Tabs.Objects[i]);
+      Child.BringToFront;
+    end;
+
+  end;
+
+end;
+
+end.

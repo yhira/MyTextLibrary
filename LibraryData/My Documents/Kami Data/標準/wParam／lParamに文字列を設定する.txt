@@ -1,0 +1,15 @@
+
+
+SendMessage、PerformメソッドのwParam、lParamは整数型です。しかし文字列を設定したい時があります。LB_FINDSTRINGEXACTメッセージはリストボックスから指定された文字列の項目インデックスを返します。文字列を設定するにはまずヌル終端文字列に変換した後、LongIntにキャストするだけです。
+
+■ wParam / lParam に文字列を指定する例 
+var
+  strItem      :  String;
+  intIndex     :  integer;
+begin
+  strItem      :=      Edit1.Text;
+  intIndex     :=      ListBox1.Perform(LB_FINDSTRINGEXACT, 0, Longint(PChar(strItem)));
+  ListBox1.ItemIndex   :=   intIndex;
+  ListBox1.SetFocus;
+end. 
+

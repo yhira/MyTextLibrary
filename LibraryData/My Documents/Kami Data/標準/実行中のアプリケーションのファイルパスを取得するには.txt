@@ -1,0 +1,29 @@
+
+--------------------------------------------------------------------------------
+ 
+現在実行中のアプリケーション、すなわち自分自身のファイルパスを知ることができます。これによって、アプリケーションからの相対パスで外部のファイルを指定したりできます。
+以下の例では、はじめにTApplicationのExenameプロパティでアプリケーションのフルパスを取得し、ExtractFilePath関数でディレクトリ部分を切り出しています。そのあと、IsPathDelimiter関数でパスの文字列内の「\」を探し、ひとつ上の階層のディレクトリパスをSubPathに代入しています。
+※uses節でFileCtrlを追加しておきます。
+
+////////// 
+procedure TForm036.FormCreate(Sender: TObject);
+var
+  ExePath,SubPath: String;
+  i: Integer;
+begin
+  ExePath:= ExtractFilePath(Application.Exename);
+  ExePath:= Trim(ExePath);
+  Edit1.Text:= ExePath;
+
+  for i:=Length(ExePath)-1 downto 1 do
+  begin
+    if IsPathDelimiter(ExePath,i)=True then
+    begin
+      SubPath:=Copy(ExePath,1,i);
+      break;
+    end;
+  end;
+
+  DirectoryListBox1.Directory:=SubPath;
+end;
+///////// 

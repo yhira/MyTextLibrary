@@ -1,0 +1,38 @@
+<HTML><HEAD><meta http-equiv="content-type" content="text/html;charset=Shift_JIS">
+<TITLE>第3回　変数とデータ型</TITLE></HEAD>
+
+<BODY>
+<P><B><U><FONT size=+1>文字列型</FONT></U></B><BR><BR>　文字列が他は文字列(文章)を記憶できるデータ型です。</P>
+<TABLE cellSpacing=0 width=610 border=1>
+<TBODY>
+<TR>
+<TD align=middle bgColor=#e6e6f2>型名</TD>
+<TD align=middle bgColor=#e6e6f2>データサイズ</TD>
+<TD align=middle bgColor=#e6e6f2>備考</TD></TR>
+<TR>
+<TD>ShortStrng</TD>
+<TD>256バイトまで</TD>
+<TD>短い文字列型</TD></TR>
+<TR>
+<TD>AnsiString</TD>
+<TD>2ギガバイトまで</TD>
+<TD>長い文字列型</TD></TR>
+<TR>
+<TD>WideString</TD>
+<TD>2ギガバイトまで</TD>
+<TD>Unicode文字を扱うための型</TD></TR></TBODY></TABLE>
+<P>　文字列型の宣言には、普通stringを使います。stringを指定すると、長い文字列型(AnsiString)を指定したのと同じ意味になります。ShortStringやAnsiStringは、確実に型を区別したいときだけ使います。<BR>　通常は、次のように宣言します。</P><PRE>  var
+    S: string;
+    Msg: string[50];</PRE>
+<P>　Sは長い文字列型(AnsiString)になります。Sには最大2ギガバイトの文字列を代入できます。<BR>　Msgは短い文字列型(ShortString)になります。上記の例では、最大50バイトの文字列を代入できます。Msgのように[ 
+]でバイト数を指定すると、短い文字列型になります。[ 
+]に指定できるのは1から255までの整数です。<BR>　WideString型はUnicode文字を扱うための型で、すべての文字を2バイトで表します。WideString型を使うと、文字列をバイト単位ではなく、文字単位で扱うことができます。<BR><BR>　文字列型に文字列を代入するには、次のようにします。</P><PRE>  S := '今日は晴れです';</PRE>
+<P>　このように、文字列を ’(シングルクォーテーション)で囲む必要があります。また、文字列の代入には次の式を使うことができます。</P><PRE>  S := '今日の天気' + '晴れ';</PRE>
+<P>　この＋(プラス)は足し算ではありません。’今日の天気’と’晴れ’を結合するという意味です。この式の結果、Sには’今日の天気晴れ’という文字列が代入されます。</P><BR>
+<FONT SIZE="-1">
+TITLE:第3回　変数とデータ型<BR>
+DATE:2002/12/29 16:35<BR>
+URL:<A HREF="http://wblue.hp.infoseek.co.jp/prog/c2_03.htm" TARGET="_blank">http://wblue.hp.infoseek.co.jp/prog/c2_03.htm</A><BR>
+</FONT>
+</BODY>
+</HTML>

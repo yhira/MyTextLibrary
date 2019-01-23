@@ -1,0 +1,8 @@
+procedure TForm1.btnMemo2TreeClick(Sender: TObject);
+var
+  strm: TStream;
+begin
+  strm := TStringStream.Create(Memo1.Lines.Text);
+  tv1.LoadFromStream(strm);
+  strm.Free;
+end;

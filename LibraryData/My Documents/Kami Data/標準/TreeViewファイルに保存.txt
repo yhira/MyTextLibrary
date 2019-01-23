@@ -1,0 +1,8 @@
+procedure TForm1.btnSaveClick(Sender: TObject);
+var
+  strm: TStream;
+begin
+  strm := TFileStream.Create(ExtractFilePath(Application.ExeName) + 'save.txt', fmCreate);
+  tv1.SaveToStream(strm);
+  strm.Free;
+end;

@@ -1,0 +1,66 @@
+クトが用意されています（ユニット IniFiles を使用）。
+
+先頭又は末端の半角スペースを有効にするためには、　
+
+WriteStringで書き込みたい文字列を半角ダブルクォーテションマーク（"）
+で囲みます。
+
+ReadStringで読み込む時の特別な処理必要ありません。[例] 
+{----------------------------------------------------------
+フォームに ListBox1 を配置。下記手続き WriteTopTailSpaceStr、
+ReadTopTailSpaceStr をボタンなどで呼び出して下さい。
+}
+var
+  IniFile: TIniFile;
+  strRead: string;
+  str:     string;
+const
+  IniErr='ERROR';
+
+{=========================================================}
+procedure TForm1.WriteTopTailSpaceStr;
+begin
+  IniFile:=TIniFile.Create(
+    ChangeFileExt(Application.Exename,'.ini'));
+  try
+    with IniFile do begin
+      WriteString('Test','TopSpaceStr','"  LikeThis"');
+      WriteString('Test','TailSpaceStr','"LikeThis  "');
+      WriteString('Test','TopTailSpaceStr','"  LikeThis  "');
+  { 変数の場合は　
+      WriteString('Test','Str','"'+str+'"');
+    のようにします。  
+  }
+    end;
+  finally
+    IniFile.Free;
+  end;
+end; {TForm1.WriteTopTailSpaceStr}
+
+{=========================================================}
+procedure TForm1.ReadTopTailSpaceStr;
+
+  {-------------------------------------------------------}
+  procedure AddString(str: string);
+  begin
+    ListBox1.Items.Add(str);
+    ListBox1.Items.Add(
+      'Length(str)='+IntToStr(Length(str)));
+  end;
+
+begin
+  IniFile:=TIniFile.Create(
+    ChangeFileExt(Application.Exename,'.ini'));
+  try
+    with IniFile do begin
+      strRead:=ReadString('Test','TopSpaceStr',IniErr);
+      if strRead<>IniErr then AddString(strRead);
+      strRead:=ReadString('Test','TailSpaceStr',IniErr);
+      if strRead<>IniErr then AddString(strRead);
+      strRead:=ReadString('Test','TopTailSpaceStr',IniErr);
+      if strRead<>IniErr then AddString(strRead);
+    end;
+  finally
+    IniFile.Free;
+  end;
+end; {TForm1.ReadTopTailSpaceStr}

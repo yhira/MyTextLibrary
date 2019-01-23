@@ -1,0 +1,13 @@
+
+--------------------------------------------------------------------------------
+ 
+以下の例では、ヒントの表示までの時間、非表示までの時間、ヒントの背景色を設定しています。Applicationクラスの各プロパティ値を設定するだけです。
+
+procedure TForm1.Button1Click(Sender: TObject);
+begin
+  TestPanel.Hint := 'ヒントテスト';
+  TestPanel.ShowHint := True;
+  Application.HintPause := 500; //表示まで0.5秒 
+  Application.HintHidePause := 3000; //非表示まで3秒 
+  Application.HintColor := $000000FF;
+end; 

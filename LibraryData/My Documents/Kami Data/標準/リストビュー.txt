@@ -1,0 +1,57 @@
+unit Unitlist;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, Buttons, ComCtrls, ImgList, ExtCtrls;
+
+type
+  TForm1 = class(TForm)
+    Panel1: TPanel;
+    ImageList1: TImageList;
+    ImageList2: TImageList;
+    ListView1: TListView;
+    StatusBar1: TStatusBar;
+    sbtnIcon: TSpeedButton;
+    sbtnSmallIcon: TSpeedButton;
+    sbtnList: TSpeedButton;
+    sbtnReport: TSpeedButton;
+    procedure sbtnIconClick(Sender: TObject);
+    procedure sbtnSmallIconClick(Sender: TObject);
+    procedure sbtnListClick(Sender: TObject);
+    procedure sbtnReportClick(Sender: TObject);
+  private
+    { Private êÈåæ }
+  public
+    { Public êÈåæ }
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+{$R *.dfm}
+
+procedure TForm1.sbtnIconClick(Sender: TObject);
+begin
+  ListView1.ViewStyle := vsIcon;
+end;
+
+procedure TForm1.sbtnSmallIconClick(Sender: TObject);
+begin
+  ListView1.ViewStyle := vsSmallIcon;
+end;
+
+procedure TForm1.sbtnListClick(Sender: TObject);
+begin
+  ListView1.ViewStyle := vsList;
+end;
+
+procedure TForm1.sbtnReportClick(Sender: TObject);
+begin
+  ListView1.ViewStyle := vsReport;
+end;
+
+end.

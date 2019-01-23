@@ -1,0 +1,54 @@
+unit Unit1;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls;
+
+type
+  TForm1 = class(TForm)
+    Button1: TButton;
+    procedure Button1Click(Sender: TObject);
+  private
+    { Private êÈåæ }
+    Index: Integer;
+    procedure NewButtonClick(Sender: TObject);
+  public
+    { Public êÈåæ }
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+{$R *.dfm}
+
+{ TForm1 }
+
+procedure TForm1.NewButtonClick(Sender: TObject);
+begin
+  ShowMessage((Sender As TButton).Caption + 'ÇâüÇµÇ‹ÇµÇΩÇÀ');
+end;
+
+procedure TForm1.Button1Click(Sender: TObject);
+var
+  NewButton: TButton;
+begin
+   Index := Index + 1;
+   NewButton := TButton.Create(Self);
+   with NewButton do
+   begin
+     Top := Button1.Top + (Button1.Height + 5) * Index;
+     Left := Button1.Left;
+     Height := Button1.Height;
+     Width := Button1.Width;
+     Caption := 'êVÉ{É^Éì' + IntToStr(Index);
+     OnClick := NewButtonClick;
+     Parent := Self;
+   end;
+
+end;
+
+end.

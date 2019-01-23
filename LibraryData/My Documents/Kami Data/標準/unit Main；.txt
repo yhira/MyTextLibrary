@@ -1,0 +1,573 @@
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, ExtCtrls, MPlayer, jpeg, SetData, Registry, StdCtrls;
+
+type
+  TDispMode = (dmCenter, dmUpLeft, dmUpRight, dmDownLeft, dmDownRight);
+
+
+  TMainForm = class(TForm)
+    ScreenImage: TImage;
+    MediaPlayer1: TMediaPlayer;
+    ScreenTimer: TTimer;
+    Image1: TImage;
+    Image2: TImage;
+    Image3: TImage;
+    Image4: TImage;
+    Image5: TImage;
+    Image6: TImage;
+    Image7: TImage;
+    Image8: TImage;
+    Image9: TImage;
+    Image10: TImage;
+    Image11: TImage;
+    Image12: TImage;
+    Image13: TImage;
+    Image14: TImage;
+    Image15: TImage;
+    Image16: TImage;
+    Image17: TImage;
+    Image18: TImage;
+    Image19: TImage;
+    Image20: TImage;
+    Image21: TImage;
+    Image22: TImage;
+    Image23: TImage;
+    Image24: TImage;
+    Image25: TImage;
+    Image26: TImage;
+    Image27: TImage;
+    Image28: TImage;
+    Image29: TImage;
+    Image30: TImage;
+    Image31: TImage;
+    Image32: TImage;
+    Image33: TImage;
+    Image34: TImage;
+    Image35: TImage;
+    Image36: TImage;
+    Image37: TImage;
+    Image38: TImage;
+    Image39: TImage;
+    Image40: TImage;
+    Image41: TImage;
+    Image42: TImage;
+    Image43: TImage;
+    Image44: TImage;
+    Image45: TImage;
+    Image46: TImage;
+    Image47: TImage;
+    Image48: TImage;
+    Image49: TImage;
+    Image50: TImage;
+    Image51: TImage;
+    Image52: TImage;
+    Image53: TImage;
+    Image54: TImage;
+    Image55: TImage;
+    Image56: TImage;
+    Image57: TImage;
+    Image58: TImage;
+    Image59: TImage;
+    Image60: TImage;
+    Image61: TImage;
+    Image62: TImage;
+    Image63: TImage;
+    Image64: TImage;
+    Image65: TImage;
+    Image66: TImage;
+    Image67: TImage;
+    Image68: TImage;
+    Image69: TImage;
+    Image70: TImage;
+    Image71: TImage;
+    Image72: TImage;
+    Image73: TImage;
+    Image74: TImage;
+    Image75: TImage;
+    Image76: TImage;
+    Image77: TImage;
+    Image78: TImage;
+    Image79: TImage;
+    Image80: TImage;
+    Image81: TImage;
+    Image82: TImage;
+    Image83: TImage;
+    Image84: TImage;
+    Image85: TImage;
+    Image86: TImage;
+    Image87: TImage;
+    Image88: TImage;
+    Image89: TImage;
+    Image90: TImage;
+    Image91: TImage;
+    Image92: TImage;
+    Image93: TImage;
+    Image94: TImage;
+    Image95: TImage;
+    Image96: TImage;
+    Image97: TImage;
+    Image98: TImage;
+    Image99: TImage;
+    Image100: TImage;
+    Image101: TImage;
+    Image102: TImage;
+    Image103: TImage;
+    Image104: TImage;
+    Image105: TImage;
+    Image106: TImage;
+    Image107: TImage;
+    Image108: TImage;
+    Image109: TImage;
+    Image110: TImage;
+    Image111: TImage;
+    Image112: TImage;
+    Image113: TImage;
+    Image114: TImage;
+    Image115: TImage;
+    Image116: TImage;
+    Image117: TImage;
+    Image118: TImage;
+    Image119: TImage;
+    Image120: TImage;
+    Image121: TImage;
+    Image122: TImage;
+    Image123: TImage;
+    Image124: TImage;
+    Image125: TImage;
+    Image126: TImage;
+    Image127: TImage;
+    Image128: TImage;
+    Image129: TImage;
+    Image130: TImage;
+    Image131: TImage;
+    Image132: TImage;
+    Image133: TImage;
+    Image134: TImage;
+    Image135: TImage;
+    Image136: TImage;
+    Image137: TImage;
+    Image138: TImage;
+    Image139: TImage;
+    Image140: TImage;
+    Image141: TImage;
+    Image142: TImage;
+    Image143: TImage;
+    Image144: TImage;
+    Image145: TImage;
+    NonImage: TImage;
+    Button1: TButton;
+    procedure FormCreate(Sender: TObject);
+    procedure ScreenTimerTimer(Sender: TObject);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+    procedure Button1Click(Sender: TObject);
+  private
+    { Private 宣言 }
+    FrameCount: Cardinal;
+    DispMode: TDispMode;
+    procedure RegistryRead;
+    procedure RegistryWrite;
+    procedure SheenDisply(FilePath: String);
+    procedure TextDsp(Text: String; Mode:TDispMode);
+  public
+    { Public 宣言 }
+    Terminated: Boolean;
+    SheenData: TSheenData;
+    MyPath: String;
+    procedure XLeftLoop(Sender:Tobject; var Done: Boolean);
+  end;
+
+var
+  MainForm: TMainForm;
+implementation
+
+{$R *.dfm}
+
+uses Setting;
+
+procedure TMainForm.FormCreate(Sender: TObject);
+begin
+  ScreenImage.Align := alClient;
+  Color := clWhite;
+
+  MyPath := ExtractFilePath(Application.ExeName);
+
+  Application.ProcessMessages;
+  ScreenTimer.Enabled := True;
+  FrameCount := 0;
+  Terminated := False;
+
+  RegistryRead;
+
+  //jpeg Read
+
+
+end;
+
+procedure TMainForm.XLeftLoop(Sender: Tobject; var Done: Boolean);
+begin
+
+end;
+
+procedure TMainForm.ScreenTimerTimer(Sender: TObject);
+begin
+
+  case FrameCount of
+    1:
+    begin
+      //MediaPlayer1.Open;
+      //MediaPlayer1.Play;
+      ScreenImage.Picture := Image1.Picture;
+    end;
+    55: ScreenImage.Picture := Image2.Picture;//img2
+    102: ScreenImage.Picture := Image3.Picture;//img3
+    107: ScreenImage.Picture := Image4.Picture;//img4
+    108: ScreenImage.Picture := Image5.Picture;
+    109: ScreenImage.Picture := Image6.Picture;
+    110: ScreenImage.Picture := Image7.Picture;
+    111: ScreenImage.Picture := Image8.Picture;
+    112: ScreenImage.Picture := Image9.Picture;
+    113: ScreenImage.Picture := Image10.Picture;
+    114: ScreenImage.Picture := Image11.Picture;
+    115: ScreenImage.Picture := Image12.Picture;
+    116: ScreenImage.Picture := Image13.Picture;
+    117: ScreenImage.Picture := Image14.Picture;
+    118: ScreenImage.Picture := Image15.Picture;
+    119: ScreenImage.Picture := Image16.Picture;
+    120: ScreenImage.Picture := Image17.Picture;
+    121: ScreenImage.Picture := Image18.Picture;
+    122: ScreenImage.Picture := Image19.Picture;
+    123: ScreenImage.Picture := Image20.Picture;
+    124: ScreenImage.Picture := Image21.Picture;
+    125: ScreenImage.Picture := Image22.Picture;
+    126: ScreenImage.Picture := Image23.Picture;
+    127: ScreenImage.Picture := Image24.Picture;
+    128: ScreenImage.Picture := Image25.Picture;
+    129: ScreenImage.Picture := Image26.Picture;
+    130: ScreenImage.Picture := Image27.Picture;
+    131: ScreenImage.Picture := Image28.Picture;
+    132: ScreenImage.Picture := Image29.Picture;
+    133: ScreenImage.Picture := Image30.Picture;
+    134: ScreenImage.Picture := Image31.Picture;
+    135: ScreenImage.Picture := Image32.Picture;
+    136: ScreenImage.Picture := Image33.Picture;
+    137: ScreenImage.Picture := Image34.Picture;
+    138: ScreenImage.Picture := Image35.Picture;
+    139: ScreenImage.Picture := Image36.Picture;
+    140: ScreenImage.Picture := Image37.Picture;
+    141: ScreenImage.Picture := Image38.Picture;
+    142: ScreenImage.Picture := Image39.Picture;
+    143: ScreenImage.Picture := Image40.Picture;
+    144: ScreenImage.Picture := Image41.Picture;
+    145: ScreenImage.Picture := Image42.Picture;
+    146: ScreenImage.Picture := Image43.Picture;
+    147: ScreenImage.Picture := Image44.Picture;
+    148: ScreenImage.Picture := Image45.Picture;
+    149: ScreenImage.Picture := Image46.Picture;
+    150: ScreenImage.Picture := Image47.Picture;
+    151: ScreenImage.Picture := Image48.Picture;
+    152: ScreenImage.Picture := Image49.Picture;
+    153: ScreenImage.Picture := Image50.Picture;
+    154: ScreenImage.Picture := Image51.Picture;
+    155: ScreenImage.Picture := Image52.Picture;
+    156: ScreenImage.Picture := Image53.Picture;
+    157: ScreenImage.Picture := Image54.Picture;
+    158: ScreenImage.Picture := Image55.Picture;
+    159: ScreenImage.Picture := Image56.Picture;
+    160: ScreenImage.Picture := Image57.Picture;
+    161: ScreenImage.Picture := Image58.Picture;
+    162: ScreenImage.Picture := Image59.Picture;
+    163: ScreenImage.Picture := Image60.Picture;
+    164: ScreenImage.Picture := Image61.Picture;
+    165: ScreenImage.Picture := Image62.Picture;
+    166: ScreenImage.Picture := Image63.Picture;
+    167: ScreenImage.Picture := Image64.Picture;
+    168: ScreenImage.Picture := Image65.Picture;
+    169: ScreenImage.Picture := Image66.Picture;
+    170: ScreenImage.Picture := Image67.Picture;
+    171: ScreenImage.Picture := Image68.Picture;
+    172: ScreenImage.Picture := Image69.Picture;
+    173: ScreenImage.Picture := Image70.Picture;
+    174: ScreenImage.Picture := Image71.Picture;
+    175: ScreenImage.Picture := Image72.Picture;
+    176: ScreenImage.Picture := Image73.Picture;
+    177: ScreenImage.Picture := Image74.Picture;
+    178: ScreenImage.Picture := Image75.Picture;
+    179: ScreenImage.Picture := Image76.Picture;
+    180: ScreenImage.Picture := Image77.Picture;
+    181: ScreenImage.Picture := Image78.Picture;
+    182: ScreenImage.Picture := Image79.Picture;
+    183: ScreenImage.Picture := Image80.Picture;
+    184: ScreenImage.Picture := Image81.Picture;
+    185: ScreenImage.Picture := Image82.Picture;
+    186: ScreenImage.Picture := Image83.Picture;
+    187: ScreenImage.Picture := Image84.Picture;
+    188: ScreenImage.Picture := Image85.Picture;
+    189: ScreenImage.Picture := Image86.Picture;
+    190: ScreenImage.Picture := Image87.Picture;
+    191: ScreenImage.Picture := Image88.Picture;//img88
+
+    239: ScreenImage.Picture := Image89.Picture;//img89
+    //250: ;//img90
+
+    250: ScreenImage.Picture := Image90.Picture;
+    251: ScreenImage.Picture := Image91.Picture;
+    252: ScreenImage.Picture := Image92.Picture;
+    253: ScreenImage.Picture := Image93.Picture;
+    254: ScreenImage.Picture := Image94.Picture;
+    255: ScreenImage.Picture := Image95.Picture;
+    256: ScreenImage.Picture := Image96.Picture;
+    257: ScreenImage.Picture := Image97.Picture;
+    258: ScreenImage.Picture := Image98.Picture;
+    259: ScreenImage.Picture := Image99.Picture;
+    260: ScreenImage.Picture := Image100.Picture;
+    261: ScreenImage.Picture := Image101.Picture;
+    262: ScreenImage.Picture := Image102.Picture;
+    263: ScreenImage.Picture := Image103.Picture;
+    264: ScreenImage.Picture := Image104.Picture;
+    265: ScreenImage.Picture := Image105.Picture;
+    266: ScreenImage.Picture := Image106.Picture;
+    267: ScreenImage.Picture := Image107.Picture;
+    268: ScreenImage.Picture := Image108.Picture;
+    269: ScreenImage.Picture := Image109.Picture;
+    270: ScreenImage.Picture := Image110.Picture;
+    271: ScreenImage.Picture := Image111.Picture;
+    272: ScreenImage.Picture := Image112.Picture;
+    273: ScreenImage.Picture := Image113.Picture;
+    274: ScreenImage.Picture := Image114.Picture;
+    275: ScreenImage.Picture := Image115.Picture;
+    276: ScreenImage.Picture := Image116.Picture;
+    277: ScreenImage.Picture := Image117.Picture;
+    278: ScreenImage.Picture := Image118.Picture;
+    279: ScreenImage.Picture := Image119.Picture;
+    280: ScreenImage.Picture := Image120.Picture;
+    281: ScreenImage.Picture := Image121.Picture;
+    282: ScreenImage.Picture := Image122.Picture;
+    283: ScreenImage.Picture := Image123.Picture;
+    284: ScreenImage.Picture := Image124.Picture;
+    285: ScreenImage.Picture := Image125.Picture;
+    286: ScreenImage.Picture := Image126.Picture;
+    287: ScreenImage.Picture := Image127.Picture;
+    288: ScreenImage.Picture := Image128.Picture;
+    289: ScreenImage.Picture := Image129.Picture;
+    290: ScreenImage.Picture := Image130.Picture;
+    291: ScreenImage.Picture := Image131.Picture;
+    292: ScreenImage.Picture := Image132.Picture;
+    293: ScreenImage.Picture := Image133.Picture;
+    294: ScreenImage.Picture := Image134.Picture;
+    295: ScreenImage.Picture := Image135.Picture;
+    296: ScreenImage.Picture := Image136.Picture;
+    297: ScreenImage.Picture := Image137.Picture;
+    298: ScreenImage.Picture := Image138.Picture;
+    299: ScreenImage.Picture := Image139.Picture;
+    300: ScreenImage.Picture := Image140.Picture;
+    301: ScreenImage.Picture := Image141.Picture;
+    302: ScreenImage.Picture := Image142.Picture;
+    303: ScreenImage.Picture := Image143.Picture;
+    304: ScreenImage.Picture := Image144.Picture;
+    305: ScreenImage.Picture := Image145.Picture;
+    //305: ;//ing145
+    306: SheenDisply(SheenData.img1);//sheen1風の中のすばる 砂の中の銀河
+
+    479: ScreenImage.Picture := nil;
+    480: SheenDisply(SheenData.img2);//sheen2みんな何処へ行った　見送られることもなく
+    481: TextDsp(SheenData.Sheen2Str1, dmCenter);
+
+    669: ScreenImage.Picture := nil;
+    670: SheenDisply(SheenData.img3);//sheen3草原のペガサス 街角のヴィーナス
+
+    860: SheenDisply(SheenData.img4);//sheen4みんな何処へ行った　見守られることもなく
+
+    1049: SheenDisply(SheenData.img5);//sheen5地上にある星を誰も覚えていない
+
+    1142: SheenDisply(SheenData.img6);//sheen6 人は空ばかり見てる
+
+    1254: SheenDisply(SheenData.img7);//sheen7 つばめよ高い空から
+
+    1343: SheenDisply(SheenData.img8);//sheen8 教えてよ地上の星を
+
+    1440: SheenDisply(SheenData.img9);//sheen9 つばめよ地上の星は今　何処にあるのだろう
+
+
+    1695: FrameCount := 0;
+  end;                 //
+  Inc(FrameCount);
+
+end;
+
+procedure TMainForm.RegistryRead;
+var
+  reg: TRegIniFile;
+begin
+  {初期設定をレジストリから読み込む}
+  reg := TRegIniFile.Create('Software');
+  try
+    with reg do
+    begin
+      SheenData.img1 := ReadString('MyProjectX', 'img1', 'Default');
+      SheenData.img2 := ReadString('MyProjectX', 'img2', 'Default');
+      SheenData.img3 := ReadString('MyProjectX', 'img3', 'Default');
+      SheenData.img4 := ReadString('MyProjectX', 'img4', 'Default');
+      SheenData.img5 := ReadString('MyProjectX', 'img5', 'Default');
+      SheenData.img6 := ReadString('MyProjectX', 'img6', 'Default');
+      SheenData.img7 := ReadString('MyProjectX', 'img7', 'Default');
+      SheenData.img8 := ReadString('MyProjectX', 'img8', 'Default');
+      SheenData.img9 := ReadString('MyProjectX', 'img9', 'Default');
+
+      SheenData.Sheen2Str1 := ReadString('MyProjectX', 's2s1', '設定を');
+      SheenData.Sheen2Str2 := ReadString('MyProjectX', 's2s2', '変更するには');
+
+      SheenData.Sheen3Str1 := ReadString('MyProjectX', 's3s1', 'デスクトップを');
+      SheenData.Sheen3Str2 := ReadString('MyProjectX', 's3s2', '右クリックして');
+
+      SheenData.Sheen4Str1 := ReadString('MyProjectX', 's4s1', 'プロパティから');
+      SheenData.Sheen4Str2 := ReadString('MyProjectX', 's4s2', 'スクリーンセーバータブを選択');
+
+      SheenData.Sheen5Str1 := ReadString('MyProjectX', 's5s1', '設定ボタンを押して');
+      SheenData.Sheen5Str2 := ReadString('MyProjectX', 's5s2', '設定を変更して下さい');
+
+      SheenData.Sheen6Str1 := ReadString('MyProjectX', 's6s1', '文字や');
+      SheenData.Sheen6Str2 := ReadString('MyProjectX', 's6s2', '画像を');
+
+      SheenData.Sheen7Str1 := ReadString('MyProjectX', 's7s1', '自分好みに');
+      SheenData.Sheen7Str2 := ReadString('MyProjectX', 's7s2', '変更出来ます');
+
+      SheenData.Sheen8Str1 := ReadString('MyProjectX', 's8s1', '自分好みの');
+      SheenData.Sheen8Str2 := ReadString('MyProjectX', 's8s2', 'ProjectXを');
+
+      SheenData.Sheen9Str1 := ReadString('MyProjectX', 's9s1', '作成してみては');
+      SheenData.Sheen9Str2 := ReadString('MyProjectX', 's9s2', 'いかがでしょう？');
+    end;
+
+  finally
+    reg.Free;
+  end;
+
+end;
+
+procedure TMainForm.RegistryWrite;
+var
+  reg: TRegIniFile;
+begin
+  reg := TRegIniFile.Create('Software');
+  try
+    with reg do
+    begin
+      WriteString('MyProjectX', 'img1', SheenData.img1); 
+      WriteString('MyProjectX', 'img2', SheenData.img2);
+      WriteString('MyProjectX', 'img3', SheenData.img3);
+      WriteString('MyProjectX', 'img4', SheenData.img4);
+      WriteString('MyProjectX', 'img5', SheenData.img5);
+      WriteString('MyProjectX', 'img6', SheenData.img6);
+      WriteString('MyProjectX', 'img7', SheenData.img7);
+      WriteString('MyProjectX', 'img8', SheenData.img8);
+      WriteString('MyProjectX', 'img9', SheenData.img9);
+
+      WriteString('MyProjectX', 's2s1', SheenData.Sheen2Str1);
+      WriteString('MyProjectX', 's2s2', SheenData.Sheen2Str2);
+
+      WriteString('MyProjectX', 's3s1', SheenData.Sheen3Str1);
+      WriteString('MyProjectX', 's3s2', SheenData.Sheen3Str2);
+
+      WriteString('MyProjectX', 's4s1', SheenData.Sheen4Str1);
+      WriteString('MyProjectX', 's4s2', SheenData.Sheen4Str2);
+
+      WriteString('MyProjectX', 's5s1', SheenData.Sheen5Str1);
+      WriteString('MyProjectX', 's5s2', SheenData.Sheen5Str2);
+
+      WriteString('MyProjectX', 's6s1', SheenData.Sheen6Str1);
+      WriteString('MyProjectX', 's6s2', SheenData.Sheen6Str2);
+
+      WriteString('MyProjectX', 's7s1', SheenData.Sheen7Str1);
+      WriteString('MyProjectX', 's7s2', SheenData.Sheen7Str2);
+
+      WriteString('MyProjectX', 's8s1', SheenData.Sheen8Str1);
+      WriteString('MyProjectX', 's8s2', SheenData.Sheen8Str2);
+
+      WriteString('MyProjectX', 's9s1', SheenData.Sheen9Str1);
+      WriteString('MyProjectX', 's9s2', SheenData.Sheen9Str2);
+    end;
+
+  finally
+    reg.Free;
+  end;
+
+end;
+
+procedure TMainForm.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+begin
+  RegistryWrite;
+end;
+
+procedure TMainForm.Button1Click(Sender: TObject);
+begin
+  SettingDlg := TSettingDlg.Create(Self);
+  try
+    SettingDlg.ShowModal;
+  finally
+    SettingDlg.Release;
+  end;
+
+end;
+
+procedure TMainForm.SheenDisply(FilePath: String);
+var
+  jpg: TJPEGImage;
+begin
+  jpg := TJPEGImage.Create;
+  try
+    if FilePath = 'Default' then
+    begin
+      ScreenImage.Picture := NonImage.Picture;
+    end
+    else
+    begin
+      if FileExists(FilePath) then
+      begin
+        jpg.LoadFromFile(FilePath);
+        ScreenImage.Picture := TPicture(jpg);
+      end
+      else
+      begin
+        ScreenImage.Picture := NonImage.Picture;
+      end;
+    end;
+  finally
+    jpg.Free;
+  end;
+
+
+end;
+
+procedure TMainForm.TextDsp(Text: String; Mode: TDispMode);
+var
+  str: String;
+  xx, yy: integer;
+begin
+  with MainForm.Canvas do
+  begin
+    Brush.Style := bsClear;
+    Brush.Color := clRed;
+    str := Text;
+    Font.Height := TextHeight(str) * Width div TextWidth(str);
+    if Font.Height > TextWidth(str) * Height div TextHeight(str) then
+      Font.Height := TextWidth(str) * Height div TextHeight(str);
+
+    case DispMode of
+      dmCenter:
+      begin
+        xx := (Self.Width - TextWidth(str)) div 2;
+        yy := (Self.Height - TextHeight(str)) div 2;
+      end;
+      
+    end;
+
+    TextOut(xx, yy, str);
+  end;
+
+end;
+
+end.

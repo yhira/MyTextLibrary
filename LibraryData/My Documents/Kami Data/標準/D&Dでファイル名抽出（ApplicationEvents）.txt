@@ -1,0 +1,70 @@
+unit Unit1;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, AppEvnts, ShellAPI;
+
+type
+  TForm1 = class(TForm)
+    ApplicationEvents1: TApplicationEvents;
+    procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+    procedure ApplicationEvents1Message(var Msg: tagMSG;
+      var Handled: Boolean);
+  private
+    { Private êÈåæ }
+  public
+    { Public êÈåæ }
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+{$R *.dfm}
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  DragAcceptFiles(Handle, True);
+end;
+
+procedure TForm1.FormDestroy(Sender: TObject);
+begin
+  DragAcceptFiles(Handle, False);
+end;
+
+procedure TForm1.ApplicationEvents1Message(var Msg: tagMSG;
+  var Handled: Boolean);
+var
+  i, count: UINT;
+  FileName: array[0..259] of Char;
+  sl: TStringList;
+begin
+  if Msg.message = WM_DROPFILES then
+  begin
+    try
+      count := DragQueryFile(Msg.wParam, $FFFFFFFF, nil, 0);
+      sl := TStringList.Create;
+      try
+        for i := 0 to count -1 do
+        begin
+          DragQueryFile(Msg.wParam, i, FileName, Length(FileName));
+          sl.Add(FileName);
+        end;
+        ShowMessage(FileName);
+      finally
+        sl.Free;
+      end;
+
+    finally
+      DragFinish(Msg.wParam);
+    end;
+
+  end;
+
+end;
+
+end.

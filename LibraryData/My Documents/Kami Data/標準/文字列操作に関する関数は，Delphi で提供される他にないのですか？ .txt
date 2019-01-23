@@ -1,0 +1,98 @@
+
+
+--------------------------------------------------------------------------------
+該当するバージョン:Delphi 2.0,Delphi 3.0/Delphi3.1,Delphi4
+ 文字列操作に関する関数は，Delphi で提供される他にないのですか？ 
+ 
+ 以下に文字列操作の関数をお知らせします。
+
+
+{ 文字が数字かどうかを判定します }
+function IsDigit(ch: char): boolean;
+begin
+  Result := ch in ['0'..'9'];
+end;
+
+{ 文字が英大文字かどうかを判定します }
+function IsUpper(ch: char): boolean;
+begin
+  Result := ch in ['A'..'Z'];
+end;
+
+{ 文字が英小文字かどうかを判定します }
+function IsLower(ch: char): boolean;
+begin
+  Result := ch in ['a'..'z'];
+end;
+
+{ 文字を大文字に変換します }
+function ToUpper(ch: char): char;
+begin
+  Result := chr(ord(ch) and $DF);
+end;
+
+{ 文字を小文字に変換します }
+function ToLower(ch: char): char;
+begin
+  Result := chr(ord(ch) or $20);
+end;
+
+{ s に渡されたすべての文字列の最初の文字を大文字に変換します }
+function Proper(const s: string): string;
+var
+  i: Integer;
+  CapitalizeNextLetter: Boolean;
+begin
+  Result := LowerCase(s);
+  CapitalizeNextLetter := True;
+  for i := 1 to Length(Result) do
+  begin
+    if CapitalizeNextLetter and IsLower(Result[i]) then
+      Result[i] := ToUpper(Result[i]);
+    CapitalizeNextLetter := Result[i] = ' ';
+  end;
+end;
+
+{ これより以下の関数は Delphi 2,0 では提供されていますが，
+  Delphi 1.0 では提供されていません }
+
+{ TrimRight 関数は指定された文字列 S から
+  末尾部分の空白と制御文字を取り除きます。}
+function TrimRight(const s: string): string;
+var
+  i: integer;
+begin
+  i := Length(s);
+  while (I > 0) and (s[i] <= ' ') do Dec(i);
+  Result := Copy(s, 1, i);
+end;
+
+{ TrimLeft 関数は指定された文字列 S から
+  先頭部分の空白と制御文字を取り除きます。}
+function TrimLeft(const S: string): string;
+var
+  I, L: Integer;
+begin
+  L := Length(S);
+  I := 1;
+  while (I <= L) and (S[I] <= ' ') do Inc(I);
+  Result := Copy(S, I, Maxint);
+end;
+
+{ Trim 関数は指定された文字列 S から
+  先頭部分および末尾部分の空白と制御文字を取り除きます。 }
+function Trim(const S: string): string;
+var
+  I, L: Integer;
+begin
+  L := Length(S);
+  I := 1;
+  while (I <= L) and (S[I] <= ' ') do Inc(I);
+  if I > L then Result := '' else
+  begin
+    while S[L] <= ' ' do Dec(L);
+    Result := Copy(S, I, L - I + 1);
+  end;
+end;
+ 
+

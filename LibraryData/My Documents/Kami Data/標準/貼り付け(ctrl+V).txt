@@ -1,0 +1,5 @@
+    SetForegroundWindow(FocusHandle);
+        keybd_event( VK_CONTROL, 0, 0 , 0 );
+        keybd_event( $56, 0, 0 , 0 );			//V Key
+        keybd_event( $56, 0, KEYEVENTF_KEYUP , 0 );
+        keybd_event( VK_CONTROL, 0, KEYEVENTF_KEYUP , 0 );

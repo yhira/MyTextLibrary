@@ -1,0 +1,25 @@
+
+--------------------------------------------------------------------------------
+ 
+以下のようにして、ファイルに最後にアクセスした日付を取得します。
+
+procedure TForm1.Button1Click(Sender: TObject);
+var
+  FindData : TWin32FindData;
+  LocalFindTime : TFileTime;
+  DosFindTime : DWord;
+  h   : THandle;
+  sFileName : String;
+begin
+  sFileName := Edit1.Text;
+  Label1.Caption := '見つかりません。';
+  //ファイル情報の取得 
+  h := Windows.FindFirstFile(PChar(sFileName), FindData);
+  if(INVALID_HANDLE_VALUE <> h)then
+  begin
+    Windows.FindClose(h);
+    FileTimeToLocalFileTime(FindData.ftLastAccessTime, LocalFindTime);
+    FileTimeToDosDateTime(LocalFindTime,LongRec(DosFindTime).Hi, LongRec(DosFindTime).Lo);
+    Label1.Caption := DateTimeToStr(FileDateToDateTime(DosFindTime));
+  end;
+end; 

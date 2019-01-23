@@ -1,0 +1,4 @@
+procedure TForm1.btnFullExpandClick(Sender: TObject);
+begin
+  tv1.FullExpand;
+end;

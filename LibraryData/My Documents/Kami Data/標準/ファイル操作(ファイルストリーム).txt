@@ -1,0 +1,77 @@
+const
+
+  FILE_NAME = 'test1.dat';
+
+procedure TForm1.Button1Click(Sender: TObject);
+var
+  fs: TFileStream;
+  Len: Integer;
+begin
+  fs := TFileStream.Create(FILE_NAME, fmCreate);
+[[  //ファイルが存在する場合は，開いて書き込みを許可し，
+  //それ以外の場合は，新しいファイルを作成する。]]
+  try
+    Len := Length(Memo1.Text);
+    fs.Write(Len, SizeOf(Len));
+    fs.Write(PChar(Memo1.Text)^, Len);
+[[    //Write メソッドは，Count で指定するバイトを Buffer から
+    //文字列ストリームの現在位置に書き込み，
+    //Count で指定するバイトだけ現在位置を更新します。]]
+    Len := Length(Memo2.Text);
+    fs.Write(Len, SizeOf(Len));
+    fs.Write(PChar(Memo2.Text)^, Len);
+
+    fs.WriteComponent(Memo1);
+    fs.WriteComponent(Memo2);
+[[    //WriteComponent メソッドは，コンポーネントおよびその
+    //プロパティのストリームへの書き込みを開始します。]]
+  finally
+    fs.Free;
+  end;
+
+end;
+
+procedure TForm1.Button2Click(Sender: TObject);
+var
+  fs: TFileStream;
+  Buf: String;
+  Len: Integer;
+begin
+  fs := TFileStream.Create(FILE_NAME, fmOpenRead);
+                                  //読み出し専用で開く
+  try
+    fs.Read(Len, SizeOf(Len));
+    SetLength(Buf, Len);
+    fs.Read(PChar(Buf)^, Len);
+    Memo1.Text := Buf;
+
+    fs.Read(Len, SizeOf(Len));
+    SetLength(Buf, Len);
+    fs.Read(PChar(Buf)^, Len);
+    Memo2.Text := Buf;
+
+    fs.ReadComponent(Memo1);
+    fs.ReadComponent(Memo2);
+  finally
+    fs.Free;
+  end;
+
+end;
+
+
+procedure TForm1.Button3Click(Sender: TObject);
+begin
+  Memo1.Clear;
+  Memo2.Clear;
+end;
+
+procedure TForm1.Memo1DblClick(Sender: TObject);
+begin
+  if FontDialog1.Execute then
+    (Sender as TMemo).Font := FontDialog1.Font;
+end;
+
+
+
+TITLE:D:\delphi\作成\ファイル処理・ファイルストリーム\Unit1.pas - EmEditor
+DATE:2002/06/05 15:59

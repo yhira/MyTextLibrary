@@ -1,0 +1,47 @@
+
+--------------------------------------------------------------------------------
+ 
+ダイアログボックスの表示をプログラムで動かすには、いくつか細工が必要です。
+まず、ダイアログボックスの動きを監視するためにタイマーオブジェクトを使います。
+ハンドルの取得は、ダイアログに使うタイトルだけが手がかりになります。
+FindWindow APIでハンドルが取得できれば、あとはGetWindowRect APIで大きさを取得し、SetWindowPos APIで描画すれば完了です。
+
+type
+  TForm1 = class(TForm)
+    Timer1: TTimer;
+    Button1: TButton;
+    OpenDialog1: TOpenDialog;
+    procedure Button1Click(Sender: TObject);
+    procedure Timer1Timer(Sender: TObject);
+  private
+    { Private 宣言 } 
+    DlgTitle: PChar;
+
+(中略)
+
+procedure TForm1.Button1Click(Sender: TObject);
+begin
+  Timer1.Enabled := True;
+  GetMem(DlgTitle, SizeOf(OpenDialog1.Title));
+  StrPCopy(DlgTitle, OpenDialog1.Title);
+  OpenDialog1.Execute;
+end;
+
+procedure TForm1.Timer1Timer(Sender: TObject);
+var
+  Hnd: HWND;
+  X, Y: integer;
+  Rect: TRect;
+begin
+  Hnd := FindWindow('#32770', DlgTitle);
+  {ハンドルが取得できたら処理} 
+  if Hnd <> 0 then
+  begin
+    GetWindowRect(Hnd, Rect);
+    X := (Screen.Width - (Rect.Right - Rect.Left)) div 2;
+    Y := (Screen.Height - (Rect.Bottom - Rect.Top)) div 2;
+    SetWindowPos(Hnd, 0, X, Y, 0, 0, SWP_NOSIZE);
+    Timer1.Enabled := False;
+  end;
+  FreeMem(DlgTitle, SizeOf(OpenDialog1.Title));
+end; 

@@ -1,0 +1,61 @@
+[Delphi-ML:36134] Re: Hint
+
+"Keinosuke Miyanaga" <kaj@kaj.net>
+Fri, 19 Feb 1999 07:57:32 -0500
+
+--------------------------------------------------------------------------------
+
+宮永＠米です。（ML風に^^）
+
+>procedure TFrom1.ListBox1MouseMove(Sender: TObject;
+>  Shift: TShiftState; X, Y: Integer);
+>begin
+>  with TListBox(Sender) do
+>  begin
+>    ItemIndex := ItemAtPos(Point(X, Y), true);
+>    if CompareStr(Hint, Links[ItemIndex]) <> 0 then
+>    begin
+>      Hint := Links[ItemIndex];
+>      Application.CancelHint;  // 古いヒントを消す
+>    end;
+>  end;
+>end;
+
+高岡さんありがとうございました。美しい出来です。結局、ItemIndexを変更せず
+に、ヒントだけ変更しました。
+
+procedure TForm1.LstLinksMouseMove(Sender: TObject; Shift: TShiftState; X,
+  Y: Integer);
+var  i: integer;
+begin
+ActiveControl := LstLinks; //TListBox
+with LstLinks do begin
+  i := ItemAtPos(Point(X, Y), true);
+  if i > -1 then
+    if CompareStr(Hint, Links[i]) <> 0 then begin
+      Hint := Links[i];
+      Application.CancelHint;
+      end;
+  end;
+end;
+
+（ちょっとフォーマットの仕方が違っててすみません）
+
+ありがとうございました。
+
+------------------------------------
+Keinosuke Miyanaga, MIT class of 2001
+kaj@mit.edu / kaj@kaj.net / http://kaj.net/
+------------------------------------
+
+
+
+
+
+ 
+
+
+
+--------------------------------------------------------------------------------
+この記事へのリンクアドレス (ご自由にリンクしてください) : 
+http://www2.big.or.jp/~osamu/Delphi/delphi-browse.cgi?index=036134

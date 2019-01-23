@@ -1,0 +1,52 @@
+> 実現しようと考えています。
+> 
+> 実際には、マウスが止まった位置の下にあるイメージ
+> 要素の説明を Hint のような形で表示させたいと
+> 思っています。
+> 
+> マウスが TImage 上にあることは識別できるのですが、
+> マウスが止まっている（動いてない）ことを識別する
+> 方法が分かりません。
+
+以前、別件で [60042] に以下のように書きました。
+－－－－－－
+「しばらくマウスを止めたとき」をどうやって
+知ることができるでしょうか？ これは、「マウスが動く」→「OnChange イベ
+ントが起こる」ということですから、OnChange イベントが一定時間起こらないと
+きを知ればよいことになります。そこで、OnChange イベントでタイマーをリセッ
+トすることにより、OnChange が一定時間起こらなかったときだけ、OnTimer イベ
+ントが実行されるようにします。
+－－－－－－
+これは、TTrackbar についてのものですが、TImage ではマウスを動かすと
+OnMouseMove イベントが起こります。上記と同じようにこのイベントハンドラ
+でタイマをリセットすると、動かないときだけ OnTimer イベントを起こす
+ことができます。以下に例を示します。
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  Timer1.Enabled := false;
+  Timer1.Interval := 500;
+  Image1.Picture.Bitmap.Width := Image1.Width;
+  Image1.Picture.Bitmap.Height := Image1.Height;
+end;
+
+procedure TForm1.Image1MouseMove(Sender: TObject; Shift: TShiftState; X,
+  Y: Integer);
+begin
+  Timer1.Enabled := false;
+  Timer1.Enabled := true;
+end;
+
+procedure TForm1.Timer1Timer(Sender: TObject);
+var
+  pt:TPoint;
+begin
+  Timer1.Enabled := false;
+  pt := Image1.ScreenToClient(Mouse.CursorPos);
+  if PtInRect(Image1.ClientRect,pt) then
+    Label1.Caption :=
+      '('+IntToStr(pt.x)+','+IntToStr(pt.y)+')';
+end;
+
+この例では、マウスが Image1 内にあって、500ms 程度静止したときだけ
+その座標が Label1 に表示されます。

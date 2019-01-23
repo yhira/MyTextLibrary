@@ -1,0 +1,2 @@
+      FolderNameLabeledEdit.SetFocus;
+      FolderNameLabeledEdit.SelectAll;

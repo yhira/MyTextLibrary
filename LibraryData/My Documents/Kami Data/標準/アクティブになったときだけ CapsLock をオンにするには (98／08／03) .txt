@@ -1,0 +1,39 @@
+
+
+--------------------------------------------------------------------------------
+該当するバージョン:Delphi 2.0,Delphi 3.0/Delphi3.1,Delphi4
+ Memo がアクティブになったときだけ，CapsLock をオンにするにはどうしたらいいですか？ 
+
+ 
+ CapsLock の設定は，SetKeyboardState によって行なうことができます。
+SetKeyboardState を使用するには，GetKeyboardState によってあらかじめ全てのキー状態を取得してから，必要な箇所だけ変更します。
+次の例は，Memo コンポーネントの OnEnter イベントで CapsLock をオンに設定し，OnExit イベントで CapsLock をオフに設定しています。
+
+
+{ Memo1のOnEnterイベント }
+procedure TForm1.Memo1Enter(Sender: TObject);
+var
+  Buf: TKeyboardState;
+begin
+  { 現在のキーボードの状態を取得します }
+  GetKeyboardState(Buf);
+  { CapsLockをオンにします }
+  Buf[VK_CAPITAL] := $81;
+  { 変更した内容を設定します }
+  SetKeyboardState(Buf);
+end;
+
+{ Memo1のOnExitイベント }
+procedure TForm1.Memo1Exit(Sender: TObject);
+var
+  Buf: TKeyboardState;
+begin
+  { 現在のキーボードの状態を取得します }
+  GetKeyboardState(Buf);
+  { CapsLockをオフにします }
+  Buf[VK_CAPITAL] := $0;
+  { 変更した内容を設定します }
+  SetKeyboardState(Buf);
+end;
+ 
+

@@ -1,0 +1,45 @@
+procedure TForm1.Print1Click(Sender: TObject);
+var
+  i: Integer;
+begin
+  if PrintDialog1.Execute then
+  begin
+    Printer.BeginDoc;
+    for i := StringGrid1.Selection.Top to StringGrid1.Selection.Bottom do
+    begin
+      PrintAline(Printer.Canvas, i);
+      if i <> StringGrid1.Selection.Bottom then
+        Printer.NewPage;
+    end;
+    Printer.EndDoc;
+  end;
+
+end;
+
+procedure TForm1.PrintSetup1Click(Sender: TObject);
+begin
+  PrinterSetupDialog1.Execute;
+end;
+
+
+
+
+
+
+
+
+
+
+
+procedure TForm1.actPrintExecute(Sender: TObject);
+begin
+  if PrintDialog1.Execute then
+  begin
+    RichEdit1.Print(Form1.Caption);
+  end;
+end;
+
+procedure TForm1.actPrinterExecute(Sender: TObject);
+begin
+  PrinterSetupDialog1.Execute;
+end;

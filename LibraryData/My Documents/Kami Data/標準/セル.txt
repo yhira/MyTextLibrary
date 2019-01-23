@@ -1,0 +1,56 @@
+unit UnitStringGrid;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, Grids, StdCtrls, Buttons, ExtCtrls;
+
+type
+  TForm1 = class(TForm)
+    Panel1: TPanel;
+    Panel2: TPanel;
+    Edit1: TEdit;
+    BitBtn1: TBitBtn;
+    StringGrid1: TStringGrid;
+    procedure FormCreate(Sender: TObject);
+    procedure Edit1KeyPress(Sender: TObject; var Key: Char);
+  private
+    { Private êÈåæ }
+  public
+    { Public êÈåæ }
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+{$R *.dfm}
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+    StringGrid1.Cells[1,0] := 'çëåÍ';
+    StringGrid1.Cells[2,0] := 'éZêî';
+    StringGrid1.Cells[3,0] := 'óùâ»';
+    StringGrid1.Cells[4,0] := 'é–âÔ';
+    StringGrid1.Cells[0,1] := 'A';
+    StringGrid1.Cells[0,2] := 'B';
+    StringGrid1.Cells[0,3] := 'C';
+    StringGrid1.Cells[0,4] := 'D';
+    StringGrid1.Cells[0,5] := 'E';
+end;
+
+procedure TForm1.Edit1KeyPress(Sender: TObject; var Key: Char);
+begin
+    if key = #13 then
+    begin
+        StringGrid1.Cells[StringGrid1.Col,StringGrid1.Row] := Edit1.Text;
+        Edit1.Text := #0;
+        StringGrid1.SetFocus;
+        
+    end;
+
+end;
+
+end.

@@ -1,0 +1,11 @@
+
+uses commctrl
+ÅE
+ÅE
+ÅE
+var 
+Style: DWORD; 
+
+    Style := GetWindowLong(MacroTreeView.Handle, GWL_STYLE);
+    Style := Style or TVS_NOTOOLTIPS;
+    SetWindowLong(MacroTreeView.Handle, GWL_STYLE, Style);

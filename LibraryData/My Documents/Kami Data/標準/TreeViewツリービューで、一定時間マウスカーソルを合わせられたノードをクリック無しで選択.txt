@@ -1,0 +1,72 @@
+する 
+リストビュー（TListView）の HotTrack プロパティを True にすると、ユーザーがマウスカーソルを項目の上に置いて 0.5 秒ほど経つと、その項目が自動的に選択されます。この動作を、ツリービュー（TTreeView）で真似てみます。  
+◆ 概要 
+ツリービューの OnMouseMove イベントでマウスカーソルがどのノードの上にあるかを記録し、タイマーを作動させます。タイマーの OnTimer イベントで再びマウスカーソルの指しているノードを調べ、先ほど記録したノードと同じであればそのノードを選択します。 
+◆ タイマーの設定など 
+ツリービューがあるのと同じフォーム上にタイマー（TTimer）を置き、Enabled プロパティを False にします。Interval プロパティには、ノードの上にマウスカーソルが来てからそのノードが選択されるまでの時間（ミリ秒単位）を設定します。500～1000 程度が良いでしょう。 
+
+また、マウスカーソルが指したノードを記録しておくためのフィールドを、フォームに追加します。 
+
+
+--------------------------------------------------------------------------------
+
+
+type
+  TForm1 = class(TForm)
+    :
+  private
+    PointedNode: TTreeNode;
+    :
+  end; 
+◆ ツリービューの OnMouseMove イベントハンドラ 
+ツリービュー上にマウスカーソルが来ると OnMouseMove イベントが起こるので、そのイベントハンドラの中でマウスカーソルの位置にあるノードを調べます。これにはツリービューの GetNodeAt メソッドを使います。GetNodeAt メソッドに座標を渡すと、そこにあるノード（TTreeNode）を返してきます（ノードの上でない場合は nil）。ただし座標ががノード上でなく左側や右側であっても GetNodeAt はそのノードを返してくるので、GetHitTestInfoAt メソッドを使ってそれらのケースを除外します。 
+
+そうして得られたノードが以前記録したノードと異なる場合は一旦タイマーを止め、そのノードを記録してタイマーをスタートさせます（ノードが nil の場合を除く）。 
+
+
+--------------------------------------------------------------------------------
+
+
+procedure TForm1.TreeView1MouseMove
+  (Sender: TObject; Shift: TShiftState; X, Y: Integer);
+var
+  Node: TTreeNode;
+  HitTest: THitTests;
+begin
+  Node := TreeView1.GetNodeAt(X, Y);
+  HitTest := TreeView1.GetHitTestInfoAt(X, Y);
+  if HitTest * [htOnIcon, htOnStateIcon, htOnLabel] = [] then
+    Node := nil;                 // * は集合の共通部分を求める演算子
+  if Node <> PointedNode then begin
+    Timer1.Enabled := False;
+    PointedNode := Node;
+    if Assigned(Node) then Timer1.Enabed := True
+  end
+end; 
+◆ タイマーの OnTimer イベントハンドラ 
+まず Windows API の GetCursorPos 関数でマウスカーソルの座標を調べます。これで得られる座標はスクリーン座標（画面の左上の端を原点とする座標）のため、ツリービューの ScreenToClient メソッドでツリービューのクライアント座標（ツリービューの左上の端を原点とする座標）に変換します。それから OnMouseMove のときと同様に、その位置にあるノードを調べ、それが記録されているノードと同じであれば Selected プロパティに True を入れてノードを選択状態にします。また、ツリービューにフォーカスを与えるために SetFocus メソッドを呼び出します。ただし、フォームがアクティブでないときはそれらを行いません。 
+
+
+--------------------------------------------------------------------------------
+
+
+procedure TForm1.Timer1Timer(Sender: TObject);
+var
+  P: TPoint;
+  Node: TTreeNode;
+  HitTest: THitTests;
+begin
+  GetCursorPos(P);
+  P := TreeView1.ScreenToClient(P);
+  Node := TreeView1.GetNodeAt(P.x, P.y);
+  HitTest := TreeView1.GetHitTestInfoAt(P.x, P.y);
+  if HitTest * [htOnIcon, htOnStateIcon, htOnLabel] = [] then
+    Node := nil;
+  if Active and Assigned(Node) and (Node = PointedNode) then begin
+    TreeView1.SetFocus;                 // Active はフォームのプロパティ
+    Node.Selected := True
+  end;
+  Timer1.Enabled := False;
+  PointedNode := Node;
+  if Assigned(Node) then Timer1.Enabled := True
+end; 

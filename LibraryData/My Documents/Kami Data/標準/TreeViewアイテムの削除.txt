@@ -1,0 +1,9 @@
+procedure TForm1.btnDeleteClick(Sender: TObject);
+var
+  trnd: TTreeNode;
+begin
+  if tv1.Selected <> nil then
+    tv1.Selected.Delete
+  else
+    ShowMessage('ノードが選択されていません。');
+end;

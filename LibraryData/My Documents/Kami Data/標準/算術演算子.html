@@ -1,0 +1,46 @@
+<HTML><HEAD><meta http-equiv="content-type" content="text/html;charset=Shift_JIS">
+<TITLE>第5回　Pascalの基礎</TITLE></HEAD>
+
+<BODY>
+<P><B><U><FONT 
+size=+1>算術演算子</FONT></U></B><BR><BR>　足し算、引き算などを行う演算子です。算術演算子には次のものがあります。</P>
+<TABLE cellSpacing=0 width=610 border=1>
+<TBODY>
+<TR>
+<TD align=middle bgColor=#e0e0ef>演算子</TD>
+<TD align=middle bgColor=#e0e0ef>意味</TD></TR>
+<TR>
+<TD>+</TD>
+<TD>加算(足し算)</TD></TR>
+<TR>
+<TD>-</TD>
+<TD>減算(引き算)</TD></TR>
+<TR>
+<TD>*</TD>
+<TD>乗算(かけ算)</TD></TR>
+<TR>
+<TD>/</TD>
+<TD>実数除算(実数型のわり算)</TD></TR>
+<TR>
+<TD>div</TD>
+<TD>整数除算(整数型のわり算)</TD></TR>
+<TR>
+<TD>mod</TD>
+<TD>剰余(整数型わり算の余り)</TD></TR></TBODY></TABLE>
+<P>　除算は/とdivで結果が異なるので、注意が必要です。/の場合、計算結果は実数になります。divは計算結果が整数になります。</P><PRE>  var
+    A, B: Integer;
+    C: Real;
+  begin
+    A := 5 div 2;
+    B := 5 mod 2;
+    C := 5 / 2;
+  end;</PRE>
+<P>　上記の例では、次の結果になります。<BR>　A = 2　　(整数除算なので、割り切れない部分=小数は切り捨てられる)<BR>　B = 
+1　　(５÷２の余りが代入される)<BR>　C = 2.5　(実数除算なので、小数点まで求められる)<BR></P><BR>
+<FONT SIZE="-1">
+TITLE:第5回　Pascalの基礎<BR>
+DATE:2002/12/29 16:53<BR>
+URL:<A HREF="http://wblue.hp.infoseek.co.jp/prog/c2_05.htm" TARGET="_blank">http://wblue.hp.infoseek.co.jp/prog/c2_05.htm</A><BR>
+</FONT>
+</BODY>
+</HTML>

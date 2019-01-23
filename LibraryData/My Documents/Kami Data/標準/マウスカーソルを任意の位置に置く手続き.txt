@@ -1,0 +1,9 @@
+
+procedure TMainForm.MouseOnButton(Btn: TButton);
+var
+  P: TPoint;
+begin
+  P := Point(Btn.Width div 2, Btn.Height div 2);
+  P := Btn.ClientToScreen(P);
+  SetCursorPos(P.X, P.Y);
+end;

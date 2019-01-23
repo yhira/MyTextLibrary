@@ -1,0 +1,39 @@
+> きません。どのようにすればよいのでしょうか？再びおねがいいたします。
+
+　うーん、OnCompareなんてイベントが追加されていたなんて...
+　コールバック関数を覚える必要がないじゃないの(^^)
+
+　便利そうだなぁと思って、ちょっと作ってみました。
+
+//ListView1のOnCompareイベントハンドラ手続き
+procedure TForm1.ListView1Compare(Sender: TObject; Item1, Item2: TListItem;
+  Data: Integer; var Compare: Integer);
+begin
+  case Data of
+    //ここでどのフィールドでソートするかを切り分ける
+    //０のときは、Captionを数字と見る
+    0: Compare := StrToInt(Item1.Caption) - StrToInt(Item2.Caption);
+    //１のときは、SubItemの一つ目を文字としてソート
+    1: Compare := AnsiCompareText(Item1.SubItems[Data-1],
+                                        Item2.SubItems[Data-1]);
+  end;
+end;
+
+//カラムボタンが押されたらソート
+procedure TForm1.ListView1ColumnClick(Sender: TObject;
+  Column: TListColumn);
+begin
+  ListView1.CustomSort(nil, Column.Index);
+  //カスタムソートの第２引数に、どのカラムが押されたかを渡す
+  //これは、ListView1CompareのDataとしてわたる
+end;
+
+
+　これで、一つ目のカラムボタンを押したときは、数字としてソー
+ト、２つめは文字としてソートできるようになります。
+　OnCompareがないときは、コールバック関数を書いてごりごりや
+らないといけなかったので、ちょっとだけお手軽になりました。
+
+　この方法が使えるのは、たぶんDelphi3からです...よね？
+
+------------------------------------------------

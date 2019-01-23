@@ -1,0 +1,110 @@
+
+
+TTreeViewでは、DragImageにこだわらなければ,DragModeプロパティを dmAutomatic に設定すれば、OnDragOver、OnDragDropイベントを使うだけで簡単にできます。
+
+OnDragOverイベントのAcceptは，ユーザーがドロップするオブジェクトをそのコントロールが受け入れることを示すだけです。
+
+ツリー構造ですので、移動が無限ルーチンに陥らないように工夫します。
+下記では、
+IsFamilyメソッドで、ファミリー内にその上位ノードを移動するのか
+を判定し、MoveNodeメソッドですべての子ノードが移動できるように
+しています。
+
+type
+  TForm1 = class(TForm)
+    // ＜省略＞
+    ・・・・・
+    ・・・・・
+  private
+    procedure MoveNode(Parent, Source: TTreeNode);
+    function IsFamily(Parent, Source: TTreeNode):boolean;
+  public
+  end;
+
+    // ＜省略＞
+    ・・・・・
+    ・・・・・
+
+procedure TForm1.FormCreate(Sender: TObject);
+var
+  i:integer;
+  Node:TTreeNode;
+begin
+  // 適当にtreeを作成
+  for i := 1 to 20 do
+  begin
+    node := TreeView1.Items.Add(nil,'A00'+IntToStr(i));
+    node.ImageIndex := 0;
+    node.SelectedIndex := 1;
+  end;
+end;
+
+// 移動と削除－－すべての子ノードを移動する
+procedure TForm1.MoveNode(Parent, Source: TTreeNode);
+var
+  node: TTreeNode;
+begin
+  node := TreeView1.Items.AddChild(Parent,Source.Text);
+  node.ImageIndex := Source.ImageIndex;
+  node.SelectedIndex := Source.SelectedIndex;
+  while Source.Count > 0  do
+    // 再帰させる
+    MoveNode(Node, TTreeNode(Source.Item[0]));
+  Source.Delete;
+end;
+
+// Sourceの一族にParentがあれば true の判定
+function TForm1.IsFamily(Parent, Source: TTreeNode):boolean;
+var
+  i:integer;
+  node: TTreeNode;
+begin
+  result := false;
+  for i := 0 to Source.Count - 1 do
+  begin
+    node := Source.Item[i];
+    if Node.AbsoluteIndex = Parent.AbsoluteIndex then
+      result := true
+    else
+      // 再帰させる
+      result := IsFamily(Parent, Node);
+    if result then break;
+  end;
+end;
+
+// ドロップ後の処理
+procedure TForm1.TreeView1DragDrop(Sender, Source: TObject; X, Y: Integer);
+Var
+  Node:TTreeNode;
+begin
+  if (Sender is TTreeView) and (Source is TTreeView) then
+  begin   //ツリーからツリー
+    with Sender, Source as TTreeView do
+    begin
+      //新親の親
+      Node := GetNodeAt(X,Y);
+      if Node = Selected then
+      begin
+        MessageDlg('同じ所に移動はできません。', mtInformation, [mbOk], 0);
+        Exit;
+      end;
+      //ツリーのアイテムを移動し削除
+      Items.BeginUpdate;
+      if IsFamily(Node, Selected) then
+        //無限循環を避ける
+        MessageDlg('この移動はできません。', mtInformation, [mbOk], 0)
+      else
+        MoveNode(Node, Selected);
+      Items.EndUpdate;
+    end;
+  end;
+end;
+
+// ソースを確認する
+procedure TForm1.TreeView1DragOver(Sender, Source: TObject; X, Y: Integer;
+  State: TDragState; var Accept: Boolean);
+begin
+  Accept := (Source as TTreeView) = TreeView1;
+end;
+
+ 

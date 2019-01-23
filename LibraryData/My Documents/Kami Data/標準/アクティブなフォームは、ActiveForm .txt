@@ -1,0 +1,43 @@
+プロパティによって確認できます。また、アクティブなフォームが変更されると、OnActiveFormChange イベントが発生します。以下の例は、現在アクティブなフォームをメインフォーム上のラベルに表示するコードです。
+
+
+
+   procedure 
+     TForm1.ActiveFormChange(Sender: TObject);
+   begin
+     Label1.Caption := Screen.ActiveForm.Caption;
+   end;
+   
+   procedure TForm1.FormShow(Sender: TObject);
+   begin
+     Screen.OnActiveFormChange :=  ActiveFormChange;
+   end;
+   
+   procedure TForm1.FormClose(
+   Sender: TObject; var Action: TCloseAction);
+   begin
+     Screen.OnActiveFormChange := nil;
+   end;
+
+ 
+
+
+
+上の例では、OnFormClose イベントハンドラで、Screen の OnActiveFormChange に nil を代入していますが、これは重要なコードです。アプリケーションが終了する時に、メインフォームはクローズされそのインスタンスは破棄されますが、この時に OnActiveFormChange イベントが発生します。もし、イベントハンドラの設定をそのままにしておけば、既に無効になったフォームのメソッドが呼ばれるため、アクセス違反が発生してしまうからです。
+TScreen の ActiveForm を使用してアクティブなフォームにアクセスする必要があるのは、例えばすべてのフォームに共通した処理を行ないたい場合などです。特定の種類のフォームについて処理を行なうのであれば、それぞれのフォームのインスタンスを直接参照した方が簡単です。ただし、次の例のように、現在アクティブなフォームの種類を調べるために用いることも可能です。
+
+
+
+   if Screen.ActiveForm is TForm1 then
+       ShowMessage('TForm1');
+
+ 
+
+
+
+ActiveForm と同じように、現在アクティブなコントロールを ActiveControl プロパティで知ることができます。そして、アクティブなコントロールが変更されたときには、 OnActiveControlChange イベントが発生します。このイベントハンドラを用いれば、アプリケーション内で共通する、アクティブコントロールへの操作を記述できます。
+TScreen は、アプリケーション内にあるすべてのデータモジュールのリストも保持しています。データモジュールのリストは、DataModules プロパティで参照でき、リスト内の項目の数は、DataModuleCount プロパティで分かります。データモジュールのリストにアクセスする必要性は、フォームのリストにアクセスする用途ほど頻繁ではないかもしれませんが、DataModules プロパティに対しても、Forms 配列と同じような記述をすることができます。
+
+
+
+

@@ -1,0 +1,45 @@
+
+--------------------------------------------------------------------------------
+ 
+背景を伴うアニメーションを作成する場合、ひとつの動作を描くのに主に以下の3つの手順が必要です。
+1.背景の描画
+2.キャラクターのスプライト画像の描画
+3.キャラクターの描画
+2はキャラクターの型抜き画像のようなものの描画です。
+以下の例では、Timerイベントが発生するたびに、描画しなおすことでアニメーションを実現しています。この例は実際にプロジェクトを開いて見てみるとわかりやすいでしょう。
+
+////////// 
+var
+  Form1: TForm1;
+  I, iwidth, iheight, itop: Integer;
+
+implementation
+
+{$R *.DFM} 
+
+procedure TForm1.Timer1Timer(Sender: Tobject);
+begin
+  if I+iwidth<screen1.Width then
+  begin
+    BitBlt(screen1.Canvas.Handle, 0, 0, screen1.Width, screen1.Height,
+           backimg.Canvas.Handle, 0, 0, cmSrcCopy);
+    BitBlt(screen1.Canvas.Handle, I, itop, iwidth, iheight,
+           animobj.Canvas.Handle, iwidth, 0, cmSrcErase);
+    BitBlt(screen1.Canvas.Handle, I, itop, iwidth, iheight,
+           animobj.Canvas.Handle, 0, 0, cmSrcErase);
+    screen1.Refresh;
+  end
+  else Timer1.Enabled := false;
+
+  I:=I+2;
+end;
+
+procedure TForm1.FormCreate(Sender: Tobject);
+begin
+  I:=0;
+  iwidth:=animobj.Width div 2;
+  iheight:=animobj.Height;
+  itop:=40;
+  Timer1.Interval:=250;
+end;
+///////// 

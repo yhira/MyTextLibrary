@@ -1,0 +1,49 @@
+
+
+--------------------------------------------------------------------------------
+該当するバージョン:Delphi 1.0,Delphi 2.0,Delphi 3.0/Delphi3.1,Delphi4
+ アプリケーションの二重起動を抑止するにはどうしたらよいのでしょうか？ 
+
+ 
+ Version 1.0J では：
+hPrevInst という標準変数が 0 でなければそのプログラムはすでに起動されています。アプリケーションの起動時にこのデータをチェックするようにしてください。
+
+if hPrevInst <> 0 then Exit; 
+
+
+ 
+ Version2.0J以降では：
+アプリケーション固有のミューテックスオブジェクトを作成し，そのミューテックスオブジェクトが存在するかしないかで，アプリケーションを実行または中止することができます。
+以下のコードをお試しください。
+このコードは，[表示(V)|プロジェクト ソース(J)] で表示されるプロジェクトソースに記述してください。
+
+
+   program Mutex;
+   
+   uses
+     Forms,
+     Windows,
+     Mutex1 in 'Mutex1.pas' {Form1};
+   
+   {$R *.RES}
+   
+   const
+     MutexName = 'EX_Mutex';
+   var
+     hMutex: THANDLE;
+   begin
+     hMutex := OpenMutex(MUTEX_ALL_ACCESS, False, MutexName);
+     if hMutex <> 0 then
+     begin
+       CloseHandle(hMutex);
+       Exit;
+     end;
+     hMutex := CreateMutex(nil, False, MutexName);
+     Application.Initialize;
+     Application.CreateForm(TForm1, Form1);
+     Application.Run;
+     ReleaseMutex(hMutex);
+   end.
+
+ 
+

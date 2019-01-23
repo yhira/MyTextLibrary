@@ -1,0 +1,39 @@
+
+
+--------------------------------------------------------------------------------
+該当するバージョン:Delphi 2.0 Delphi 3.0/Delphi 3.1 Delphi 4
+ StringGridで入力文字数の制限を行なうにはどのようにすればよいでしょうか？ 
+ 
+ StringGrid の編集用コントロールは，InplaceEditor という StringGridのプロテクトメンバです。この InplaceEditor の入力文字数を制限ることで，StringGrid の入力文字数制限を実現できます。StringGrid が編集状態になる直前の OnGetEditText イベントで，メッセージをポストします。InplaceEditorのハンドルを取得する方法によって，2通りの手法が考えられます。
+
+
+方法１
+
+Windows API 関数 GetWindow で InplaceEditor にアクセスする方法
+
+
+
+procedure TForm1.StringGrid1GetEditText(Sender: TObject; ACol,
+  ARow: Integer; var Value: String);
+var
+  hWnd: THandle;
+  maxlen: Integer;
+begin
+  hWnd := GetWindow( ( Sender as TStringGrid ).Handle, GW_CHILD );
+  if hWnd <> 0 then begin
+    { この例では，ARowを入力文字数にしています }
+    maxlen := ARow;
+    PostMessage(hWnd, EM_LIMITTEXT, maxlen, 0);
+  end;
+end;
+
+
+方法２ 
+仮のクラスを宣言してInplaceEditorにアクセスする方法 
+
+{ 宣言のあるユニット内ではそのクラスの protect メンバにアクセスできます } type TDummy = class(TStringGrid); 
+
+procedure TForm1.StringGrid1GetEditText(Sender: TObject; ACol, ARow: Integer; var Value: String); var hWnd: THandle; maxlen: Integer; begin if TDummy( Sender ).InplaceEditor <> nil then begin { この例では，ARowを入力文字数にしています } maxlen := ARow; hWnd := TDummy( Sender ).InplaceEditor.Handle; PostMessage( hWnd, EM_LIMITTEXT, maxlen, 0); end; end; 
+
+ 
+

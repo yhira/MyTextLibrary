@@ -1,0 +1,201 @@
+
+
+92 名前：デフォルトの名無しさん 投稿日：02/04/22 02:06
+RichEdit1に500kbくらいの文字列を貼り付けて 
+以下のような処理をしようと思ったのですが 
+固まってしまいます。RichEditで処理できる文字数に制限ってあるのでしょうか？ 
+また解決策などありましたら、教えていただけないでしょうか。 
+
+for i := RichEdit1.Lines.Count - 1 downto 0 do 
+begin 
+if RichEdit1.Lines[i] = '' then 
+RichEdit1.Lines.Delete(i); 
+end; 
+
+
+93 名前：デフォルトの名無しさん 投稿日：02/04/22 02:47
+>>92 
+ものすごいゆっくりだけど動作してたよ。 
+固まったと思ってもループの中にブレークポイント置けば 
+そこで停止するはず。 
+
+
+94 名前：92 投稿日：02/04/22 03:07
+>>93 
+レスありがとうございます。 
+このあとまだfor文を何個か書こうと思ってるのですが 
+そしたら相当時間かかりそですね。 
+
+
+95 名前：鉄拐 投稿日：02/04/22 03:53
+>>94 
+いくらでも速度を向上させる方法はあるけど、例えば StringListを使ったら？ 
+
+var 
+　　i:integer; 
+　　wStrList:TStringList; 
+begin 
+
+　　wStrList:=TStringList.Create; 
+
+　　wStrList.Text:=Self.RichEdit1.Text; 
+
+　　for i:=wStrList.Count-1 downto 0 do 
+　　begin 
+　　　　　if (wStrList.Strings[i]='') then 
+　　　　　　wStrList.Delete(i); 
+　　end; 
+
+　　Self.RichEdit1.Lines.BeginUpdate; 
+　　Self.RichEdit1.Text:=wStrList.Text; 
+　　Self.RichEdit1.Lines.EndUpdate; 
+
+　　wStrList.Free; 
+
+end; 
+
+
+
+96 名前：デフォルトの名無しさん 投稿日：02/04/22 04:59
+>>95 
+
+Text を参照するなら ただの string でいいのでは？ 
+
+
+
+97 名前：デフォルトの名無しさん 投稿日：02/04/22 05:09
+string に読み込んでから、いちいち削除すると再配列に時間がかかるので 
+
+前から巡回して、削除する位置をみつけたら、前に見つけた位置の後ろからコピー 
+して足しこんでいくとよい 
+
+
+98 名前：デフォルトの名無しさん 投稿日：02/04/22 06:28
+>>96 stringで？配列を使うってこと？ 
+たぶん折れもこの場合tstringlistを 
+使うとおもうけどstringでの処理方法 
+を具体的におしえてくれませんか？ 
+
+
+99 名前：デフォルトの名無しさん 投稿日：02/04/22 08:25
+>>86 
+渡された　デバイスコンテキストを使わないで　GetDCを使わないと勿体ないお化けが出ます。 
+
+Canvas:TControlCanvasはデバイスコンテキストを持っている訳ではありません 
+TControl.GetDeviceContext　を追いかけると 
+WM_PAINT以外では GetDCが呼ばれます 
+VCLはWM_PAINT　の中でBeginPaintを使って用意したものをCanvasで利用しています。 
+OnPaint等で利用しているのはソレです 
+
+安全にやるには、この真似をすべきです。 
+FCanvas.Lock; 
+　 try 
+　 FCanvas.Handle := DC; 
+　 　try 
+・・・・この間で　使うようにする 
+　 　 finally 
+　　 FCanvas.Handle := 0; 
+　　 end; 
+　 finally 
+　　 FCanvas.Unlock; 
+end; 
+
+
+
+100 名前：デフォルトの名無しさん 投稿日：02/04/22 08:27
+>>96ではないが… 
+>>98 
+
+str := ''; 
+for i:=0 to StringList.Count-1 do 
+　if not(i 行目が削除の対象ならば) then 
+　　str := str + StringList[I] + #13#10; 
+
+って事なのでは。 
+
+
+101 名前：デフォルトの名無しさん 投稿日：02/04/22 08:30
+文字列の削除をループで行うと　N^2 オーダの処理となります 
+
+大きな文字列に対しては >>97　の方法を使うべきです 
+
+つまり 
+WINだと #13#10#13#10 という文字を見つけて #13#10　１個に置換 
+を連続して行うという方法なら N にしか比例しません。 
+
+
+102 名前：デフォルトの名無しさん 投稿日：02/04/22 08:41
+>>100-101 
+基本的なことでもうしわけないのですが 
+stringって文字数の上限ないんですか？ 
+
+
+103 名前：デフォルトの名無しさん 投稿日：02/04/22 08:43
+それよりも… 
+1) クラス THoge はインターフェイス IAdapter を利用する. 
+2) インターフェイス IAdapter にはとあるイベントがあり、 
+そのイベントが発生したら THoge の該当イベントを呼び出したい. 
+
+これをどうやって実現するかなんですが、 
+
+IAdapter = Interface 
+　function GetEvent: TMyEvent; 
+　procedure SetEvent(Value: TMyEvent); 
+　property OnEvent: TMyEvent read GetEvent write SetEvent; 
+end; 
+
+THoge = class 
+　property Adapter: IAdapter ... write SetAdapter ; 
+　procedure DoEvent; 
+end; 
+
+とすると、SetAdapter メソッドで 
+procedure THoge.SetAdapter(Value: IAdapter); 
+begin 
+　if Assigned( Self.Adapter ) then 
+　　if Assigned( Self.Adapter.OnEvent ) then 
+　　　Self.Adapter.OnEvent := nil 
+　if Assigned( Value ) then 
+　　Value.OnEvent := Self.DoEvent; 
+end; 
+
+とするのがセオリーなんでしょうか。 
+でも、こうすると万が一ユーザーに OnEvent を上書きされてしまうと 
+困りますよね。 
+なんか、丁度良いパターンがありそうなのですが。 
+
+
+104 名前：デフォルトの名無しさん 投稿日：02/04/22 08:45
+>>102 
+string 型は 2GB までのテキストを扱えます。 
+事実上、無制限といっても良いでしょう。 
+
+
+
+だって、2GBの ○○.txt ってファイルは見たこと無いでしょ。 
+
+
+105 名前：デフォルトの名無しさん 投稿日：02/04/22 09:07
+>>103 OnEventの上書きまで制御したいなら SetOnEventを殺しておけばいいと思うが？ 
+
+
+106 名前：デフォルトの名無しさん 投稿日：02/04/22 09:14
+>>100 それでも十分な場合もあるけど、それより高速にしたいなら 
+SetLength( str , Length(StringList.Text) ); して 
+n:=0; 
+for i:=0 to StringList.Count-1 do 
+　if not(i 行目が削除の対象ならば) then 
+　　StrAdd(str,n, StringList[I] + #13#10); 
+SetLength(str,n); 
+
+でStrAdd 
+procedure StrAdd(var str:string, var cnt; const astr:string); 
+var i,len:integer; 
+begin 
+len:=Length(astr); 
+for i:=1 to len do begin 
+inc(n); 
+str[n]:=astr[i]; 
+end; 
+end; 
+

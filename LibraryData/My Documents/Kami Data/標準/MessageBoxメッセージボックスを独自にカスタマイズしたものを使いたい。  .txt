@@ -1,0 +1,49 @@
+
+メッセージボックスを使ってたのですが、動きはほとんど同じで表示のアイコンやボタンをカスタマイズする方法って言うのはないものでしょうか? 決まりきった疑問符や感嘆符などではなく、ユーザが自由にビットマップを貼り付けられるようにしたいのですが。
+
+CreateMessageDialog関数を使えば簡単にできます。
+以下の例を試して見て下さい。あなた好みのメッセージボックスのイメージが沸いてきますよ。
+
+CreateMessageDialogは、メッセージダイアログのインスタンスを返します。
+このダイアログ（TForm）の上のコンポーネントは
+                         クラス       名前
+Components[0]が、TImage      'Image'
+Components[1]が、TLabel      'Message'
+Components[2]が、TButton     たとえば 'Yes','No' など
+Components[3] ・・・ボタンがつづく
+となっています。
+
+function MyMessageBox(Const Msg: String): integer;
+var
+  Dlg:TForm;
+begin
+   Dlg:=CreateMessageDialog(Msg, mtError, [mbYes,mbNo]);
+   with Dlg do
+   try
+     Dlg.Caption := '登録確認';
+     TImage(Components[0]).Picture.Icon.LoadFromFile('C:\Program Files\Borland\Delphi 4\IMAGES\ICONS\Technlgy.ico');
+     TButton(Components[2]).Caption := '登録';
+     TButton(Components[3]).Caption := '中止';
+     ret := ShowModal;
+   finally
+     Free;
+   end;
+end;
+
+// テスト
+procedure TForm1.Button1Click(Sender: TObject);
+begin
+  if MyMessageBox('データを登録しますか？') = mrYes then
+    // 登録処理
+  else
+    ; // 無視
+end;
+
+てな具合で絵（BitmapやIcon）を変える事ができます。
+LeftやTopを使って配置を換えることも可能です。
+HelpContextなども設定できます。
+
+絵は32x32サイズに作っておいた方がいいです。
+大きさが違う場合には位置の調整をしなければならなくなりますが、ダイアログ上のコントロールに名前がついていないので苦労します。（Ｄ４以降は上記のように名前も付いています）
+ボタンについても同様です。
+ 

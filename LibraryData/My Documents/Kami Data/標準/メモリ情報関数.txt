@@ -1,0 +1,33 @@
+
+// 空きメモリ容量
+function TBugReportForm.MemoryActiveInfo: String;
+var
+  MemStatus : TMemoryStatus;
+begin
+  MemStatus.dwLength := SizeOf(TMemoryStatus);
+  GlobalMemoryStatus(MemStatus);
+
+  Result := FormatFloat('#,##0KB',Round(MemStatus.dwAvailPhys/1024));
+end;
+
+// 物理メモリ容量
+function TBugReportForm.MemoryTotalInfo: String;
+var
+  MemStatus : TMemoryStatus;
+begin
+  MemStatus.dwLength := SizeOf(TMemoryStatus);
+  GlobalMemoryStatus(MemStatus);
+
+  Result := FormatFloat('#,##0KB',Round(MemStatus.dwTotalPhys/1024));
+end;
+
+// メモリ使用率
+function TBugReportForm.MemoryRateOfUse: String;
+var
+  MemStatus : TMemoryStatus;
+begin
+  MemStatus.dwLength := SizeOf(TMemoryStatus);
+  GlobalMemoryStatus(MemStatus);
+
+  Result := IntToStr(MemStatus.dwMemoryLoad);
+end;

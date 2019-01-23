@@ -1,0 +1,35 @@
+
+--------------------------------------------------------------------------------
+ 
+Windows標準のフォルダブラウズダイアログを利用するには、APIを使います。
+BrowseInfo構造体でオープン形式を決めて、SHBrowseForFolder APIでダイアログを呼び出し、ItemIDList構造体に結果を格納します。
+ItemIDList構造体からフォルダ名を取り出すには、SHGetPathFromIDList APIを使います。
+
+procedure TForm1.Button1Click(Sender: TObject);
+var
+  Browse: TBrowseInfo;
+  IDList: PItemIDList;
+  Buf: PChar;
+begin
+  GetMem(Buf, MAXWORD);
+  try
+    with Browse do
+    begin
+      hwndOwner := Handle;
+      pidlRoot := nil;
+      pszDisplayName := Buf;
+      lpszTitle := 'Select Folder';
+      ulFlags := BIF_RETURNONLYFSDIRS or BIF_BROWSEINCLUDEFILES;
+      lpfn := nil;
+      lParam := 0;
+    end;
+    IDList := SHBrowseForFolder(Browse);
+    if IDList <> nil then
+    begin
+      SHGetPathFromIDList(IDList, Buf);
+      Edit1.Text := Buf;
+    end;
+  finally
+    FreeMem(Buf, MAXWORD);
+  end;
+end; 

@@ -1,0 +1,16 @@
+
+--------------------------------------------------------------------------------
+ 
+Memoコンポーネントなどで文字列を検索して検索行までスクロールする場合、EM_ScrollcaretメッセージをMemoコントロールへ送ることで、検索位置までスクロールします。
+
+以下の例では、SubStringに代入された文字列をPos関数を使って検索し、その場所をRichEdit1.SelStartに格納して、EM_Scrollcaretメッセージを送っています。
+
+procedure SearchString(SubString : String);
+var
+  iStrPos : Integer;
+begin
+   iStrPos := Pos(SubString,RichEdit1.Text);
+   RichEdit1.SelStart:=iStrPos;
+   SendMessage(RichEdit1.handle,EM_Scrollcaret,0,0);
+   RichEdit1.SetFocus;
+end; 

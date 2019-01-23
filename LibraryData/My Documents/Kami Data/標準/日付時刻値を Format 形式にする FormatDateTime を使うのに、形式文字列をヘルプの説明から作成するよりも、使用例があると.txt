@@ -1,0 +1,43 @@
+助かりますが。 
+
+[Ａ] 
+　FormatDateTime は、プログラム中で一度使ったら、あと、そんなに頻繁に
+使い回すことはなく、次に使うときはやり方を忘れてしまっています。しか
+し、ある程度例があれば、これからバリエーションを作るのは楽です。そし
+てそのときこそヘルプの説明が役立ちます。
+　以下の少ない例示は、SBORLAND および FDELPHI の過去ログから集めたも
+のです。
+[例] 
+program FormatDT;
+
+{$APPTYPE CONSOLE}
+uses
+  Classes,SysUtils;
+
+begin
+                                          {コンソールに表示されたもの}
+  Writeln(FormatDateTime('yymmdd',Now));  {970228}
+  Writeln(FormatDateTime('m"/"d "("aaa")"',Now));{2/28 (金)}
+  Writeln(FormatDateTime('yy/mm/dd',Now));{97/02/28}
+  Writeln(FormatDateTime('dddd, mmmm d, yyyy',Now));
+                                          {金曜日, 2月 28, 1997}
+  Writeln(FormatDateTime('yyyy/mm/dd',Now));{1997/02/28}
+  Writeln(FormatDateTime('aaa',Now));     {金}
+  Writeln(FormatDateTime('aaaa',Now));    {金曜日}
+  Writeln(FormatDateTime('ddd',Now));     {金}
+  Writeln(FormatDateTime('dddd',Now));    {金曜日}
+  Writeln(FormatDateTime('yyyy/mm/dd hh:nn:ss  ',Now));
+                                          {1997/02/28 14:45:52}
+  Writeln(FormatDateTime('yy/mm/dd hh/nn/ss',Now));
+                                          {97/02/28 14/45/52}
+  Writeln(FormatDateTime('aaa',Now));     {金}
+  Writeln(FormatDateTime('dddddd',Now));  {1997年2月28日}
+  Writeln(FormatDateTime('yyyy"年"mm"月"dd"日"',Now));
+                                          {1997年02月28日}
+  Writeln(FormatDateTime('gg.ee.mm.dd',32516));{平.01.01.08}
+  Writeln(FormatDateTime('yyyy.mm.dd',Now));   {1997.02.28}
+  Writeln(FormatDateTime('yymmddhhnnss',Now)); {970228144553}
+  Writeln(FormatDateTime('yy"年"mm"月"dd"日"(aaa)',Now));
+                                          {97年02月28日(金)}
+  Readln;
+end.

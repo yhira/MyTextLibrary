@@ -1,0 +1,12 @@
+//ただ単にAddしてるだけです。AddFirstとの違いは
+//トップノードを引数にしているところです。
+procedure TForm1.btnAddLastClick(Sender: TObject);
+var
+  trnd: TTreeNode;
+  i: Integer;
+begin
+  if tv1.Items.Count = 0 then
+    trnd := tv1.Items.Add(nil, Edit1.Text)
+  else
+    trnd := tv1.Items.Add(tv1.Items[0], Edit1.Text);
+end;

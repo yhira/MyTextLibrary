@@ -1,0 +1,95 @@
+Shell_NotifyIconを使います。
+さらにポップアップメニューを出すために、WndProcをオーバーライドしてタスクトレイのアイコンがクリックされたときのメッセージ（WM_LBUTTONDOWN/UP）を取得し、ポップアップメニューを表示させます。
+PopupMenuコンポーネントを乗せてメニューを作っておいてください
+
+uses Windows, ..... ShellAPI;  //追加
+（略）
+
+  public
+    { Public 宣言 }
+    procedure WndProc(var Message: TMessage); override;
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+{$R *.DFM}
+
+const
+ WM_NotifyTasktray = WM_USER + 100;
+
+var
+ NotifyIcon: TNotifyIconData;
+
+
+{メッセージ処理}
+procedure TForm1.WndProc(var Message: TMessage);
+ procedure ShowPopupMenu;
+ var
+  Point: TPoint;
+ begin
+  GetCursorPos(Point);
+  PopupMenu1.Popup(Point.X,Point.Y);
+ end;
+
+begin
+ if Message.Msg = WM_NotifyTasktray then
+  begin
+   case Message.LParam of
+    WM_RBUTTONDOWN:                 //右クリックしたら
+     begin
+      SetForegroundWindow(Handle);  //メインウィンドウをアクティブにして
+      ShowPopupMenu;                //メニュー表示
+     end;
+    //WM_LBUTTONDOWN:               //左クリック用
+    //WM_LBUTTONDBLCLK:             //ダブルクリック用
+   end;
+  end
+  else
+   inherited;
+end;
+
+
+{タスクトレイにアイコン追加}
+procedure TForm1.Button1Click(Sender: TObject);
+begin
+ with NotifyIcon do
+  begin
+    cbSize := SizeOf(TNotifyIconData);
+    Wnd := Handle;
+    uID := 1;
+    uFlags := NIF_ICON or NIF_MESSAGE or NIF_TIP;
+    uCallbackMessage := WM_NotifyTasktray;
+    hIcon := Application.Icon.Handle;
+    StrPCopy(szTip,Application.Title);
+  end;
+ Shell_NotifyIcon(NIM_ADD,@NotifyIcon);
+end;
+
+
+{タスクトレイのアイコンを変える}
+procedure TForm1.Button2Click(Sender: TObject);
+begin
+ with NotifyIcon do
+  begin
+    hIcon := Icon.Handle;
+  end;
+ Shell_NotifyIcon(NIM_MODIFY,@NotifyIcon);
+end;
+
+
+{タスクトレイからアイコン削除}
+procedure TForm1.Button3Click(Sender: TObject);
+begin
+ with NotifyIcon do
+  begin
+   cbSize := SizeOf(TNotifyIconData);
+   Wnd := Handle;
+   uID := 1;
+  end;
+ Shell_NotifyIcon(NIM_DELETE,@NotifyIcon);
+end;
+
+

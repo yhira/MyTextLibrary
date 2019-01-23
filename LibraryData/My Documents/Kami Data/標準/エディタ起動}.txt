@@ -1,0 +1,38 @@
+procedure TFormJGMain.ActionEditorExecute(Sender: TObject);
+var
+  FileName: string;
+  LineNo: Integer;
+  CmdLine: string;
+  hProcess: Cardinal;
+begin
+  if Length(Editor1.ListString[Editor1.Row]) > 0 then
+  begin
+    if Length(EditorInfo.EditorExeName) > 0 then
+    begin
+      FileName := '"' + GetFileName(GrepList.Strings[Editor1.Row]) + '"';
+      LineNo := GetLineNo(GrepList.Strings[Editor1.Row]);
+      CmdLine := StringReplace(EditorInfo.EditorCmdLine, '%F', FileName, [rfReplaceAll, rfIgnoreCase]);
+      CmdLine := StringReplace(CmdLine, '%L', IntToStr(LineNo), [rfReplaceAll, rfIgnoreCase]);
+      hProcess := JmFileExecute(EditorInfo.EditorExeName, CmdLine, SW_SHOWNORMAL, False);
+      CloseHandle(hProcess);
+    end
+    else
+    begin
+      if FormView = nil then
+      begin
+        FormView := TFormView.Create(Self);
+      end;
+      FormView.FileName := GetFileName(GrepList.Strings[Editor1.Row]);
+      FormView.LineNum := GetLineNo(GrepList.Strings[Editor1.Row]);
+      FormView.FindString := GrepList.Strings[Editor1.Row];
+      FormView.FindColor := FindResultInfo.StringColor;
+      FormView.FindStyle := FindResultInfo.StringStyle;
+      FormView.FindRegExp := Grep1.RegExp;
+      FormView.TextView;
+    end;
+  end;
+  Application.ProcessMessages;
+  Editor1.Col := 0;
+  Editor1.SelLength := Length(Editor1.ListString[Editor1.Row]) + 2;
+  Editor1.SetRowCol(Editor1.Row-1, 0);
+end;

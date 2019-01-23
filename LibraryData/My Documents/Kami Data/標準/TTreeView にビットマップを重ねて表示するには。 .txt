@@ -1,0 +1,103 @@
+
+
+--------------------------------------------------------------------------------
+該当するバージョン:Delphi 2.0,Delphi 3.0/Delphi3.1,Delphi4
+ TTreeView にビットマップとテキストを表示しています。このビットマップに他のビットマップを重ねて表示するにはどうしますか？ 
+
+ 
+ 以下のコードをお試しください。 TImageList にビットマップをロード後，ボタンを押して，TImageList の他のビットマップを重ねて表示します。
+
+
+unit Unit1;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  StdCtrls, ComCtrls;
+
+type
+  TForm1 = class(TForm)
+    TreeView1: TTreeView;
+    Button1: TButton;
+    Button2: TButton;
+    Button3: TButton;
+    ImageList1: TImageList;
+    procedure FormCreate(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
+    procedure Button3Click(Sender: TObject);
+  private
+    { Private 宣言 }
+  Overlay: TOverlay;
+  public
+    { Public 宣言 }
+  end;
+
+var
+  Form1: TForm1;
+
+
+implementation
+
+{$R *.DFM}
+{$R IMAGES.RES}
+
+procedure TForm1.FormCreate(Sender: TObject);
+var
+  Node: TTreeNode;
+begin
+  // ビットマップ取り込み
+  ImageList1.ResourceLoad(rtBitmap, 'SmallImages', clWhite);
+
+  // アイテム作成
+  TreeView1.Items.Clear;
+  Node := TreeView1.Items.Add(nil, 'テキスト１');
+  Node.ImageIndex := 2;
+  Node.SelectedIndex := 2;
+
+  Node := TreeView1.Items.Add(nil, 'テキスト２');
+  Node.ImageIndex := 3;
+  Node.SelectedIndex := 3;
+
+  Node := TreeView1.Items.Add(nil, 'テキスト３');
+  Node.ImageIndex := 4;
+  Node.SelectedIndex := 4;
+end;
+
+procedure TForm1.Button1Click(Sender: TObject);
+var
+  i: Integer;
+begin
+  Overlay := 0;
+  ImageList1.Overlay(0, Overlay);
+  // 全項目のOverlayIndex=0
+  for i:=0 to (TreeView1.Items.Count-1) do
+    TreeView1.Items[i].OverlayIndex := 0;
+  TreeView1.Invalidate;
+end;
+
+procedure TForm1.Button2Click(Sender: TObject);
+var
+  i: Integer;
+begin
+  Overlay := 1;
+  ImageList1.Overlay(1, Overlay);
+  // 全項目のOverlayIndex=1
+  for i:=0 to (TreeView1.Items.Count-1) do
+    TreeView1.Items[i].OverlayIndex := 1;
+  TreeView1.Invalidate;
+end;
+
+procedure TForm1.Button3Click(Sender: TObject);
+var
+  i: Integer;
+begin
+  // 全項目のOverlayIndex=-1（クリアする）
+  for i:=0 to (TreeView1.Items.Count-1) do
+    TreeView1.Items[i].OverlayIndex := -1;
+end;
+
+end.
+ 
+

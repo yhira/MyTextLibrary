@@ -1,0 +1,48 @@
+procedure TForm1.Button1Click(Sender:
+TObject);
+var
+  f: file;
+  Len: Integer;
+begin
+  AssignFile(f, FILE_NAME);
+  Rewrite(f, 1);
+  try
+    Len := length(Memo1.Text);
+    BlockWrite(f, Len, sizeof(Len));
+    BlockWrite(f, pchar(Memo1.Text)^, Len);
+
+    Len := length(Memo2.Text);
+    BlockWrite(f, Len, sizeof(Len));
+    BlockWrite(f, pchar(Memo2.Text)^, Len);
+  finally
+    CloseFile(f);
+  end;
+
+end;
+
+procedure TForm1.Button2Click(Sender: TObject);
+var
+  f: file;
+  Buf: String;
+  Len: Integer;
+begin
+  AssignFile(f, FILE_NAME);
+  Reset(f, 1);
+  try
+    BlockRead(f, Len, sizeof(Len));
+    SetLength(Buf, Len);
+    BlockRead(f, Pchar(Buf)^, Len);
+    Memo1.Text := Buf;
+
+    BlockRead(f, Len, sizeof(Len));
+    SetLength(Buf, Len);
+    BlockRead(f, Pchar(Buf)^, Len);
+    Memo2.Text := Buf;
+  finally
+    CloseFile(f);
+  end;
+
+end;
+
+TITLE:D:\delphi\作成\ファイル処理・型なしファイル\Unit1.pas - EmEditor
+DATE:2002/06/05 04:16

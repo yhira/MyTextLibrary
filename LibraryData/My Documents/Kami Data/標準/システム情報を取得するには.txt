@@ -1,0 +1,96 @@
+
+--------------------------------------------------------------------------------
+ 
+GetSystemMetricsを使えば、マウスのボタンの数やシステムの起動モードなどを知ることができます。
+
+////////// 
+var
+  Form039: TForm039;
+  Index: array[0..20] of DWORD;
+
+implementation
+
+{$R *.DFM} 
+
+procedure TForm039.FormCreate(Sender: Tobject);
+begin
+  Label1.Caption:= '';
+  ComboBox1.Items.Clear;
+
+  ComboBox1.Items.Add('システムの起動方法は？');
+  Index[0]:=SM_CLEANBOOT;
+
+  ComboBox1.Items.Add('プロセッサが遅いか？');
+  Index[1]:=SM_SLOWMACHINE;
+
+  ComboBox1.Items.Add('User.exeがデバッグバージョンか？');
+  Index[2]:=SM_DEBUG;
+
+  ComboBox1.Items.Add('ネットワークが存在するか？');
+  Index[3]:=SM_NETWORK;
+
+  ComboBox1.Items.Add('セキュリティが存在するか？');
+  Index[4]:=SM_SECURE;
+
+  ComboBox1.Items.Add('マウスが接続されているか？');
+  Index[5]:=SM_MOUSEPRESENT;
+
+  ComboBox1.Items.Add('マウスボタンの数はいくつか？');
+  Index[6]:=SM_CMOUSEBUTTONS;
+
+  ComboBox1.Items.Add('マウスにホイールが存在するか？');
+  Index[7]:=SM_MOUSEWHEELPRESENT;
+
+  ComboBox1.Items.Add('マウスボタンの入れ替えをしているか？');
+  Index[8]:=SM_SWAPBUTTON;
+
+  ComboBox1.Items.Add('Windows for Pen computing extensionがインストールされているか？');
+  Index[9]:=SM_PENWINDOWS;
+
+  ComboBox1.Items.Add('ユーザー補助「サウンド解説を使う」有効か？');
+  Index[10]:=SM_SHOWSOUNDS;
+
+  ComboBox1.Items.Add('User.exeが2バイト文字のサポートされているか？');
+  Index[11]:=SM_DBCSENABLED;
+
+  ComboBox1.Items.Add('ドロップダウンメニューが右寄せされるか？');
+  Index[12]:=SM_MENUDROPALIGNMENT;
+
+  ComboBox1.Items.Add('ヘブライ語やアラビア語が使用可能なシステムか？');
+  Index[13]:=SM_MIDEASTENABLED;
+
+  ComboBox1.ItemIndex:=0;
+end;
+
+procedure TForm039.Button1Click(Sender: TObject);
+var
+  sysmet: Integer;
+begin
+  sysmet:= GetSystemMetrics(Index[ComboBox1.ItemIndex]);
+  if Index[ComboBox1.ItemIndex] = SM_CLEANBOOT then
+  begin
+    if sysmet = 0 then
+      Label1.Caption:= '通常のブート';
+    if sysmet = 1 then
+      Label1.Caption:= 'Safeモード';
+    if sysmet = 2 then
+      Label1.Caption:= 'ネットワークを使ったSafeモード';
+  end
+  else if Index[ComboBox1.ItemIndex] = SM_CMOUSEBUTTONS then
+    Label1.Caption:= IntToStr(sysmet) + '個'
+  else if Index[ComboBox1.ItemIndex] = SM_NETWORK then
+  begin
+    if sysmet and 1 = 1 then
+      Label1.Caption:= IntToStr(sysmet)
+    else
+      Label1.Caption:= IntToStr(sysmet);
+  end
+  else
+  begin
+    if sysmet = 0 then
+      Label1.Caption:= 'No'
+    else
+      Label1.Caption:= 'Yes';
+  end;
+end;
+///////// 

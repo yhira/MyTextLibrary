@@ -1,0 +1,20 @@
+
+[Ａ] 
+例のコードを参考にしてください。ボーランドのmassangeanaさんのものです。
+
+Original document by ataru(SGR03043)[例] 
+type TMyHint = class(THintWindow)
+  constructor Create(AOwner : TComponent); override;
+  end;
+constructor TMyHInt.Create(AOwner : TComponent);
+begin
+  inherited Create(AOwner);
+  Canvas.Font.Name := 'ＭＳ 明朝'
+end;
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  HintWindowClass := TMyHint;
+  Application.ShowHint := FALSE;
+  Application.ShowHint := TRUE;
+end;

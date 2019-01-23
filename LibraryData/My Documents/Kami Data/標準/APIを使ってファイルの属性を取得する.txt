@@ -1,0 +1,57 @@
+
+--------------------------------------------------------------------------------
+ 
+GetFileAttributesExを使って指定したファイルの属性、作成日時などを取得することができます。第1引き数として指定したファイルの属性を第3引き数に取得できます。作成日時などはGMTでFILETIME型として得られるので、FileTimeToLocalFileTimeなどで変換します。
+※uses節でFileCtrlを追加しておきます。
+
+////////// 
+procedure TForm037.Button1Click(Sender: TObject);
+var
+  infolevel: GET_FILEEX_INFO_LEVELS;
+  attribute: WIN32_FILE_ATTRIBUTE_DATA;
+  systime  : SYSTEMTIME;
+  localft  : FILETIME;
+  attrib   : DWORD;
+begin
+  if (FileExists(Edit1.Text)=True) or (DirectoryExists(Edit1.Text)=True)  then
+  begin
+    infolevel:= GetFileExInfoStandard;
+    GetFileAttributesEx(PChar(Edit1.Text),infolevel,@attribute);
+    attrib:= attribute.dwFileAttributes;
+    Label1.Caption:= '';
+    if attrib and FILE_ATTRIBUTE_ARCHIVE = FILE_ATTRIBUTE_ARCHIVE then
+      Label1.Caption:= Label1.Caption + 'アーカイブ、';
+    if attrib and FILE_ATTRIBUTE_COMPRESSED = FILE_ATTRIBUTE_COMPRESSED then
+      Label1.Caption:= Label1.Caption + '圧縮、';
+    if attrib and FILE_ATTRIBUTE_DIRECTORY = FILE_ATTRIBUTE_DIRECTORY then
+      Label1.Caption:= Label1.Caption + 'ディレクトリ、';
+    if attrib and FILE_ATTRIBUTE_HIDDEN = FILE_ATTRIBUTE_HIDDEN then
+      Label1.Caption:= Label1.Caption + '隠しファイル、';
+    if attrib and FILE_ATTRIBUTE_NORMAL = FILE_ATTRIBUTE_HIDDEN then
+      Label1.Caption:= Label1.Caption + '普通、';
+    if attrib and FILE_ATTRIBUTE_OFFLINE = FILE_ATTRIBUTE_OFFLINE then
+      Label1.Caption:= Label1.Caption + 'オフライン、';
+    if attrib and FILE_ATTRIBUTE_READONLY = FILE_ATTRIBUTE_READONLY then
+      Label1.Caption:= Label1.Caption + '読み取り専用、';
+    if attrib and FILE_ATTRIBUTE_SYSTEM = FILE_ATTRIBUTE_SYSTEM then
+      Label1.Caption:= Label1.Caption + 'システムファイル、';
+    if attrib and FILE_ATTRIBUTE_TEMPORARY = FILE_ATTRIBUTE_TEMPORARY then
+      Label1.Caption:= Label1.Caption + 'テンポラリ、';
+
+    FileTimeToLocalFileTime(attribute.ftCreationTime, localft);
+    FileTimeToSystemTime(localft, systime);
+    Label2.Caption:= DateTimeToStr(SystemTimeToDatetime(systime));
+
+    FileTimeToLocalFileTime(attribute.ftLastAccessTime, localft);
+    FileTimeToSystemTime(localft, systime);
+    Label3.Caption:= DateTimeToStr(SystemTimeToDatetime(systime));
+
+    FileTimeToLocalFileTime(attribute.ftLastWriteTime, localft);
+    FileTimeToSystemTime(localft, systime);
+    Label4.Caption:= DateTimeToStr(SystemTimeToDatetime(systime));
+
+    Label5.Caption:= IntToStr(attribute.nFileSizeHigh)
+                    +IntToStr(attribute.nFileSizeLow) + 'バイト';
+  end;
+end;
+///////// 

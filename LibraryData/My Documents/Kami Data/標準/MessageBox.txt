@@ -1,0 +1,4 @@
+    Application.MessageBox('–¼‘O‚ğ“ü—Í‚µ‚Ä‰º‚³‚¢@@',
+      PChar(Application.Title), MB_ICONINFORMATION);
+    FolderNameLabeledEdit.SetFocus;
+    Abort;

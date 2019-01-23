@@ -1,0 +1,34 @@
+procedure TGikoForm.ListViewColumnClick(Sender: TObject;
+	Column: TListColumn);
+var
+	wkBBS: TBBS2ch;
+	wkCategory: TCategory;
+	wkBoard: TBoard;
+begin
+	if FSortIndex = Column.Index then
+		FSortOrder := not FSortOrder
+	else
+		FSortOrder := False;
+
+	Sort.SortNoFlag := ListNumberVisibleAction.Checked;
+
+	if TObject(TreeView.Selected.Data) is TBBS2ch then begin
+		wkBBS := TBBS2ch(TreeView.Selected.Data);
+		Sort.SortOrder := FSortOrder;
+		Sort.SortIndex := Column.Index;
+		wkBBS.Sort(CategorySortProc);
+		ListView.Refresh;
+	end else if TObject(TreeView.Selected.Data) is TCategory then begin
+		wkCategory := TCategory(TreeView.Selected.Data);
+		Sort.SortOrder := FSortOrder;
+		Sort.SortIndex := Column.Index;
+		wkCategory.Sort(BoardSortProc);
+		ListView.Refresh;
+	end else if TObject(TreeView.Selected.Data) is TBoard then begin
+		wkBoard := TBoard(TreeView.Selected.Data);
+		Sort.SortOrder := FSortOrder;
+		Sort.SortIndex := Column.Index;
+		wkBoard.Sort(ThreadItemSortProc);
+		ListView.Refresh;
+	end;
+	FSortIndex := Column.Index;

@@ -1,0 +1,29 @@
+
+FlagNodeMÅÅÉOÉçÅ[ÉoÉãïœêî
+
+procedure TMainForm.MacroTreeViewChange(Sender: TObject; Node: TTreeNode);
+begin
+
+  if Node.Expanded = True then
+    Node.Expanded := False
+  else
+    Node.Expanded := True;
+  FlagNodeM := Node;
+end;
+
+procedure TMainForm.MacroTreeViewEditing(Sender: TObject; Node: TTreeNode;
+  var AllowEdit: Boolean);
+begin
+  AllowEdit := False;
+end;
+
+procedure TMainForm.MacroTreeViewChanging(Sender: TObject; Node: TTreeNode;
+  var AllowChange: Boolean);
+begin
+  if FlagNodeM = nil then Exit;
+
+  if (FlagNodeM.Expanded = True) and (FlagNodeM <> Node) then
+  begin
+    FlagNodeM.Expanded := False;
+  end;
+end;

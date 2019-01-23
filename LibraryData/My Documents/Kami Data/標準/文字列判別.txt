@@ -1,0 +1,180 @@
+486 名前：デフォルトの名無しさん 投稿日：02/03/10 02:30
+文字列が半角英数字かを判定するにはどうすればよいのでしょうか
+
+
+
+488 名前：デフォルトの名無しさん 投稿日：02/03/10 02:40
+>>486
+if c in ['A'..'Z', 'a'..'z', '0'..'9'] then
+
+
+
+
+489 名前：ネタでなければいいが… 投稿日：02/03/10 02:41
+>>486
+StrToIntDef
+
+
+490 名前：488 投稿日：02/03/10 02:41
+>if c in ['A'..'Z', 'a'..'z', '0'..'9'] then
+これは文字cが半角英数かどうかって事ね。
+文字列全体ならループまわして判定。
+
+
+491 名前：489 投稿日：02/03/10 02:43
+ああ、アルファベットもってことか。
+
+
+492 名前：486 投稿日：02/03/10 02:52
+>>488
+>>489
+>>490
+ホント厨な質問してしまってすいません。。
+こんな漏れに答えてくださってありがとうございます。
+
+
+493 名前： ◆l1kFOeLY 投稿日：02/03/10 03:19
+>>490
+それでいいのかなぁ～。
+
+
+
+494 名前：Delフサギコ ◆zE1iiRdQ 投稿日：02/03/10 03:43
+　　,,,,,,,,,,,,,,,,∧,,∧　 　／￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣
+～′,,,,,,,,,,ミ,,ﾟДﾟ彡 ＜　なんでも判定するよろし。
+　 UU"""" U U　　　 ＼＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
+
+type
+　TStrInTable = (vitAllInclude, vitAllExclude);
+
+function CheckStrInTable(const Str, Table: WideString;
+InTable: TStrInTable): Boolean;
+var
+　ExistCondition: Boolean;
+　i: Integer;
+begin
+　case InTable of
+　　vitAllInclude: ExistCondition := True;
+　　vitAllExclude: ExistCondition := False;
+　else
+　　raise Exception.Create('InTableの不正指定');
+　end;
+
+　Result := True;
+　for i:=1 to Length(Str) do
+　begin
+　　if (AnsiPos(Str[i], Table)=0)=ExistCondition then
+　　begin
+　　　Result := False;
+　　　Break;
+　　end;
+　end;
+end;
+
+
+495 名前：Delフサギコ ◆zE1iiRdQ 投稿日：02/03/10 03:43
+　　,,,,,,,,,,,,,,,,∧,,∧　 　／￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣
+～′,,,,,,,,,,ミ,,ﾟДﾟ彡 ＜　こんなんして使います。
+　 UU"""" U U　　　 ＼＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
+const zenHiraTbl: String =
+　　'あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほ'+
+　　'まみむめもやゆよらりるれろわゐゑをんがぎぐげござじずぜぞだぢづでど'+
+　　'ばびぶべぼぱぴぷぺぽぁぃぅぇぉゃゅょゎっー';
+const zenKataTbl: String =
+　　'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホ'+
+　　'マミムメモヤユヨラリルレロワンヲガギグゲゴザジズゼゾダヂヅデド'+
+　　'バビブベボパピプペポァィゥェォャュョヮッー';
+const hanKanaTbl: String =
+　　'ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜｦﾝｧｨｩｪｫｬｭｮｯﾟｰ･､｡｢｣';
+const zenNumberTbl: String =
+　　'１２３４５６７８９０';
+const hanNumberTbl: String =
+　　'1234567890';
+const zenAlphaTbl: String =
+　　'ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ'+
+　　'ａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ';
+const hanAlphaTbl: String =
+　　'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+const zenMarkTbl: String =
+　　'－．＆％＄＃＊＠？／，＜＞（）｛｝｜；：～＋｀！＇＝_＾・';
+const hanMarkTbl: String =
+　　'!"#$%&''()*+,-./:;<=>?@[\]^_`{|}~';
+const zenSpaceTbl: String = '　';
+const hanSpaceTbl: String = ' ';
+
+procedure TForm1.Button1Click(Sender: TObject);
+begin
+　if CheckStrInTable(Edit1.Text, hanNumberTbl, vitAllInclude) then
+　　Form1.Caption := 'すべて半角数字で構成されています'
+　else
+　　Form1.Caption := '半角数字以外の文字が入っています'
+end;
+
+procedure TForm1.Button2Click(Sender: TObject);
+begin
+　if CheckStrInTable(Edit1.Text, hanNumberTbl + zenNumberTbl, vitAllExclude) then
+　　Form1.Caption := '一文字も数字は含まれていません'
+　else
+　　Form1.Caption := '数字が含まれています'
+end;
+
+
+496 名前：デフォルトの名無しさん 投稿日：02/03/10 04:16
+begin;
+
+この文は妥当か？
+
+
+497 名前：デフォルトの名無しさん 投稿日：02/03/10 04:51
+コンパイルは出来た。
+
+
+498 名前：Delフサギコ 投稿日：02/03/10 10:44
+
+　　　　　 　 　　　　∫　　　 ＿＿＿＿＿＿＿＿＿
+　　　∧,,∧ 　　 　∬　　 ／
+　　 ミ,,ﾟДﾟ彡っ━~　　＜　このスレは低レベルですな。
+＿と~,,　　~,,,ﾉ_. 　∀　　　＼
+　　　 ﾐ,,,,/~), │　┷┳━ 　￣￣￣￣￣￣￣￣￣
+￣￣￣ .じ'Ｊ￣￣|　┃
+￣￣￣￣
+
+
+
+
+
+499 名前：名無しヘタぐらま ◆B18Bks.Y 投稿日：02/03/10 13:05
+>>493
+全角文字を含む文字列の中の文字の場合，
+ByteType関数などを使ってチェックしないといけないです．
+
+例：文字列sの中の半角英数すべてを"#"に痴漢．
+for i := 1 to Length(s) do
+if (s[i] in ['A'..'Z', 'a'..'z', '0'..'9']) and (ByteType(s, i) = mbSingleByte) then
+s[i] := '#';
+
+
+
+500 名前：デフォルトの名無しさん 投稿日：02/03/10 13:27
+>>499
+毎回ByteType呼ぶと重い。
+1バイト文字のときに限り、ならこんな感じかね。
+
+isSecondByte := false;
+for i := 1 to Length(s) do
+begin
+　if isSecondByte then
+　　isSecondByte := false
+　else
+　if s[i] in LeadBytes then
+　　isSecondByte := true
+　else
+　if s[i] in ['A'..'Z', 'a'..'z', '0'..'9'] then
+　　s[i] := '#';
+end;
+
+重さを無視すれば WideStringに代入して回したほうがコードはシンプルになるね。
+
+
+501 名前：500 投稿日：02/03/10 13:31
+for->whileにして中でiいじったら？

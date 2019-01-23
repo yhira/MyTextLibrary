@@ -1,0 +1,59 @@
+
+
+近藤＠TDKです。
+
+On Wed, 14 Jan 98 14:26:42 JST
+"[Delphi-ML:15753] Re: ListViewについて" で
+Yoshikazu Hattori <y_hattori@geocities.co.jp> さんは書きました。:
+
+> 
+> TListItem のプロパティの subitem の値でソートしたいのですがうまくい
+> きません。どのようにすればよいのでしょうか？再びおねがいいたします。
+> 
+
+　例として列ヘッダーをクリックした際に発生する OnColumnClickイベント
+ハンドラーでソートさせるやり方です。
+
+procedure TForm1.ListView1ColumnClick(Sender: TObject;
+  Column: TListColumn);
+var
+  Data: Integer;
+ begin
+  { Columnパラメータのプロパティ（ID ,Index, Caption等）を使ってソー
+  トの仕方を決定する。Indexプロパティの値をそのまま使って、正だった
+  ら昇順、負の値なら降順と指定するのが簡単かな。}
+  Data := Column.Index;
+  CustomSort( nil , Data );//CallBack関数の代わりにOnCompare
+                           //ハンドラーを使う。
+ end;
+
+
+procedure TForm1.ListView1Compare(Sender: TObject; Item1, Item2:
+               TListItem;  Data: Integer; var Compare: Integer);
+var
+  ItemStr1, ItemStr2 :string;
+  nItem :Integer;
+ begin
+  {Dataパラメータからソート対象となるSubItem番号を決定しnItemに代入。
+なおData = 0 ならばSortTypeで自動ソートに設定した場合の比較動作を  
+行います。}
+  
+  ItemStr1 := Item1.SubItems.Strings[ nItem ];
+  ItemStr1 := Item1.SubItems.Strings[ nItem ];
+  {　ItemStr1 と ItemStr2 を比較する。比較の方法は項目ごとに異なる
+     ので Dataパラメータか Index を case 文で場合分けする事になります。
+     比較結果をCompare に代入する。}
+  case nItem of
+    .
+    .
+  end;
+ end;
+
+*-----------------------------------------------------------
+|     ＴＤＫ(株)応用製品研究所
+|　　　　近藤 良一
+|　　　　Ryoichi KONDO
+|　　　　kondo_ry@ywt.tdk.co.jp
+*-----------------------------------------------------------
+
+

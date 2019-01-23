@@ -1,0 +1,62 @@
+
+procedure TMainForm.ClipLoad(DataFile: String);
+var
+  P: PClipItem;
+  fs: TFileStream;
+  i, Len, Count: integer;
+  Buf, strName, strData: String;
+begin
+  if FileExists(DataFile) = False then Exit;
+  fs := TFileStream.Create(DataFile, fmOpenRead or fmShareExclusive);
+  List := TList.Create;
+  try
+    fs.Read(Count, SizeOf(Count));
+
+    for i := 0 to Count -1 do
+    begin
+      //データ名の読み込み
+      fs.Read(Len, SizeOf(Len));
+      SetLength(Buf, Len);
+      fs.Read(PChar(Buf)^, Len);
+      strName := Buf;
+
+      //データの読み込み
+      fs.Read(Len, SizeOf(Len));
+      SetLength(Buf, Len);
+      fs.Read(PChar(Buf)^, Len);
+      strData := Buf;
+
+      New(P);
+      P^.FName := strName;
+      P^.FData := strData;
+
+
+
+      List.Add(P);
+    end;
+
+  finally
+    fs.Free;
+  end;
+
+end;
+
+
+procedure TMainForm.FormShow(Sender: TObject);
+var
+  i: Integer;
+begin
+  if ClipSetup.ClipDataLoadCheck then
+  begin
+    if List <> nil then
+    begin
+      for i := 0 to List.Count -1 do
+      begin
+        if PClipItem(List[i])^.FData <> Clipboard.AsText then
+          ClipTreeView.Items.AddChildObject(nil, PClipItem(List[i])^.FName, List[i]);
+      end;
+      List.Free;
+    end;
+  end;
+
+end;

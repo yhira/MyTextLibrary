@@ -1,0 +1,232 @@
+
+
+
+いぇーい。 かとちんです。＼(^0^)／
+
+MessageDlg ではタイトルが決め打ちだわ、MessageBox はパラメータが多いは
+ShowMessage はアイコンもタイトルもないわで、私は結局、MessageBox 派
+だったんですが（デバッグ時のデバッグ文はShowMessageで事足りますが）
+コーディングが毎度毎度うざいので、呼び出しが単純化できるラッパー関数群
+を持ったユニットを２年前（Delphi3の頃）から使ってました。
+そのユニットを掲載します。
+
+誰でも思いつくし、やってるであろう簡単なものですが、この２年間で使用頻
+度が最も高かったユニットでしたのでアップします。
+コーディングの量が減る(且つ見通しが良くなる)ので重宝しています。
+
+概要は以下の通りです。
+
+●メッセージ表示の用途別に手続き・関数を用意しています。
+    Ok, OkCancel, YesNo, Warning, Stop, WarningYesNo, YesNoCancel,
+    WarningYesNoCancel,
+    OkT, OkCancelT, YesNoT, WarningT, StopT, WarningYesNoT,
+    YesNoCancelT, WarningYesNoCancelT
+
+●手続き名の末尾に T が付いているものは、タイトル指定を意味します。
+
+●タイトル指定がない場合は、アクティブフォームのタイトルを優先的に使用
+　します。アクティブフォームがなければ ShowMessage と同じように、
+  Application.Title を使用します。
+
+●処理中(マウスカーソルを砂時計にしていた時)に例外が発生した場合に表示
+　するとカーソルが砂時計のまんまじゃユーザの誤解を招きます。
+　かといって毎回設定し直すのは大変です。
+　このユニットの全ての手続きで、必ず一旦標準カーソルに切り替わるように
+　なっています。
+
+Delphi3の頃のままなので、今(Delphi4,5)だったら、overload や デフォルト
+値パラメータが使えるんですが各人で好きなように改造してください。
+
+
+
+
+【ユニットソース】   ※MsgBox.pas という名前で保存してください。
+unit MsgBox;
+
+interface
+
+uses
+  Windows, Controls, Forms;
+
+type
+  MsgBool = Boolean;
+  MsgInt = 0..2;
+  procedure Ok(Msg: string);
+  function OkCancel(Msg: string): MsgBool;
+  function YesNo(Msg: string): MsgBool;
+  procedure Warning(Msg: string);
+  function WarningYesNo(Msg: string): MsgBool;
+  procedure Stop(Msg: string);
+  function YesNoCancel(Msg: string): MsgInt;
+  function WarningYesNoCancel(Msg: string): MsgInt;
+
+  procedure OkT(Msg: string; Title: string);
+  function OkCancelT(Msg: string; Title: string): MsgBool;
+  function YesNoT(Msg: string; Title: string): MsgBool;
+  procedure WarningT(Msg: string; Title: string);
+  function WarningYesNoT(Msg: string; Title: string): MsgBool;
+  procedure StopT(Msg: string; Title: string);
+  function YesNoCancelT(Msg: string; Title: string): MsgInt;
+  function WarningYesNoCancelT(Msg: string; Title: string): MsgInt;
+
+const
+  MsgOK : MsgBool = True;
+  MsgCancel : MsgBool = False;
+  MsgYes : MsgBool = True;
+  MsgNo : MsgBool = False;
+  MsgIntNo: MsgInt = 0;
+  MsgIntYes: MsgInt = 1;
+  MsgIntCancel: MsgInt = 2;
+
+implementation
+
+function AppMsgBox(msg, title: string; flags: Integer): Integer;
+var
+  SvCursor: TCursor;
+begin
+  SvCursor := Screen.Cursor;
+  Screen.Cursor := crDefault;
+  try
+    Result := Application.MessageBox(PChar(msg), PChar(title), flags);
+  finally
+    Screen.Cursor := SvCursor;
+  end;
+end;
+
+function GetTitle: string;
+begin
+  if Screen.ActiveForm <> nil then
+  begin
+    Result := Screen.ActiveForm.Caption;
+  end else begin
+    Result := Application.Title;
+  end;
+end;
+
+procedure Ok(Msg: string);
+begin
+  OkT(Msg,GetTitle);
+end;
+
+function OkCancel(Msg: string): MsgBool;
+begin
+  Result := OkCancelT(Msg,GetTitle);
+end;
+
+function YesNo(Msg: string): MsgBool;
+begin
+  Result := YesNoT(Msg, GetTitle);
+end;
+
+procedure Warning(Msg: string);
+begin
+  WarningT(Msg, GetTitle);
+end;
+
+procedure Stop(Msg: string);
+begin
+  StopT(Msg, GetTitle);
+end;
+
+function WarningYesNo(Msg: string): MsgBool;
+begin
+  Result := WarningYesNoT(Msg, GetTitle);
+end;
+
+function YesNoCancel(Msg: string): MsgInt;
+begin
+  Result := YesNoCancelT(Msg, GetTitle);
+end;
+
+function WarningYesNoCancel(Msg: string): MsgInt;
+begin
+  Result := WarningYesNoCancelT(Msg, GetTitle);
+end;
+
+
+procedure OkT(Msg: string; Title: string);
+begin
+  AppMsgBox(Msg, Title, mb_IconInformation);
+end;
+
+function OkCancelT(Msg: string; Title: string): MsgBool;
+begin
+  Result := (IDOK = AppMsgBox(Msg, Title, mb_IconInformation or
+             mb_OkCancel));
+end;
+
+function YesNoT(Msg: string; Title: string): MsgBool;
+begin
+  Result := (IDYes = AppMsgBox(Msg, Title, mb_IconQuestion or
+             mb_YesNo));
+end;
+
+procedure WarningT(Msg: string; Title: string);
+begin
+  AppMsgBox(Msg, Title, mb_IconExclamation);
+end;
+
+procedure StopT(Msg: string; Title: string);
+begin
+  AppMsgBox(Msg, Title, mb_IconStop);
+end;
+
+function WarningYesNoT(Msg: string; Title: string): MsgBool;
+begin
+  Result := (IDYes = AppMsgBox(Msg, Title, mb_IconExclamation or
+   mb_YesNo));
+end;
+
+function YesNoCancelT(Msg: string; Title: string): MsgInt;
+begin
+  case AppMsgBox(Msg, Title, mb_IconQuestion or mb_YesNoCancel) of
+  IDYes:  Result := MsgIntYes;
+  IDNo:   Result := MsgIntNo;
+  else
+    Result := MsgIntCancel;
+  end;
+end;
+
+function WarningYesNoCancelT(Msg: string; Title: string): MsgInt;
+begin
+  case AppMsgBox(Msg, Title, mb_IconExclamation or mb_YesNoCancel) of
+  IDYes:  Result := MsgIntYes;
+  IDNo:   Result := MsgIntNo;
+  else
+    Result := MsgIntCancel;
+  end;
+end;
+
+end.
+
+
+【使用例】
+
+uses
+  MsgBox;
+
+  if not OkCancel('フォーマットを実行します') then Exit;
+
+  //明示的にユニット名を付けても分かりやすいです。
+  MsgBox.OkT('成功しました.', 'Gドライブのフォーマット');
+
+  if not YesNo('続行しますか？') then Exit;
+
+  // MsgInt型の戻り値を返す関数群だけはちょっと特殊で使いにくいかも...
+  case YesNoCancel('編集内容が更新されています.保存しますか？') of
+  MsgIntYes:
+    FileSave;
+  MsgIntCancel:
+    Exit;
+  end;
+  Close;
+
+
+▲●    2000/09/16 15:58 JDX06162(とんちんかんちんかとちん)
+ ■     Inprise Delphi ... The Great Development Kit
+uses D2Desktop, D3CSS, D4CSS, D5ENT;
+ 
+
+
+
+Original document by かとちん        氏 ID:(JDX06162)

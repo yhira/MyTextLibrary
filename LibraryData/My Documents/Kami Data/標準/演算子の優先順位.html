@@ -1,0 +1,38 @@
+<HTML><HEAD><meta http-equiv="content-type" content="text/html;charset=Shift_JIS">
+<TITLE>第5回　Pascalの基礎</TITLE></HEAD>
+
+<BODY>
+<P><B><U><FONT size=+1>演算子の優先順位</FONT></U></B><BR><BR>　数学の問題です。次の答えは何になるでしょうか。</P><PRE>    8 - 2 + 10 ÷ 5</PRE>
+<P>　正解は、8です。まさか間違えた方はいないでしょう。数学では、わり算・かけ算を先に計算し、次に足し算・引き算を計算するというルールがあります。また、足し算・引き算同士の場合、左側から順番に計算します。<BR>　上の例では、まず10÷5を計算し、次に8-2、最後に8-2の答えと、10÷5の答えを足します。<BR>　Pascalでも同じで、どの演算子から優先的に計算するのか決まっています。この優先順位は次のとおりです。<BR>　表の上にあるものから順番に計算し、同じ優先順位の演算子は、式の左側から計算されます。</P>
+<TABLE cellSpacing=0 width=610 border=1>
+<TBODY>
+<TR>
+<TD align=middle bgColor=#e0e0ef>優先順位</TD>
+<TD align=middle bgColor=#e0e0ef>演算子</TD></TR>
+<TR>
+<TD align=middle>１</TD>
+<TD>not</TD></TR>
+<TR>
+<TD align=middle>２</TD>
+<TD>*　/　div　mod　and</TD></TR>
+<TR>
+<TD align=middle>３</TD>
+<TD>+　-　or　xor</TD></TR>
+<TR>
+<TD align=middle>４</TD>
+<TD>=　&lt;&gt;　&lt;　&gt;　&lt;=　&gt;=　in</TD></TR></TBODY></TABLE>
+<P>　例えば次の式の結果は、95になります。</P><PRE>  Ans := 100 - 50 div 10;</PRE>
+<P>　計算する順序を変えたいときは、( )カッコで囲みます。例えば上記の式で減算を先に計算したいときは、次のようにします。</P><PRE>  Ans := (100 - 50) div 10;</PRE>
+<P>　数学と同様にカッコで囲まれた部分が先に計算されます。上記の式の結果は、5になります。複雑な式を計算する場合、計算の順番が分かりづらいときは、わざとカッコを付けて分かりやすくする手もあります。</P><PRE>  Ans := 100 div 50 - 115 mod 10;      { このような式は }
+  Ans := (100 div 50) - (115 mod 10);  { わざとカッコを付けると分かりやすくなることもある }</PRE>
+<P>　優先順位で特に注意したいのは、if文の条件の部分です。次のif文はエラーになります。</P><PRE>  if A = 5 and B = 0 then</PRE>
+<P>　理由は、andの優先順位が高いため、まず5 and 
+Bが計算されてしまうためです。このようなことを避けるため、if文に論理演算子を用いるときは、必ずカッコで囲みます。</P><PRE>  if (A = 5) and (B = 0) then</PRE>
+<P><BR></P><BR>
+<FONT SIZE="-1">
+TITLE:第5回　Pascalの基礎<BR>
+DATE:2002/12/29 17:00<BR>
+URL:<A HREF="http://wblue.hp.infoseek.co.jp/prog/c2_05.htm" TARGET="_blank">http://wblue.hp.infoseek.co.jp/prog/c2_05.htm</A><BR>
+</FONT>
+</BODY>
+</HTML>

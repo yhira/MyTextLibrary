@@ -1,0 +1,293 @@
+unit kushi;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, Grids, ValEdit, StdCtrls, ComCtrls;
+
+type
+  TForm1 = class(TForm)
+    Button1: TButton;
+    Button2: TButton;
+    Button3: TButton;
+    Button4: TButton;
+    Memo1: TMemo;
+    Memo2: TMemo;
+    Memo3: TMemo;
+    Memo4: TMemo;
+    Memo5: TMemo;
+    Button5: TButton;
+    Label1: TLabel;
+    Label2: TLabel;
+    Label3: TLabel;
+    procedure Memo1DblClick(Sender: TObject);
+    procedure Memo2DblClick(Sender: TObject);
+    procedure Memo3DblClick(Sender: TObject);
+    procedure Memo4DblClick(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
+    procedure Button3Click(Sender: TObject);
+    procedure Button4Click(Sender: TObject);
+    procedure Button5Click(Sender: TObject);
+  private
+    { Private 宣言 }
+  public
+    { Public 宣言 }
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+{$R *.dfm}
+
+procedure TForm1.Memo1DblClick(Sender: TObject);
+begin
+    Memo1.SelectAll;
+end;
+
+procedure TForm1.Memo2DblClick(Sender: TObject);
+begin
+    Memo2.SelectAll;
+end;
+
+procedure TForm1.Memo3DblClick(Sender: TObject);
+begin
+        Memo3.SelectAll;
+end;
+
+procedure TForm1.Memo4DblClick(Sender: TObject);
+begin
+    Memo4.SelectAll;
+end;
+
+function GetNum(Line: string):Integer;
+var
+Index, Count: Integer;
+begin
+Index :=AnsiPos('[', Line) + 1;
+Count := AnsiPos('ミリ',Line) - Index;
+
+Line := Copy(Line, Index, Count);
+
+Result := StrToInt(Line);
+end;
+
+function MyCompare(List: TStringList; Index1, Index2: Integer): Integer;
+begin
+Result := GetNum(List[Index1]) - GetNum(List[Index2]);
+end;
+
+
+
+
+
+procedure TForm1.Button1Click(Sender: TObject);
+     var k,s1,s2 : integer ;
+         kushi,speed : String;
+         StringList : TStringList;
+begin
+
+
+    //振り分け作業
+
+    if Memo2.Lines.Count > 0 then
+    begin
+    ShowMessage('クリアボタンを押してください');
+    Beep;
+    end
+    else
+    begin
+    while Memo1.Lines.Count > 0 do
+    begin
+    if Pos('総合評価：<font size=+2>？',Memo1.Lines[0]) >0 then
+    begin
+    Memo2.Lines.Add(Memo1.Lines[0]) ;
+    Memo1.Lines.Delete(0);
+    end
+    else
+    if Pos('総合評価：<font size=+2>A',Memo1.Lines[0]) >0 then
+    begin
+    Memo3.Lines.Add(Memo1.Lines[0]);
+    Memo1.Lines.Delete(0);
+    end
+    else
+   if Pos('総合評価：<font size=+2>B',Memo1.Lines[0]) >0 then
+   begin
+   Memo4.Lines.Add(Memo1.Lines[0]) ;
+   Memo1.Lines.Delete(0);
+   end
+   else
+     Memo1.Lines.Delete(0);
+    end;
+
+
+    //?プロクシ
+    while Memo2.Lines.Count > 0 do
+    begin
+    k := Pos(' ',Memo2.Lines[0]);
+    s1 := pos('[',Memo2.Lines[0]);
+    s2 := pos('ミリ秒]',Memo2.Lines[0]);
+    kushi:=copy(Memo2.Lines[0],0,k-1);
+    speed:=copy(Memo2.Lines[0],s1+1,(s2-(s1+1)));
+    Memo5.Lines.Add(kushi+' ['+speed+'ミリ秒]');
+    Memo2.Lines.Delete(0);
+    end;
+    Memo5.Lines.SaveToFile(ExtractFileDir(Application.ExeName)+'\q-proxy-speed.txt');
+
+    while Memo5.Lines.Count > 0 do
+    begin
+    k:=pos(' ',Memo5.Lines[0]);
+    kushi:=copy(Memo5.Lines[0],0,k-1);
+    Memo2.Lines.Add(kushi);
+    Memo5.Lines.Delete(0);
+    end;
+    Memo2.Lines.SaveToFile(ExtractFileDir(Application.ExeName)+'\q-proxy.txt');
+    Memo2.Lines.LoadFromFile(ExtractFileDir(Application.ExeName)+'\q-proxy-speed.txt');
+
+    //Aプロクシ
+    Memo5.Lines.Clear;
+    while Memo3.Lines.Count > 0 do
+    begin
+    k := Pos(' ',Memo3.Lines[0]);
+    s1 := pos('[',Memo3.Lines[0]);
+    s2 := pos('ミリ秒]',Memo3.Lines[0]);
+    kushi:=copy(Memo3.Lines[0],0,k-1);
+    speed:=copy(Memo3.Lines[0],s1+1,(s2-(s1+1)));
+    Memo5.Lines.Add(kushi+' ['+speed+'ミリ秒]');
+    Memo3.Lines.Delete(0);
+    end;
+    Memo5.Lines.SaveToFile(ExtractFileDir(Application.ExeName)+'\A-proxy-speed.txt');
+
+    while Memo5.Lines.Count > 0 do
+    begin
+    k:=pos(' ',Memo5.Lines[0]);
+    kushi:=copy(Memo5.Lines[0],0,k-1);
+    Memo3.Lines.Add(kushi);
+    Memo5.Lines.Delete(0);
+    end;
+    Memo3.Lines.SaveToFile(ExtractFileDir(Application.ExeName)+'\A-proxy.txt');
+    Memo3.Lines.LoadFromFile(ExtractFileDir(Application.ExeName)+'\A-proxy-speed.txt');
+
+    //Bプロクシ
+     Memo5.Lines.Clear;
+    while Memo4.Lines.Count > 0 do
+    begin
+    k := Pos(' ',Memo4.Lines[0]);
+    s1 := pos('[',Memo4.Lines[0]);
+    s2 := pos('ミリ秒]',Memo4.Lines[0]);
+    kushi:=copy(Memo4.Lines[0],0,k-1);
+    speed:=copy(Memo4.Lines[0],s1+1,(s2-(s1+1)));
+    Memo5.Lines.Add(kushi+' ['+speed+'ミリ秒]');
+    Memo4.Lines.Delete(0);
+    end;
+    Memo5.Lines.SaveToFile(ExtractFileDir(Application.ExeName)+'\B-proxy-speed.txt');
+
+    while Memo5.Lines.Count > 0 do
+    begin
+    k:=pos(' ',Memo5.Lines[0]);
+    kushi:=copy(Memo5.Lines[0],0,k-1);
+    Memo4.Lines.Add(kushi);
+    Memo5.Lines.Delete(0);
+    end;
+    Memo4.Lines.SaveToFile(ExtractFileDir(Application.ExeName)+'\B-proxy.txt');
+    Memo4.Lines.LoadFromFile(ExtractFileDir(Application.ExeName)+'\B-proxy-speed.txt');
+    end;
+
+
+begin
+StringList := TStringList.Create;
+try
+StringList.Assign(Memo2.Lines);
+StringList.CustomSort(MyCompare);
+
+Memo2.Lines.Assign(StringList);
+Memo2.Lines.SaveToFile(ExtractFileDir(Application.ExeName)+'\q-proxy-speed.txt');
+
+    while Memo2.Lines.Count > 0 do
+    begin
+    k:=pos(' ',Memo2.Lines[0]);
+    kushi:=copy(Memo2.Lines[0],0,k-1);
+    Memo5.Lines.Add(kushi);
+    Memo2.Lines.Delete(0);
+    end;
+    Memo5.Lines.SaveToFile(ExtractFileDir(Application.ExeName)+'\q-proxy.txt');
+    Memo2.Lines.LoadFromFile(ExtractFileDir(Application.ExeName)+'\q-proxy-speed.txt');
+    Memo5.Lines.Clear;
+    finally
+StringList.Free;
+end;
+
+
+end;
+
+
+end;
+
+
+
+procedure TForm1.Button2Click(Sender: TObject);
+begin
+
+
+    if Button2.Caption = 'スピード表示' then
+    begin
+    Memo2.Lines.Clear;
+    Memo2.Lines.LoadFromFile(ExtractFileDir(Application.ExeName)+'\q-proxy-speed.txt');
+    Button2.Caption := 'proxyのみ';
+    end
+    else
+    begin
+    Memo2.Lines.Clear;
+    Memo2.Lines.LoadFromFile(ExtractFileDir(Application.ExeName)+'\q-proxy.txt');
+    Button2.Caption := 'スピード表示' ;
+    end;
+
+end;
+
+procedure TForm1.Button3Click(Sender: TObject);
+begin
+    if Button3.Caption = 'スピード表示' then
+    begin
+    Memo3.Lines.Clear;
+    Memo3.Lines.LoadFromFile(ExtractFileDir(Application.ExeName)+'\A-proxy-speed.txt');
+    Button3.Caption := 'proxyのみ';
+    end
+    else
+    begin
+    Memo3.Lines.Clear;
+    Memo3.Lines.LoadFromFile(ExtractFileDir(Application.ExeName)+'\A-proxy.txt');
+    Button3.Caption := 'スピード表示' ;
+    end;
+end;
+
+procedure TForm1.Button4Click(Sender: TObject);
+begin
+    if Button4.Caption = 'スピード表示' then
+    begin
+    Memo4.Lines.Clear;
+    Memo4.Lines.LoadFromFile(ExtractFileDir(Application.ExeName)+'\B-proxy-speed.txt');
+    Button4.Caption := 'proxyのみ';
+    end
+    else
+    begin
+    Memo4.Lines.Clear;
+    Memo4.Lines.LoadFromFile(ExtractFileDir(Application.ExeName)+'\B-proxy.txt');
+    Button4.Caption := 'スピード表示' ;
+    end;
+end;
+
+procedure TForm1.Button5Click(Sender: TObject);
+begin
+    Memo1.Lines.Clear;
+    Memo2.Lines.Clear;
+    Memo3.Lines.Clear;
+    Memo4.Lines.Clear;
+    Button2.Caption := 'proxyのみ' ;
+    Button3.Caption := 'proxyのみ' ;
+    Button4.Caption := 'proxyのみ' ;
+end;
+
+end.

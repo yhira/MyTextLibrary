@@ -1,0 +1,65 @@
+
+--------------------------------------------------------------------------------
+ 
+ファイルのタイムスタンプを取得するにはWindowsAPIのGetFileTime関数を使用します。
+
+////////// 
+Procedure TForm1.Button1Click(Sender: Tobject);
+var
+   FileName:    String;
+   FileHandle:  Thandle;
+   SystemTime:  TSystemTime;
+   TempTime:    TFileTime;
+   CreateTime:  TFileTime;
+   AccessTime:  TFileTime;
+   ModifyTime:  TFileTime;
+begin
+   // ファイル名を設定 
+   FileName := 'C:\autoexec.bat';
+   // ファイルをオープンしてハンドルを取得 
+   FileHandle := CreateFile(Pchar(FileName), GENERIC_READ, 0, 0, OPEN_ALWAYS, 0, 0);
+
+   Edit1.Text := IntToStr(CreateTime.dwLowDateTime);
+
+   try
+      // タイムスタンプを取得 
+      GetFileTime(FileHandle, @CreateTime, @AccessTime, @ModifyTime);
+
+      // 作成日 
+      // FileTime形式を地域にあわせる 
+      FileTimeToLocalFileTime(CreateTime, TempTime);
+      // FileTime形式をSystemTime形式にする 
+      FileTimeToSystemTime(TempTime, SystemTime);
+      // 型キャストして出力 以降同じロジック 
+      Edit1.Text := DateTimetoStr(SystemTimeToDateTime(SystemTime));
+
+      // 最終アクセス日 
+      FileTimeToLocalFileTime(AccessTime, TempTime);
+      FileTimeToSystemTime(TempTime, SystemTime);
+      Edit2.Text := DateTimetoStr(SystemTimeToDateTime(SystemTime));
+
+      // 最終更新日 
+      FileTimeToLocalFileTime(ModifyTime, TempTime);
+      FileTimeToSystemTime(TempTime, SystemTime);
+      Edit3.Text := DateTimetoStr(SystemTimeToDateTime(SystemTime));
+
+   finally
+      // 取得したハンドルを開放する 
+      CloseHandle(FileHandle);
+   end;
+end;
+////////// 
+
+GetFileTime(hFile, lpCreationTime, lpLastAccessTime, lpLastWriteTime)
+
+hFile               ファイルのハンドルCreateFile API等で取得しておく
+lpCreationTime      ファイルが作成された日時を取得する
+                    TFileTimeオブジェクトのポインタ
+lpLastAccessTime    最後にアクセスされた日時を取得する
+                    TFileTimeオブジェクトのポインタ
+lpLastWriteTime     最後に書き込まれた日時を取得する
+                    TFileTimeオブジェクトのポインタ
+
+戻り値
+    正常終了：true
+    エラー  ：false 

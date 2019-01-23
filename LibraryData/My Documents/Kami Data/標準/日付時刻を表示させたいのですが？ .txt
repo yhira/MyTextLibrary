@@ -1,0 +1,24 @@
+
+
+--------------------------------------------------------------------------------
+該当するバージョン:Delphi 1.0,Delphi 2.0,Delphi 3.0/Delphi3.1,Delphi4
+ 日付及び時刻を表示する際に，指定した形式で表示させたいのですが，どのようにすればよいのでしょうか？ 
+
+ 
+ 下記のコードを参考にして下さい。
+
+TEdit に指定された形式で日付及び時刻が表示されます。
+
+
+
+   procedure TForm1.Button1Click(Sender: TObject);
+   var
+     S: string;
+   begin
+     S := FormatDateTime('gggee/mm/d aaa ' + '"at" hh:mm AM/PM', 
+                                          StrToDateTime('95/02/15 10:30am'));
+     Edit1.Text:= S;   {  平成08/01/01 水 at 10:30 AM  } 
+   end;
+
+ 
+

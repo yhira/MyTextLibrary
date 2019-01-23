@@ -1,0 +1,41 @@
+
+
+--------------------------------------------------------------------------------
+該当するバージョン:Delphi 1.0,Delphi 2.0,Delphi 3.0/Delphi3.1,Delphi4
+ TMemo や TListbox のデータを印刷するには，どうしたら良いですか？ 
+
+ 
+ 以下の関数は，TStrings オブジェクトを引数にとりすべての string を印刷します。TStrings を使用するため，この関数は TDBMemo やTOutline などのような TStrings 型のプロパティのあるコンポーネントであれば使用できます。
+
+uses Printers; を追加してください。
+
+
+
+   procedure PrintStrings(Strings: TStrings);
+   var
+     Prn: TextFile;
+     i: word;
+   begin
+     AssignPrn(Prn);
+     try
+       Rewrite(Prn);
+       try
+         for i := 0 to Strings.Count - 1 do
+           writeln(Prn, Strings.Strings[i]);
+       finally
+         CloseFile(Prn);
+       end;
+     except
+       on EInOutError do
+         MessageDlg('印刷エラー', mtError, [mbOk], 0);
+     end;
+   end;
+
+   procedure TForm1.Button1Click(Sender: TObject);
+   begin
+     PrintStrings(Memo1.Lines);
+    {  PrintStrings(Listbox1.Items); }
+   end;
+
+ 
+

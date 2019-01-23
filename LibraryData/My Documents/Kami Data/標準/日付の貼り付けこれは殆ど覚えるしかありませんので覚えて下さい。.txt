@@ -1,0 +1,11 @@
+
+
+procedure TForm1.mnuGetDayClick(Sender: TObject);
+begin
+  ShortdateFormat := 'yyyy/mm/dd';
+  Memo1.SelText := DateToStr(Date);
+end; 
+まず「shortdataFormat」というのはヘルプで調べて見て下さい。 自分もそんなに詳しいワケではありませんので（＾＾；）。 「yyyy」とすると、西暦４桁で…という事ですね。 そして、「SelText」つまり、選択された文字列に、日付を貼り付けるという事になります。
+
+また、ひとつ忘れてましたが、 もし文字列が選択されてない時には「SelText」はどうなるのか？といいますと、 これはタダの現在位置に文字列を挿入する…というような事と同じ事になります。 これは非常に重要で、後々出てきます。「DateToStr」というのは「IntToStr」と同じです。 整数型などと同じように、「Data型」というのが定義されています。 この「型」は最初は慣れないかも知れませんが、そのうち慣れてきます。
+

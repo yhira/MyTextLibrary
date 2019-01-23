@@ -1,0 +1,31 @@
+<HTML><HEAD><meta http-equiv="content-type" content="text/html;charset=Shift_JIS">
+<TITLE>第5回　Pascalの基礎</TITLE></HEAD>
+
+<BODY>
+<P><B><U><FONT 
+size=+1>集合演算子</FONT></U></B><BR><BR>　集合型の演算に使用します。in以外にも集合演算子はありますが、ここでは説明を省きます。</P>
+<TABLE cellSpacing=0 width=610 border=1>
+<TBODY>
+<TR>
+<TD align=middle bgColor=#e0e0ef>演算子</TD>
+<TD align=middle bgColor=#e0e0ef>意味</TD></TR>
+<TR>
+<TD>in</TD>
+<TD>集合に要素が含まれているかチェックします。含まれているときは真(True)、含まれていないときは偽(False)の結果になります。</TD></TR></TBODY></TABLE>
+<P>　in演算子は、次の書式で使用します。</P><PRE>  要素 in 集合型</PRE>
+<P>　使用例は次のとおりです。</P><PRE>  var
+    Ans: Boolean;
+    Fruit: set of (frApple, frOrange, frGrape);
+  begin
+    Fruit := [frApple, frGrape];
+
+    Ans := frOrange in Fruit;  { FruitにfrOrangeが含まれていないので、Ans = False }
+    Ans := frApple in Fruit;   { frAppleは含まれているので、Ans = True になる }
+  end;</PRE><BR>
+<FONT SIZE="-1">
+TITLE:第5回　Pascalの基礎<BR>
+DATE:2002/12/29 16:59<BR>
+URL:<A HREF="http://wblue.hp.infoseek.co.jp/prog/c2_05.htm" TARGET="_blank">http://wblue.hp.infoseek.co.jp/prog/c2_05.htm</A><BR>
+</FONT>
+</BODY>
+</HTML>

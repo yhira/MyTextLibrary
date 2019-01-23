@@ -1,0 +1,4 @@
+procedure TForm1.btnClearClick(Sender: TObject);
+begin
+  tv1.Items.Clear;
+end;

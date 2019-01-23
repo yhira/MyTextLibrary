@@ -1,0 +1,42 @@
+
+
+(Delphi 5 以前用 Tips) 他のアプリケーションにフォーカスが移った場合のイベントは TApplication の Dactivate イベントが使用できます。しかしこの TApplication のイベントはオブジェクトインスペクタには表示されないので手書きしないといけません。Delphi 6 からは Application コンポーネントが用意されているのでそちらを利用してください。
+以下の例はアプリケーションが非アクティブ時とアクティブ時にラベルの内容を更新します。
+
+■ 非アクティブのイベントの例 
+type
+  TForm1  =  class(TForm);
+    procedure FormCreate(Sender: TObject);
+  private
+    { プライベート宣言 }
+    procedure AppOnActivate  (Sender: TObject); 
+    procedure AppOnDeactivate(Sender: TObject); 
+  public
+    { パブリック宣言 }
+  end;
+
+  var
+    Form1 : TForm1;
+
+  implementation
+
+  { $R *.DFM }
+
+  procedure TForm1.FormCreate(Sender: TObject);
+  begin
+    Appliaction.OnActivate    :=   AppOnActivate;
+    Appliaction.OnDeactivate  :=   AppOnDeactivate;
+  end;
+
+  procedure TForm1.AppOnActivate(Sender: TObject);
+  begin
+     //アクティブ時の処理
+     Label.Caption   :=   'Activate';
+  end;
+
+  procedure TForm1.AppOnDeactivate(Sender: TObject);
+  begin
+     //非アクティブ時の処理
+     Label.Caption   :=   'Deactivate';
+  end; 
+

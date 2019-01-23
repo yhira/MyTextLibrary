@@ -1,0 +1,136 @@
+unit Unit1;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  StdCtrls, ComCtrls;
+
+type
+  TForm1 = class(TForm)
+    TreeView1: TTreeView;
+    StatusBar: TStatusBar;
+    Edit1: TEdit;
+    AddButton: TButton;
+    AddFirstButton: TButton;
+    AddChildButton: TButton;
+    AddChildFirstButton: TButton;
+    InsertButton: TButton;
+    Label1: TLabel;
+    Label2: TLabel;
+    DeleteButton: TButton;
+    DeleteChildrenButton: TButton;
+    procedure FormCreate(Sender: TObject);
+    procedure AddButtonClick(Sender: TObject);
+    procedure AddFirstButtonClick(Sender: TObject);
+    procedure AddChildButtonClick(Sender: TObject);
+    procedure AddChildFirstButtonClick(Sender: TObject);
+    procedure InsertButtonClick(Sender: TObject);
+    procedure DeleteButtonClick(Sender: TObject);
+    procedure DeleteChildrenButtonClick(Sender: TObject);
+    procedure TreeView1Change(Sender: TObject; Node: TTreeNode);
+  private
+    { Private êÈåæ }
+    procedure ShowHint(Sender: TObject );
+  public
+    { Public êÈåæ }
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+{$R *.DFM}
+
+procedure TForm1.ShowHint(Sender: TObject);
+begin
+  StatusBar.SimpleText := Application.Hint;
+end;
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  Application.OnHint := ShowHint;
+end;
+
+procedure TForm1.AddButtonClick(Sender: TObject);
+begin
+  if Edit1.Text <> '' then
+  begin
+    TreeView1.Items.Add(TreeView1.Selected,Edit1.Text);
+    Form1.Caption := 'item.Index = ' + IntToStr(TreeView1.Items.Count);
+  end;
+end;
+
+procedure TForm1.AddFirstButtonClick(Sender: TObject);
+begin
+  if Edit1.Text <> '' then
+  begin
+    TreeView1.Items.AddFirst(TreeView1.Selected,Edit1.Text);
+    Form1.Caption := 'item.Index = ' + IntToStr(TreeView1.Items.Count);
+  end;
+end;
+
+procedure TForm1.AddChildButtonClick(Sender: TObject);
+begin
+  if Edit1.Text <> '' then
+  begin
+    TreeView1.Items.AddChild(TreeView1.Selected,Edit1.Text);
+    Form1.Caption := 'item.Index = ' + IntToStr(TreeView1.Items.Count);
+  end;
+end;
+
+procedure TForm1.AddChildFirstButtonClick(Sender: TObject);
+begin
+  if Edit1.Text <> '' then
+  begin
+    TreeView1.Items.AddChildFirst(TreeView1.Selected,Edit1.Text);
+    Form1.Caption := 'item.Index = ' + IntToStr(TreeView1.Items.Count);
+  end;
+end;
+
+procedure TForm1.InsertButtonClick(Sender: TObject);
+begin
+  if Edit1.Text <> '' then
+  begin
+    TreeView1.Items.Insert(TreeView1.Selected,Edit1.Text);
+    Form1.Caption := 'item.Index = ' + IntToStr(TreeView1.Items.Count);
+  end;
+end;
+
+procedure TForm1.DeleteButtonClick(Sender: TObject);
+begin
+  TreeView1.Selected.Delete;
+  Form1.Caption := 'item.Index = ' + IntToStr(TreeView1.Items.Count);
+  if TreeView1.Items.Count = 0 then
+  begin
+    DeleteButton.Enabled := false;
+    DeleteChildrenButton.Enabled := false;
+  end;
+end;
+
+procedure TForm1.DeleteChildrenButtonClick(Sender: TObject);
+begin
+  TreeView1.Selected.DeleteChildren;
+  if TreeView1.Items.Count = 0 then
+  begin
+    DeleteButton.Enabled := false;
+    DeleteChildrenButton.Enabled := false;
+  end;
+end;
+
+procedure TForm1.TreeView1Change(Sender: TObject; Node: TTreeNode);
+begin
+  if TreeView1.Items.count > 0 then
+    begin
+      DeleteButton.Enabled := True;
+      DeleteChildrenButton.Enabled := True;
+    end
+  else
+    begin
+      DeleteButton.Enabled := false;
+      DeleteChildrenButton.Enabled := false;
+    end;
+end;
+
+end.

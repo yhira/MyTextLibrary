@@ -1,0 +1,37 @@
+<HTML><HEAD><meta http-equiv="content-type" content="text/html;charset=Shift_JIS">
+<TITLE>第3回　変数とデータ型</TITLE></HEAD>
+
+<BODY>
+<P><B><U><FONT 
+size=+1>集合型</FONT></U></B><BR><BR>　集合型は、論理型(Boolean)の集まりだと考えられます。集合型は次のように宣言します。</P><PRE>  var
+    変数名: set of (識別子1, 識別子2, 識別子3 ・・・);</PRE>
+<P>　例を取って説明します。リンゴ、オレンジ、ブドウのうち好きなフルーツを記憶するとします。変数名はFruitにします。変数宣言は次のようになります。</P><PRE>  var
+    Fruit: set of (frApple, frOrange, frGrape);</PRE>
+<P>　集合型の変数に代入するには、[ ]で囲む必要があります。例えば、リンゴ(frApple)を代入するには</P><PRE>  Fruit := [frApple];</PRE>
+<P>となります。では、オレンジ(frOrange)とブドウ(frGrape)の両方が好きだという人がいたときは</P><PRE>  Fruit := [frOrange, frGrape];</PRE>
+<P>このように、複数のデータを同時に保存できます。<BR>　集合型では、次の式を使えます。</P><PRE>  Fruit := Fruit + [frApple];
+  Fruit := Fruit - [frGrape];</PRE>
+<P>　上の例では、FruitにfrAppleを追加します。下の例では、frGrapeを取り除きます。<BR>　もし、FruitにすでにfrAppleが含まれていて、そこにfrAppleを追加しても問題はありません。frAppleが2重になることはありません。同様に、frGrapeがないのにfrGrapeを除こうとしてもエラーにはなりません。<BR><BR>　次のように宣言すると、エラーになります。</P><PRE>  var
+    Fruit:  set of (frApple, frOrange, frGrape);
+    Fruit2: set of (frApple, frOrange, frGrape);</PRE>
+<P>同じ識別子の組み合わせは、2度以上宣言できません。このようなときは、ユーザ定義型として宣言します。ユーザ定義型の宣言は、次のとおりです。</P><PRE>  type
+    型名 = set of (識別子1, 識別子2・・・);</PRE>
+<P>例として、次のようになります。</P><PRE>  type
+    TFruit = set of (frApple, frOrange, frGrape);
+
+  var
+    Fruit:  TFruit;
+    Fruit2: TFruit;</PRE>
+<P>　ところで、集合型はほかの型に似ていないでしょうか。そう、列挙型に似ています。列挙型と組み合わせて、次のように宣言できます。</P><PRE>  type
+    TFruitType = (frApple, frOrange, frGrape);  { 列挙型の宣言 }
+    TFruit = set of TFruitType;                 { 集合型の宣言(列挙型と組み合わせ) }</PRE>
+<P>　さらに部分範囲型とも組み合わせられます。</P><PRE>  type
+    TBubun = 0..50;
+    TMySize = set of TBubun;</PRE><BR>
+<FONT SIZE="-1">
+TITLE:第3回　変数とデータ型<BR>
+DATE:2002/12/29 16:37<BR>
+URL:<A HREF="http://wblue.hp.infoseek.co.jp/prog/c2_03.htm" TARGET="_blank">http://wblue.hp.infoseek.co.jp/prog/c2_03.htm</A><BR>
+</FONT>
+</BODY>
+</HTML>

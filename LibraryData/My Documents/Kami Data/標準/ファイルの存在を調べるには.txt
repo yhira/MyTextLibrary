@@ -1,0 +1,14 @@
+
+--------------------------------------------------------------------------------
+ 
+FileExists関数を使用します。引数にはファイルをフルパスで記述します。
+
+UsesにFileCtrlを追加します。
+
+Procedure TForm1.Button1Click(Sender: Tobject);
+begin
+  if FileExists(Edit1.Text) then
+    ShowMessage('ファイルが存在しました。')
+  else
+    ShowMessage('ファイルが存在しません。');
+end; 

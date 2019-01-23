@@ -1,0 +1,51 @@
+
+[Ａ] 
+例のコードを参考にしてください。
+この例ではフォームにStatusBarコンポーネントが有り、Panelsが最低
+１つ作られているものとしています。また、このコードは複数フォーム
+上のステータスバーでも自動的に検地しますが、ステータスバーのName
+が「StatusBar1」になってないと駄目です。
+
+また、各コンポーネントのHintプロパティには、下記の形式で入力しま
+す。
+
+  Hintウインドウ文字|ステータスバーヒント
+
+つまり、ヒントウインドウで表示したい文字と、ステータスバーで表示し
+たい文字を|で区切って入力します。どちらも同じで良い場合は|以降を
+入力しません。例えば、
+
+   更新ボタン|このボタンを押すと、データの更新を行います。
+
+等としておくと、ヒントウインドウに「更新ボタン」、ステータスバーに、
+「このボタンを押すと、データの更新を行います。」と表示されます。[例] 
+
+まず、メインフォーム（TForm1とします）のPrivate部に、
+
+  Private
+    Procedure OnHint(Sender : TObject);
+
+とし、
+
+implementation
+
+{$R *.DFM}
+
+Procedure TForm1.OnHint(Sender : TObject);
+var
+   Component : TComponent;
+Begin
+     Component := Screen.ActiveForm.FindComponent('StatusBar1');
+     If Component <> Nil Then
+        With (Component As TStatusBar) Do
+           Panels[0].Text := Application.Hint;
+End;
+
+とします。メインフォームのOnCreateイベントで
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+     Application.OnHint := OnHint;
+end;
+
+とします。

@@ -1,0 +1,33 @@
+
+
+--------------------------------------------------------------------------------
+該当するバージョン:Delphi 1.0,Delphi 2.0,Delphi 3.0/Delphi3.1,Delphi4
+ IniFile を使用したアプリケーションを開発したいのですが，どのようなプログラムにすればよいのでしょうか？ 
+
+ 
+ 下記コードを参考にして下さい。
+TIniFile オブジェクトはアプリケーションが .INI ファイルを読み書きできるようにします。
+
+
+   procedure TForm1.FormActivate(Sender: TObject);
+   var
+     WinIni: TIniFile;
+   begin
+     Canvas.TextOut(20, 10, 'WINDOWS の設定');
+     WinIni := TIniFile.Create('Win.Ini');
+     with WinIni do begin
+       Canvas.TextOut(10, 45, 'Border Width = ' +
+          IntToStr(ReadInteger('Windows', 'BorderWidth', -1)));
+       Canvas.TextOut(10, 65, 'Icon Spacing = ' +
+          IntToStr(ReadInteger('Desktop', 'IconSpacing', -1)));
+       Canvas.TextOut(10, 85, 'Grid Granularity = ' +
+          IntToStr(ReadInteger('Desktop', 'GridGranularity', -1)));
+       Canvas.TextOut(10, 105, 'Cursor Blink Rate = ' +
+          IntToStr(ReadInteger('Windows', 'CursorBlinkRate', -1)));
+       Canvas.TextOut(10, 125, 'Double Click Speed = ' +
+          IntToStr(ReadInteger('Windows', 'DoubleClickSpeed', -1)));
+     end;
+     WinIni.Free;
+   end;
+ 
+

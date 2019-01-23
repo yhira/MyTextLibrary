@@ -1,0 +1,24 @@
+
+--------------------------------------------------------------------------------
+ 
+Tstringｓクラスには、CommaTextというカンマ区切りのデータを格納するためのプロパティが用意されています。
+TstringｓクラスそのものではProtectedされていますが、派生クラスであるTStringListクラスでは利用できます。
+そこで、読み込んだテキストファイルのデータをTStringListクラスのCommaTextプロパティに格納し、CSVファイルを通常のテキストに変換します。
+
+Procedure TForm1.ReadDerimiter(Source: String; var List: TStringList);
+var
+  TxtFile: TextFile;
+  Str: String;
+begin
+  try
+    AssignFile(TxtFile, Source);
+    Reset(TxtFile);
+    While not EOF(TxtFile) do Begin
+      Readln(TxtFile,Str);
+      List.CommaText := List.CommaText + Str;
+    end;
+  except
+    List.Clear;
+  end;
+    CloseFile(TxtFile);
+end; 

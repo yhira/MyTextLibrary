@@ -1,0 +1,254 @@
+　まず、ソフトウェアキーボードは普通フォーカスを受け取りません（IME 2000 の
+ソフトウェアキーボードなど、そうですよね）。
+　また、MS-IME, ATOK など IME によってコーディングが多少異なります。
+　以下に私が作成したときのコードを（かなり）単純化した概要を書いておきますの
+で、よろしければ参考になさってください。
+
+　・アクティブ（フォーカスを持っている）ウィンドウをタイマーで監視する。
+　　特にフックを使用する必要はない。
+
+　・アクティブウィンドウが変更されたら、DestroyWnd, CreateWnd を使用して
+　　ウィンドウを作り直す。
+
+　・CreateParams は以下のようにしておく
+
+procedure TfrmMain.CreateParams(var vParams: TCreateParams);
+begin
+  // ↓アクティブウィンドウを監視しているタイマーをオフ
+  timerWatchActive.Enabled := False; 
+
+  Application.ProcessMessages;
+
+  inherited;
+
+  with vParams do begin
+    // フォーカスを取らず、親が関係ないウィンドウになっても不都合が
+    // 起きないような設定。
+    // 詳しくは Win32 API Help or MSDN を参照。
+    Style := Style or WS_DISABLED or WS_POPUP;
+    ExStyle := ExStyle or WS_EX_TOPMOST or WS_EX_NOPARENTNOTIFY;
+
+    if (FActiveWnd <> 0) and (IsWindow(FActiveWnd)) then
+      WndParent := FActiveWnd; // ウィンドウの親をアクティブウィンドウにする
+  end;
+
+  // ↓アクティブウィンドウを監視しているタイマーをオン
+  timerWatchActive.Enabled := True;
+end;
+
+　・アクティブウィンドウに文字を送信するのは以下のように行う。
+
+    // vString 送信したい文字列
+    for i := 1 to Length(vString) do begin
+      // FActiveIME はアクティブな入力ロケール識別子
+      // 詳しくは MSDN を参照
+      ScanCode := VkKeyScanEx(vString[i], FActiveIME);
+
+      if (ScanCode = $ffffffff) then
+        Continue;
+
+      Shift := ((ScanCode and $0100) > 0);
+      Ctrl := ((ScanCode and $0200) > 0);
+      Alt := ((ScanCode and $0400) > 0);
+
+      if (Shift) then 
+        KeyDown(VK_SHIFT); 
+
+      if (Ctrl) then 
+        KeyDown(VK_CONTROL);
+
+      if (Alt) then 
+        KeyDown(VK_MENU);
+
+      KeyPress(ScanCode and $00ff);
+
+      if (Shift) then
+        KeyUp(VK_SHIFT);
+
+      if (Ctrl) then
+        KeyUp(VK_CONTROL);
+
+      if (Alt) then
+        KeyUp(VK_MENU);
+    end;
+
+    procedure KeyDown(vKey: Byte);
+    begin
+      keybd_event(vKey, 0, 0, 0);
+    end;
+
+    procedure KeyUp(vKey: Byte);
+    begin
+      keybd_event(vKey, 0, KEYEVENTF_KEYUP, 0);
+    end;
+
+    procedure KeyPress(vKey: Byte);
+    begin
+      KeyDown(vKey);
+      KeyUp(vKey);
+    end;
+
+　・送信文字列の作成は、アルファベットは直接入力モードにし、アルファベット
+　　を送信する。
+　　日本語は仮名入力モードに切り替え、半角カナを送信するようにしておく。
+　　濁音の処理は半角の濁音記号を送信すれば IME が行う。
+
+　・ＩＭＥの変換モードの切り替えは、アプリケーションが使用することを推奨
+　　されていない以下のメッセージを使用して行う。
+
+    // 詳しくは MSDN の WM_IME_CONTROL を参照
+    IMC_GETCONVERSIONMODE = $0001;
+    IMC_SETCONVERSIONMODE = $0002;
+    IMC_GETSENTENCEMODE = $0003;
+    IMC_SETSENTENCEMODE = $0004;
+    IMC_GETOPENSTATUS = $0005;
+    IMC_SETOPENSTATUS = $0006;
+
+　と、こんな感じです。
+　かなり Delphi から逸脱してしまっていますので、もし質問などありましたら、Ｄ
+Ｍでお願いします。
+
+Regards,
+HOSOKAWA Jun
+[S/G] SERIALGAMES Inc.
+E-mail:
+  jun@serialgames.co.jp (Primary)
+  jun@serialgames.com (Secondary)
+  trash@jb3.so-net.ne.jp (Private)
+URL:
+  http://www.serialgames.co.jp/
+
+
+　ホソカワ＠シリアルゲームズです。
+
+　# 仮眠してたのでレスが遅れました。
+
+　マルチレスです。
+　すいません。
+
+paramag さん: wrote
+
+> > 　かなり Delphi から逸脱してしまっていますので、もし質問などあり
+> ましたら、ＤＭでお願いします。
+> 
+> Delphi に無関係とは思いませんので、ここに投稿させて下さい。
+
+　できるだけ、Delphi と関係なさそうな事は、かなり省いあるので、そう思われた
+のだと思います。
+　が、私が作成したプログラムは API ばかりだったので、逸脱するかなと思いまし
+た。どのようなソフトウェアキーボードを作成するかによって、変わってくるところ
+ですね（私のは業務で作成したんですが、ちょっと普通では考えられないキーボード
+だったのです）。
+
+> プログラマなんですが、別プロセスで作られたウィンドウをオーナーとし
+> て、自プロセスで「所有された」ウィンドウを作成する、ということは
+> よくあることなんですか。
+
+　2000 ではアプリケーションがフォーカスを受け取る事が制限されていますが、9x,
+ NT4.0 等の時代は、この方法でフォーカスを取らないようにするのが、一般的だっ
+たと思います。
+　が、トリッキーである事には変わりありませんね。
+
+> この場合、Delphiで作成すると Application 
+> ウィンドウとの関係はどうなっているんでしょうか。
+
+　Application ウィンドウは Owner です。
+　CreateParams で指定しているのは WndParent ですから、Parent です。
+　Owner はウィンドウを所有しているウィンドウで、Parent はウィンドウの親です
+。
+　vParams.Style = vParams.Style or WM_POPUP となっているのは Parent が土台に
+なっていながらも、Parent ウィンドウの外にウィンドウを出すための手法です。
+
+> また、ボタンやリストボックスのようにフォーカスは受け取るが、文字
+> 入力しない場合でも Owned ウィンドウを作成しなおすのでしょうか。
+> それとも、一プロセス内でのコントロール間のフォーカスの移動は関係
+> しないようになっているんでしょうか。
+
+　Timer で監視するのは、GetForegroundWindow の値が変化したかどうかを見ます。
+　なので私の作成したプログラムでは１プロセス内でのコントロール間でフォーカス
+が移動したかどうかは見ていません。
+　ソフトウェアキーボードの場合は、それでいいと思います。
+
+Sekizawa さん: wrote
+> >　・アクティブウィンドウが変更されたら、DestroyWnd, CreateWnd を使用して
+> >　　ウィンドウを作り直す。
+> 
+> 今、ここで引っかかっています。
+> ここですが、こんなことしていいのか、わからないけど、DestroyWnd, CreateWnd
+> が難しかったので、RecreateWnd　を使いました。
+
+　すいません。
+　間違えました。
+　RecreateWnd で正しいです。
+　私のプログラムでは、他にもイロイロやっていて、CreateWnd, DestroyWnd を 
+override していたので、間違えてしまいました。
+
+> それでとりあえず、フォーカスを受け取らないということが確認できました。
+> しかし、フォーカスが受け取れないので、ボタンなどのクリックイベントも取れ
+> なくなりました。当たり前だったのかもしれませんが、今一度、ヒントを頂けない
+> でしょうか？
+
+　肝心な事を言い忘れていました。
+　ここが一番トリッキー＆知らないと出来ない定石の部分です。
+　フォーカスを受け取らないウィンドウにも実は WM_SETCURSOR だけは来ます。これ
+はウィンドウの状態によってマウスカーソルの形状を変更できるようにするためです
+。
+　で、この WM_SETCURSOR は LParam の High-Word にマウスメッセージが入ってい
+ます。
+　このメッセージを使用して、自分自身にマウスメッセージを流してやるのです。
+　すると、その上に載っているボタンなどのコンポーネントにマウスに関するメッセ
+ージが流れるようになるのでボタンを押したり出来るようになります。
+　以下に私のコードを載せて起きます。参考にどうぞ。
+
+procedure TfrmMain.WMSetCursor(var vMsg: TWMSetCursor);
+var
+  Pos: TPoint;
+  KeyBtn: TKeyBtn;
+  Wnd: HWND;
+  Rgn: HRGN;
+  i: Integer;
+begin
+  Pos := Mouse.CursorPos;
+
+  vMsg.Result := 1;
+
+  // フォーカスを持っているウィンドウが存在するときだけメッセージを
+  // 流している
+  if (FActiveWnd <> 0) and (FActiveWnd = GetForegroundWindow) then begin
+    Dec(Pos.X, Left);
+    Dec(Pos.Y, Top);
+
+    // マウスカーソルがさしているボタンを探す
+    // ここでは、なにやら SkinManager なんていうのがいますが、
+    // 通常のフォームであれば↓な感じでコンポーネントを列挙して
+    // for i := 0 to ComponentCount - 1 do begin
+    // PtInRect なんかで調べるといいと思います。
+    Wnd := 0;
+    for i := 0 to SkinManager.Buttons.Count - 1 do begin
+      KeyBtn := TKeyBtn(SkinManager.Buttons[i]);
+      Rgn := CreateRectRgn(0, 0, 0, 0);
+      try
+        GetWindowRgn(KeyBtn.Handle, Rgn);
+
+        if (PtInRegion(Rgn, Pos.X, Pos.Y)) then begin
+          Wnd := KeyBtn.Handle;
+
+          with TMessage(vMsg) do
+            PostMessage(Wnd, WM_SETCURSOR, wParam, lParam);
+
+          Break;
+        end;
+      finally
+        DeleteObject(Rgn);
+      end;
+    end;
+
+    if (Wnd = 0) then
+      Wnd := Handle;
+
+    PostMessage(Wnd, vMsg.MouseMsg, 0, MakeLParam(Pos.X, Pos.Y));
+  end;
+end;
+
+Regards,
+HOSOKAWA Jun

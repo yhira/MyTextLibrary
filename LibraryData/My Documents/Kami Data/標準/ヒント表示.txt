@@ -1,0 +1,165 @@
+◆ 準備段階 
+Application の OnShowHint イベントハンドラを記述することにより可能です。まず、メインフォームの private なメソッドを Application の OnShowHint イベントに関連付けます。 
+
+
+--------------------------------------------------------------------------------
+
+
+interface
+
+type
+  TForm1 = class(TForm)
+    :
+  private
+    procedure AppShowHint(var HintStr: string;
+      var CanShow: Boolean; var HintInfo: THintInfo);
+    :
+  end;
+
+implementation
+
+{ フォームの OnCreate イベントハンドラ }
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  Application.OnShowHint := AppShowHint
+end;
+
+--------------------------------------------------------------------------------
+
+メソッドと仮パラメータの名前は任意に決めて構いませんが、特に理由がない限りこのままにしておいた方が混乱がないでしょう。 
+
+OnShowHint イベントは、アプリケーションがヒントを表示しようとしたときに起こります。これは通常、ShowHint プロパティが True になっているコントロールの上にマウスカーソルが移動してきたときです。文字列グリッドの ShowHint プロパティが False だと、グリッド上にマウスカーソルが来ても OnShowHint イベントが起こらないので、ShowHint プロパティには True を入れておいてください。Hint プロパティは空にしておいてください。 
+
+OnShowHint イベントハンドラの中で、まずヒントを要求されているのが文字列グリッドであるかどうか調べます。HintInfo.HintControl を見れば、アプリケーションがどのコントロールについてヒントを表示しようとしているか（つまり、マウスカーソルがどのコントロールの上にあるか）が分かります。それが文字列グリッドであれば、MouseToCell メソッドを使って、マウスカーソルがどのセルの上にあるか調べます（マウスカーソルの位置は HintInfo.CursorPos を見れば分かります）。セルが分かったら、その内容を HintStr に代入すれば、それがヒントに表示されます（HintStr に空の文字列を入れると、ヒントは表示されません）。 
+
+以上をまとめると、次のようになります（グリッドの名前は Grid1 とします）。 
+
+
+--------------------------------------------------------------------------------
+
+
+procedure TForm1.AppShowHint(var HintStr: string;
+  var CanShow: Boolean; var HintInfo: THintInfo);
+var
+  ACol, ARow: Integer;
+begin
+  with HintInfo do
+    if HintControl = Grid1 then begin
+      Grid1.MouseToCell(CursorPos.x, CursorPos.y, ACol, ARow);
+      if (ACol >= 0) and (ARow >= 0) then
+        HintStr := Grid1.Cells[ACol, ARow]
+    end
+end;
+ 
+◆ とりあえずの完成まで 
+しかし、これだけではうまくいきません。マウスカーソルを他のセルの上に移動しても、ヒントが更新されないのです。これは、デフォルトでは「一度ヒントを表示したら、マウスカーソルがそのコントロールの上にある間はヒントを更新しない」ことになっているためです。 
+
+これを解決するには、HintInfo.CursorRect を使います。CursorRect に何か特定の領域を表す長方形の座標を与える（現在のコントロールのクライアント座標で指定します）と、マウスカーソルがその領域から出たとき、強制的にヒントを更新させることができます。文字列グリッドの場合、現在のセルをその領域ということにすれば良いでしょう。 
+
+
+--------------------------------------------------------------------------------
+
+
+procedure TForm1.AppShowHint(var HintStr: string;
+  var CanShow: Boolean; var HintInfo: THintInfo);
+var
+  ACol, ARow: Integer;
+begin
+  with HintInfo do
+    if HintControl = Grid1 then begin
+      Grid1.MouseToCell(CursorPos.x, CursorPos.y, ACol, ARow);
+      if (ACol >= 0) and (ARow >= 0) then begin
+        HintStr := Grid1.Cells[ACol, ARow];
+        CursorRect := Grid1.CellRect(ACol, ARow)
+      end
+    end
+end;
+ 
+◆ ヒントが自動的に隠されないようにする 
+ヒントは通常、表示されてから一定時間が経つと自動的に隠されます。これを避けるには、HintInfo.ReshowTimeout に 0 以外の値を入れます。例えば 1000 を入れると、ヒントが表示されてから１秒後、ヒントが更新されます(再び OnShowHint イベントが起きます）。つまり、OnShowHint イベントハンドラで CanShow に False を与えない限り、ヒントがずっと表示されたままになります。 
+
+マウスカーソルを移動させるとヒントのウィンドウが付いて来ますが、その反応の早さは ReshowTimeout の値で決まります。ReshowTimeout に 200 くらいまでの小さい値を入れると、ヒントはほぼリアルタイムでマウスカーソルに付いて来ます。ですが、通常は 500～1000 程度で良いでしょう。 
+
+
+--------------------------------------------------------------------------------
+
+
+procedure TForm1.AppShowHint(var HintStr: string;
+  var CanShow: Boolean; var HintInfo: THintInfo);
+var
+  ACol, ARow: Integer;
+begin
+  with HintInfo do
+    if HintControl = Grid1 then begin
+      Grid1.MouseToCell(CursorPos.x, CursorPos.y, ACol, ARow);
+      if (ACol >= 0) and (ARow >= 0) then begin
+        HintStr := Grid1.Cells[ACol, ARow];
+        CursorRect := Grid1.CellRect(ACol, ARow);
+        ReshowTimeout := 1000
+      end
+    end
+end;
+ 
+◆ マウスカーソルのちらつきをなくす 
+文字列の入っているセルの右または下の境界線上にマウスカーソルを置くと、マウスカーソルがちらつきます。これは、グリッドの MouseToCell が境界線上の点をセルの内部と見なしているのが原因です。つまり、MouseToCell メソッドによってセルの位置が分かってヒントを表示したはいいが、そのセルの領域を CellRect メソッド（こちらは単純に境界線の内側のみをセルの内部と見なす）で調べて HintInfo.CursorRect に代入したところ、現在のマウスカーソル位置は HintInfo.CursorRect の指す領域の外にあることになり、ヒントが更新されてしまうのです。その結果、ヒントの更新がごく短い間隔で延々と繰り返され、マウスカーソルが点滅状態になります。 
+
+マウスカーソルが境界線上にあるときはヒントを表示しないようにすれば、この問題は解決できます。 
+
+
+--------------------------------------------------------------------------------
+
+
+procedure TForm1.AppShowHint(var HintStr: string;
+  var CanShow: Boolean; var HintInfo: THintInfo);
+var
+  ACol, ARow: Integer;
+begin
+  with HintInfo do
+    if HintControl = Grid1 then begin
+      Grid1.MouseToCell(CursorPos.x, CursorPos.y, ACol, ARow);
+      if (ACol >= 0) and (ARow >= 0) then begin
+        HintStr := Grid1.Cells[ACol, ARow];
+        CursorRect := Grid1.CellRect(ACol, ARow);
+        CanShow := (CursorPos.x < CursorRect.Right) and
+          (CursorPos.y < CursorRect.Bottom);
+        ReshowTimeout := 1000
+      end
+    end
+end;
+ 
+◆ セルに内容が入りきらない場合のみヒントが表示されるようにする 
+OnShowHint イベントハンドラで CanShow に False を代入すると、ヒントは表示されません。そこで、セルに文字が入りきるときは CanShow を False にします。 
+
+
+--------------------------------------------------------------------------------
+
+
+procedure TForm1.AppShowHint(var HintStr: string;
+  var CanShow: Boolean; var HintInfo: THintInfo);
+var
+  ACol, ARow: Integer;
+begin
+  with HintInfo do
+    if HintControl = Grid1 then begin
+      Grid1.MouseToCell(CursorPos.x, CursorPos.y, ACol, ARow);
+      if (ACol >= 0) and (ARow >= 0) then begin
+        HintStr := Grid1.Cells[ACol, ARow];
+        CursorRect := Grid1.CellRect(ACol, ARow);
+        CanShow := (CursorPos.x < CursorRect.Right) and
+          (CursorPos.y < CursorRect.Bottom) and
+          (Grid1.Canvas.TextWidth(HintStr) > Grid1.ColWidths[ACol]);
+        ReshowTimeout := 1000
+      end
+    end
+end;
+
+--------------------------------------------------------------------------------
+
+Delphi ヘルプの参照項目：「Application 変数」「OnShowHint」「THintInfo 型」「MouseToCell」「CellRect,TDrawGrid」「TextWidth」「ColWiths」 
+ 
+
+
+
+
+
+  

@@ -1,0 +1,25 @@
+
+--------------------------------------------------------------------------------
+ 
+長いファイル名から、従来の短いファイル名(ファイル名8文字+拡張子3文字)を生成するには、GetShortPathName関数を使用します。
+
+function
+  ShortName(LongName : string ): string;
+var
+  ShortName    : string;
+  ShortNameLen : integer;
+begin
+  SetLength(ShortName,255);
+
+  ShortNameLen :=GetShortPathName(PChar(LongName),PChar(ShortName),254);
+
+  if(ShortNameLen=0)then ShowMessage('ファイル名がありません');
+
+  SetLength(ShortName,ShortNameLen);
+  Result := ShortName;
+end;
+
+procedure TForm1.Button1Click(Sender: TObject);
+begin
+  Edit2.Text := ShortName(Edit1.Text);
+end; 

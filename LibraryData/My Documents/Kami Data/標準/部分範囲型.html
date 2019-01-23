@@ -1,0 +1,31 @@
+<HTML><HEAD><meta http-equiv="content-type" content="text/html;charset=Shift_JIS">
+<TITLE>第3回　変数とデータ型</TITLE></HEAD>
+
+<BODY>
+<P><B><U><FONT 
+size=+1>部分範囲型</FONT></U></B><BR><BR>　整数型などで特定の範囲の値を代入できるようにするための型です。例えば次の宣言があったとします。</P><PRE>  var
+    Year: Word;</PRE>
+<P>　YearはWord型なので、0から65535までの数値を代入できます。しかし、Yearには1900から2100までの数値に限定したいとします。そのときに、部分範囲型を使います。部分範囲型は次のように宣言します。</P><PRE>  var
+    Year: 1900..2100;</PRE>
+<P>　このようにすると、Yearには1900から2100までの整数だけを代入できます。部分範囲型も、ユーザ定義型にすることができます。ユーザ定義型は次のように宣言します。</P><PRE>  type
+    TYear = 1900..2100;
+
+  var
+    Year: TYear;</PRE>
+<P>　部分範囲型には、整数型、文字型、列挙型を使用できます。次の例を見てください。</P><PRE>  type
+    TMyColor = (mcRed, mcBlue, mcGreen, mcYellow);
+    TBubun = mcBlue..mcYellow;
+    TAlpha = 'A'..'Z';
+
+  var
+    Color: TMyColor;
+    Bubun: TBubun;
+    Alpha: TAlpha;</PRE>
+<P>　ColorはTMyColor型で、これにはcmRed、mcBlue、mcGreen、mcYellowの値を代入できます。TBubun型はその中で、mcBlueからmcYellowまでの値を使えます。つまり、mcBlue、mcGreen、mcYellowを代入できます。もし、BubunにmcRedを代入しようとしたら、エラーになります。<BR>　Alphaは、アルファベット大文字のAからZまでに限定しています。それ以外の文字を代入しようとするとエラーになります。また、文字は上記の例のように、’(シングルクォーテーション)で囲む必要があります。<BR><BR><BR></P><BR>
+<FONT SIZE="-1">
+TITLE:第3回　変数とデータ型<BR>
+DATE:2002/12/29 16:31<BR>
+URL:<A HREF="http://wblue.hp.infoseek.co.jp/prog/c2_03.htm" TARGET="_blank">http://wblue.hp.infoseek.co.jp/prog/c2_03.htm</A><BR>
+</FONT>
+</BODY>
+</HTML>

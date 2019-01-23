@@ -1,0 +1,27 @@
+
+--------------------------------------------------------------------------------
+ 
+GetBinaryType APIを使うと、実行ファイルの種類を調べることができます。
+このAPIはWindowsNTでの使用も考慮されていますので、POSIX互換やOS/2 16ビットアプリケーションの識別もできます。
+
+Procedure TForm1.FormCreate(Sender: Tobject);
+var
+  BinType: Dword;
+begin
+  if OpenDialog1.Execute then begin
+    Label3.Caption := OpenDialog1.FileName;
+    if GetBinaryType(Pchar(OpenDialog1.FileName), BinType) then
+      case BinType of
+        SCS_32BIT_BINARY: Edit1.Text := 'Win32アプリケーション';
+        SCS_DOS_BINARY:   Edit1.Text := 'DOSアプリケーション';
+        SCS_WOW_BINARY:   Edit1.Text := 'Win16アプリケーション';
+        SCS_PIF_BINARY:   Edit1.Text := 'PIFファイル';
+        SCS_POSIX_BINARY: Edit1.Text := 'POSIX互換アプリケーション';
+        SCS_OS216_BINARY: Edit1.Text := 'OS/2 16bitアプリケーション';
+      else
+        Edit1.Text := '識別不能なバイナリファイル';
+      end
+    else
+      Edit1.Text := '実行ファイルではない';
+  end;
+end; 

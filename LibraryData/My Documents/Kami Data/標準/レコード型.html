@@ -1,0 +1,31 @@
+<HTML><HEAD><meta http-equiv="content-type" content="text/html;charset=Shift_JIS">
+<TITLE>第3回　変数とデータ型</TITLE></HEAD>
+
+<BODY>
+<P><B><U><FONT 
+size=+1>レコード型</FONT></U></B><BR><BR>　レコード型は、複数の変数をまとめて扱うための型です。例えば名前、年齢、血液型の個人情報を記憶することを考えてみます。個人情報がそれぞれバラバラになっているよりも、一つにまとめると便利です。<BR>　そんなとき、レコード型を使います。レコード型は次のように宣言します。</P><PRE>  type
+    型名 = record
+      メンバ名: データ型;
+      メンバ名: データ型;
+　　　　　・
+　　　　　・
+      メンバ名: データ型;
+    end;</PRE>
+<P>　個人情報を記憶するデータ型 TParsonを宣言してみます。</P><PRE>  type
+    TParson = record
+      Name : string;
+      Old  : Integer;
+      Blood: (blA, blB, blO, blAB);
+    end;</PRE>
+<P>　Name(名前)、Old(年齢)、Blood(血液型)のデータが、TParson型にまとめられました。レコード型のメンバとは、レコード型に含まれる変数のことです。TParson型の変数は、ほかの型の変数と同様に宣言します。</P><PRE>  var
+    Parson: TParson;</PRE>
+<P>　それぞれのメンバにデータを代入するときは、．(ピリオド)を付けます。次の例を見てください。ピリオドの前後に空白を入れることはできません。</P><PRE>  Parson.Name := '山田';
+  Parson.Old := 30;
+  Parson.Blood := blA;</PRE><BR>
+<FONT SIZE="-1">
+TITLE:第3回　変数とデータ型<BR>
+DATE:2002/12/29 16:39<BR>
+URL:<A HREF="http://wblue.hp.infoseek.co.jp/prog/c2_03.htm" TARGET="_blank">http://wblue.hp.infoseek.co.jp/prog/c2_03.htm</A><BR>
+</FONT>
+</BODY>
+</HTML>

@@ -1,0 +1,1436 @@
+unit proxy;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, Buttons;
+
+type
+  TMainForm = class(TForm)
+    Memohen: TMemo;
+    MemoQ: TMemo;
+    MemoA: TMemo;
+    MemoB: TMemo;
+    MemoR: TMemo;
+    BtnGo: TBitBtn;
+    BtnCler: TBitBtn;
+    CheckQ: TCheckBox;
+    CheckA: TCheckBox;
+    CheckB: TCheckBox;
+    CheckR: TCheckBox;
+    Label1: TLabel;
+    Label2: TLabel;
+    Label3: TLabel;
+    Label4: TLabel;
+    procedure BtnGoClick(Sender: TObject);
+    procedure MemohenDblClick(Sender: TObject);
+    procedure MemoQDblClick(Sender: TObject);
+    procedure MemoADblClick(Sender: TObject);
+    procedure MemoBDblClick(Sender: TObject);
+    procedure MemoRDblClick(Sender: TObject);
+    procedure CheckQClick(Sender: TObject);
+    procedure CheckAClick(Sender: TObject);
+    procedure CheckBClick(Sender: TObject);
+    procedure CheckRClick(Sender: TObject);
+    procedure BtnClerClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+
+  private
+    { Private 宣言 }
+    procedure check;
+    //procedure Check1;
+
+  public
+    { Public 宣言 }
+  end;
+
+var
+  MainForm: TMainForm;
+  StringList: TStringList;
+implementation
+
+{$R *.dfm}
+
+function GetNum(Line: string):Integer;
+var
+Index, Count: Integer;
+begin
+Index :=AnsiPos('[', Line) + 1;
+Count := AnsiPos('ミリ',Line) - Index;
+
+Line := Copy(Line, Index, Count);
+
+Result := StrToInt(Line);
+end;
+
+function MyCompare(List: TStringList; Index1, Index2: Integer): Integer;
+begin
+Result := GetNum(List[Index1]) - GetNum(List[Index2]);
+end;
+
+procedure TMainForm.check;
+var cut: Integer;
+begin
+    if MemoQ.Lines.Count > 0 then
+    begin
+        Application.MessageBox('「クリア」ボタンを押してから、「振り分け・ソート」ボタンを押してください'#13'「クリア」ボタンを押すと表示されてるデータはすべて消されます',pchar(Application.Title),MB_ICONINFORMATION);
+        BtnCler.SetFocus;
+        Abort;
+    end
+    else
+    begin
+        if MemoA.Lines.Count > 0 then
+        begin
+            Application.MessageBox('「クリア」ボタンを押してから、「振り分け・ソート」ボタンを押してください'#13'「クリア」ボタンを押すと表示されてるデータはすべて消されます',pchar(Application.Title),MB_ICONINFORMATION);
+            BtnCler.SetFocus;
+            Abort;
+        end
+        else
+        begin
+            if MemoB.Lines.Count > 0 then
+            begin
+                Application.MessageBox('「クリア」ボタンを押してから、「振り分け・ソート」ボタンを押してください'#13'「クリア」ボタンを押すと表示されてるデータはすべて消されます',pchar(Application.Title),MB_ICONINFORMATION);
+                BtnCler.SetFocus;
+                Abort;
+            end
+            else
+            begin
+            if MemoR.Lines.Count > 0 then
+            begin
+                Application.MessageBox('「クリア」ボタンを押してから、「振り分け・ソート」ボタンを押してください'#13'「クリア」ボタンを押すと表示されてるデータはすべて消されます',pchar(Application.Title),MB_ICONINFORMATION);
+                BtnCler.SetFocus;
+                Abort;
+            end;
+
+            end;
+
+        end;
+
+    end;
+cut:=Memohen.Lines.Count;
+
+if (cut<2) and  (Memohen.Lines[0] = 'ここに折れ串漏れ串チェッカーで出た値を、そのまま貼り付けてて下さい') then
+begin
+    Application.MessageBox('テキストボックスに適切な値が貼り付けられていません'pchar(Application.Title),MB_ICONINFORMATION);
+    Abort;
+end;
+end;
+
+
+
+procedure TMainForm.BtnGoClick(Sender: TObject);
+var ii,i,sps,sps1,kk,kkt,hon,han,kei : integer;
+    ss,Line,honbun:String;
+    Index, Count: Integer;
+begin
+
+    check;
+kei := 0 ;
+for i := 0 to Memohen.Lines.Count -1 do
+begin
+    han := AnsiPos('は使用可能',Memohen.Lines[i])  ;
+    kei := kei + han ;
+end;
+
+if kei > 0 then
+begin
+
+
+//Ver0.931-----------------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------
+    ii := Memohen.Lines.Count;
+
+        for i := 0 to ii-1 do
+        begin
+
+            if AnsiPos('3128 は使用可能　重要ＥＮＶ',Memohen.Lines[i]) > 0 then
+            begin
+
+                MemoR.Lines.Add(Memohen.Lines[i]);
+            end
+            else
+            begin
+                if AnsiPos('<font size=+2>？',Memohen.Lines[i]) > 0 then
+                begin
+                    MemoQ.Lines.Add(Memohen.Lines[i]);
+                end
+                else
+                begin
+                    if AnsiPos('<font size=+2>A',Memohen.Lines[i]) > 0 then
+                    begin
+                        MemoA.Lines.Add(Memohen.Lines[i]);
+                    end
+                    else
+                    begin
+                        if AnsiPos('<font size=+2>B',Memohen.Lines[i]) > 0 then
+                        begin
+                            MemoB.Lines.Add(Memohen.Lines[i]);
+                        end
+
+                    end;
+
+                end;
+
+            end;
+
+
+        end;
+
+//Check------------------------------------------------------------------------------------------------------------
+//Q proxy Check
+
+ii:= MemoQ.Lines.Count;
+for i := 0 to ii-1 do
+
+begin
+    if Pos('は使用可能',MemoQ.Lines[i]) = 0 then
+    begin
+        Application.MessageBox('ソートするのに不適切な値が貼り付けられた可能性があります(エラー番号1)',pchar(Application.Title),MB_ICONINFORMATION);
+        ShowMessage(MemoQ.Lines[i]);
+        MemoQ.Lines.Clear;
+        MemoA.Lines.Clear;
+        MemoB.Lines.Clear;
+        MemoR.Lines.Clear;
+        Abort;
+    end
+    else
+    begin
+        if Pos('<br>）[',MemoQ.Lines[i]) = 0 then
+        begin
+            Application.MessageBox('ソートするのに不適切な値が貼り付けられた可能性があります(エラー番号2)',pchar(Application.Title),MB_ICONINFORMATION);
+            ShowMessage(MemoQ.Lines[i]);
+            MemoQ.Lines.Clear;
+            MemoA.Lines.Clear;
+            MemoB.Lines.Clear;
+            MemoR.Lines.Clear;
+            Abort;
+        end
+        else
+        begin
+            if Pos('秒]',MemoQ.Lines[i]) = 0 then
+            begin
+                Application.MessageBox('ソートするのに不適切な値が貼り付けられた可能性があります(エラー番号3)',pchar(Application.Title),MB_ICONINFORMATION);
+                ShowMessage(MemoQ.Lines[i]);
+                MemoQ.Lines.Clear;
+                MemoA.Lines.Clear;
+                MemoB.Lines.Clear;
+                MemoR.Lines.Clear;
+                Abort;
+            end
+            else
+            begin
+                if Pos('ミリ',MemoQ.Lines[i]) = 0 then
+                begin
+                    Application.MessageBox('ソートするのに不適切な値が貼り付けられた可能性があります(エラー番号4)',pchar(Application.Title),MB_ICONINFORMATION);
+                    ShowMessage(MemoQ.Lines[i]);
+                    MemoQ.Lines.Clear;
+                    MemoA.Lines.Clear;
+                    MemoB.Lines.Clear;
+                    MemoR.Lines.Clear;
+                    Abort;
+                end
+                else
+                begin
+Index :=AnsiPos('<br>）[', MemoQ.Lines[i]) + 7;
+Count := AnsiPos('ミリ',MemoQ.Lines[i]) - Index;
+Line := Copy(MemoQ.Lines[i], Index, Count);
+                    if StrToIntDef(Line,0) = 0  then
+                    begin
+                    Application.MessageBox('ソートするのに不適切な値が貼り付けられた可能性があります(エラー番号5)',pchar(Application.Title),MB_ICONINFORMATION);
+                    ShowMessage(MemoQ.Lines[i]);
+                    MemoQ.Lines.Clear;
+                    MemoA.Lines.Clear;
+                    MemoB.Lines.Clear;
+                    MemoR.Lines.Clear;
+                    Abort;
+                    end
+                    else
+                    begin
+                        hon := pos('<br>）[',MemoQ.Lines[i])+6;
+                        honbun := copy(MemoQ.Lines[i],0,hon);
+                        if pos('秒]',honbun) > 0 then
+                        begin
+                    Application.MessageBox('ソートするのに不適切な値が貼り付けられた可能性があります(エラー番号6)',pchar(Application.Title),MB_ICONINFORMATION);
+                    ShowMessage(MemoQ.Lines[i]);
+                    MemoQ.Lines.Clear;
+                    MemoA.Lines.Clear;
+                    MemoB.Lines.Clear;
+                    MemoR.Lines.Clear;
+                    Abort;
+                        end;
+
+                    end;
+
+                end;
+
+            end;
+
+        end;
+
+    end;
+
+end;
+
+//A proxy Check
+
+ii:= MemoA.Lines.Count;
+for i := 0 to ii-1 do
+
+begin
+    if Pos('は使用可能',MemoA.Lines[i]) = 0 then
+    begin
+        Application.MessageBox('ソートするのに不適切な値が貼り付けられた可能性があります(エラー番号1)',pchar(Application.Title),MB_ICONINFORMATION);
+        ShowMessage(MemoA.Lines[i]);
+        MemoQ.Lines.Clear;
+        MemoA.Lines.Clear;
+        MemoB.Lines.Clear;
+        MemoR.Lines.Clear;
+        Abort;
+    end
+    else
+    begin
+        if Pos('<br>）[',MemoA.Lines[i]) = 0 then
+        begin
+            Application.MessageBox('ソートするのに不適切な値が貼り付けられた可能性があります(エラー番号2)',pchar(Application.Title),MB_ICONINFORMATION);
+            ShowMessage(MemoA.Lines[i]);
+            MemoQ.Lines.Clear;
+            MemoA.Lines.Clear;
+            MemoB.Lines.Clear;
+            MemoR.Lines.Clear;
+            Abort;
+        end
+        else
+        begin
+            if Pos('秒]',MemoA.Lines[i]) = 0 then
+            begin
+                Application.MessageBox('ソートするのに不適切な値が貼り付けられた可能性があります(エラー番号3)',pchar(Application.Title),MB_ICONINFORMATION);
+                ShowMessage(MemoA.Lines[i]);
+                MemoQ.Lines.Clear;
+                MemoA.Lines.Clear;
+                MemoB.Lines.Clear;
+                MemoR.Lines.Clear;
+                Abort;
+            end
+            else
+            begin
+                if Pos('ミリ',MemoA.Lines[i]) = 0 then
+                begin
+                    Application.MessageBox('ソートするのに不適切な値が貼り付けられた可能性があります(エラー番号4)',pchar(Application.Title),MB_ICONINFORMATION);
+                    ShowMessage(MemoA.Lines[i]);
+                    MemoQ.Lines.Clear;
+                    MemoA.Lines.Clear;
+                    MemoB.Lines.Clear;
+                    MemoR.Lines.Clear;
+                    Abort;
+                end
+                else
+                begin
+Index :=AnsiPos('<br>）[', MemoA.Lines[i]) + 7;
+Count := AnsiPos('ミリ',MemoA.Lines[i]) - Index;
+Line := Copy(MemoA.Lines[i], Index, Count);
+                    if StrToIntDef(Line,0) = 0  then
+                    begin
+                    Application.MessageBox('ソートするのに不適切な値が貼り付けられた可能性があります(エラー番号5)',pchar(Application.Title),MB_ICONINFORMATION);
+                    ShowMessage(MemoQ.Lines[i]);
+                    MemoQ.Lines.Clear;
+                    MemoA.Lines.Clear;
+                    MemoB.Lines.Clear;
+                    MemoR.Lines.Clear;
+                    Abort;
+                    end
+                    else
+                    begin
+                        hon := pos('<br>）[',MemoA.Lines[i])+6;
+                        honbun := copy(MemoA.Lines[i],0,hon);
+                        if pos('秒]',honbun) > 0 then
+                        begin
+                    Application.MessageBox('ソートするのに不適切な値が貼り付けられた可能性があります(エラー番号6)',pchar(Application.Title),MB_ICONINFORMATION);
+                    ShowMessage(MemoA.Lines[i]);
+                    MemoQ.Lines.Clear;
+                    MemoA.Lines.Clear;
+                    MemoB.Lines.Clear;
+                    MemoR.Lines.Clear;
+                    Abort;
+                        end;
+
+                    end;
+
+                end;
+
+            end;
+
+        end;
+
+    end;
+
+end;
+
+
+//B proxy Check
+
+ii:= MemoB.Lines.Count;
+for i := 0 to ii-1 do
+
+begin
+    if Pos('は使用可能',MemoB.Lines[i]) = 0 then
+    begin
+        Application.MessageBox('ソートするのに不適切な値が貼り付けられた可能性があります(エラー番号1)',pchar(Application.Title),MB_ICONINFORMATION);
+        ShowMessage(MemoB.Lines[i]);
+        MemoQ.Lines.Clear;
+        MemoA.Lines.Clear;
+        MemoB.Lines.Clear;
+        MemoR.Lines.Clear;
+        Abort;
+    end
+    else
+    begin
+        if Pos('<br>）[',MemoB.Lines[i]) = 0 then
+        begin
+            Application.MessageBox('ソートするのに不適切な値が貼り付けられた可能性があります(エラー番号2)',pchar(Application.Title),MB_ICONINFORMATION);
+            ShowMessage(MemoB.Lines[i]);
+            MemoQ.Lines.Clear;
+            MemoA.Lines.Clear;
+            MemoB.Lines.Clear;
+            MemoR.Lines.Clear;
+            Abort;
+        end
+        else
+        begin
+            if Pos('秒]',MemoB.Lines[i]) = 0 then
+            begin
+                Application.MessageBox('ソートするのに不適切な値が貼り付けられた可能性があります(エラー番号3)',pchar(Application.Title),MB_ICONINFORMATION);
+                ShowMessage(MemoB.Lines[i]);
+                MemoQ.Lines.Clear;
+                MemoA.Lines.Clear;
+                MemoB.Lines.Clear;
+                MemoR.Lines.Clear;
+                Abort;
+            end
+            else
+            begin
+                if Pos('ミリ',MemoB.Lines[i]) = 0 then
+                begin
+                    Application.MessageBox('ソートするのに不適切な値が貼り付けられた可能性があります(エラー番号4)',pchar(Application.Title),MB_ICONINFORMATION);
+                    ShowMessage(MemoB.Lines[i]);
+                    MemoQ.Lines.Clear;
+                    MemoA.Lines.Clear;
+                    MemoB.Lines.Clear;
+                    MemoR.Lines.Clear;
+                    Abort;
+                end
+                else
+                begin
+Index :=AnsiPos('<br>）[', MemoB.Lines[i]) + 7;
+Count := AnsiPos('ミリ',MemoB.Lines[i]) - Index;
+Line := Copy(MemoB.Lines[i], Index, Count);
+                    if StrToIntDef(Line,0) = 0  then
+                    begin
+                    Application.MessageBox('ソートするのに不適切な値が貼り付けられた可能性があります(エラー番号5)',pchar(Application.Title),MB_ICONINFORMATION);
+                                        ShowMessage(MemoB.Lines[i]);
+                    MemoQ.Lines.Clear;
+                    MemoA.Lines.Clear;
+                    MemoB.Lines.Clear;
+                    MemoR.Lines.Clear;
+                    Abort;
+                    end
+                    else
+                    begin
+                        hon := pos('<br>）[',MemoB.Lines[i])+6;
+                        honbun := copy(MemoB.Lines[i],0,hon);
+                        if pos('秒]',honbun) > 0 then
+                        begin
+                    Application.MessageBox('ソートするのに不適切な値が貼り付けられた可能性があります(エラー番号6)',pchar(Application.Title),MB_ICONINFORMATION);
+                    ShowMessage(MemoB.Lines[i]);
+                    MemoQ.Lines.Clear;
+                    MemoA.Lines.Clear;
+                    MemoB.Lines.Clear;
+                    MemoR.Lines.Clear;
+                    Abort;
+                        end;
+
+                    end;
+
+                end;
+
+            end;
+
+        end;
+
+    end;
+
+end;
+
+
+//R proxy Check
+
+ii:= MemoR.Lines.Count;
+for i := 0 to ii-1 do
+
+begin
+    if Pos('は使用可能',MemoR.Lines[i]) = 0 then
+    begin
+        Application.MessageBox('ソートするのに不適切な値が貼り付けられた可能性があります(エラー番号1)',pchar(Application.Title),MB_ICONINFORMATION);
+        ShowMessage(MemoR.Lines[i]);
+        MemoQ.Lines.Clear;
+        MemoA.Lines.Clear;
+        MemoB.Lines.Clear;
+        MemoR.Lines.Clear;
+        Abort;
+    end
+    else
+    begin
+        if Pos('<br>）[',MemoR.Lines[i]) = 0 then
+        begin
+            Application.MessageBox('ソートするのに不適切な値が貼り付けられた可能性があります(エラー番号2)',pchar(Application.Title),MB_ICONINFORMATION);
+            ShowMessage(MemoR.Lines[i]);
+            MemoR.Lines.Delete(i);
+            MemoQ.Lines.Clear;
+            MemoA.Lines.Clear;
+            MemoB.Lines.Clear;
+            MemoR.Lines.Clear;
+            Abort;
+        end
+        else
+        begin
+            if Pos('秒]',MemoR.Lines[i]) = 0 then
+            begin
+                Application.MessageBox('ソートするのに不適切な値が貼り付けられた可能性があります(エラー番号3)',pchar(Application.Title),MB_ICONINFORMATION);
+                ShowMessage(MemoR.Lines[i]);
+                MemoQ.Lines.Clear;
+                MemoA.Lines.Clear;
+                MemoB.Lines.Clear;
+                MemoR.Lines.Clear;
+                Abort;
+            end
+            else
+            begin
+                if Pos('ミリ',MemoR.Lines[i]) = 0 then
+                begin
+                    Application.MessageBox('ソートするのに不適切な値が貼り付けられた可能性があります(エラー番号4)',pchar(Application.Title),MB_ICONINFORMATION);
+                    ShowMessage(MemoR.Lines[i]);
+                    MemoQ.Lines.Clear;
+                    MemoA.Lines.Clear;
+                    MemoB.Lines.Clear;
+                    MemoR.Lines.Clear;
+                    Abort;
+                end
+                else
+                begin
+Index :=AnsiPos('<br>）[', MemoR.Lines[i]) + 7;
+Count := AnsiPos('ミリ',MemoR.Lines[i]) - Index;
+Line := Copy(MemoR.Lines[i], Index, Count);
+                    if StrToIntDef(Line,0) = 0  then
+                    begin
+                    Application.MessageBox('ソートするのに不適切な値が貼り付けられた可能性があります(エラー番号5)',pchar(Application.Title),MB_ICONINFORMATION);
+                    ShowMessage(MemoR.Lines[i]);
+                    MemoQ.Lines.Clear;
+                    MemoA.Lines.Clear;
+                    MemoB.Lines.Clear;
+                    MemoR.Lines.Clear;
+                    Abort;
+                    end
+                    else
+                    begin
+                        hon := pos('<br>）[',MemoR.Lines[i])+6;
+                        honbun := copy(MemoR.Lines[i],0,hon);
+                        if pos('秒]',honbun) > 0 then
+                        begin
+                    Application.MessageBox('ソートするのに不適切な値が貼り付けられた可能性があります(エラー番号6)',pchar(Application.Title),MB_ICONINFORMATION);
+                    ShowMessage(MemoR.Lines[i]);
+                    MemoQ.Lines.Clear;
+                    MemoA.Lines.Clear;
+                    MemoB.Lines.Clear;
+                    MemoR.Lines.Clear;
+                    Abort;
+                        end;
+
+                    end;
+
+                end;
+
+            end;
+
+        end;
+
+    end;
+
+end;
+
+
+//Sort------------------------------------------------------------------------------------------------------------
+
+
+    //Q Prpxy
+
+    StringList := nil;
+    try
+    StringList := TStringList.Create;
+    ii := MemoQ.Lines.Count;
+
+    for i := 0 to ii-1 do
+    begin
+        sps := Pos('使用可能',MemoQ.Lines[i])-3;
+        kk := pos('<br>）[',MemoQ.Lines[i])+6;
+        kkt := pos('秒]',MemoQ.Lines[i])+3;
+        ss := MemoQ.Lines[i];
+        StringList.Add(copy(ss,0,sps)+copy(ss,kk,kkt-kk));
+
+    end;
+        MemoQ.Lines.Clear;
+        StringList.CustomSort(MyCompare);
+        StringList.SaveToFile(IncludeTrailingPathDelimiter(ExtractFilePath(Application.ExeName))+'Q-Proxy-Speed.txt');
+
+        for i := 0 to ii-1 do
+        begin
+            sps := pos(' ',StringList[i])-1;
+            ss := StringList[i];
+            MemoQ.Lines.Add(copy(ss,0,sps));
+        end;
+
+        MemoQ.Lines.SaveToFile(IncludeTrailingPathDelimiter(ExtractFileDir(Application.ExeName))+'Q-Proxy.txt');
+        MemoQ.Lines.Clear;
+        MemoQ.Lines.LoadFromFile(IncludeTrailingPathDelimiter(ExtractFileDir(Application.ExeName))+'Q-Proxy.txt');
+
+    finally
+        StringList.Free;
+   end;
+
+
+
+
+
+    //A Prpxy
+
+    StringList := nil;
+    try
+    StringList := TStringList.Create;
+    ii := MemoA.Lines.Count;
+
+    for i := 0 to ii-1 do
+    begin
+        sps := Pos('使用可能',MemoA.Lines[i])-3;
+        kk := pos('<br>）[',MemoA.Lines[i])+6;
+        kkt := pos('秒]',MemoA.Lines[i])+3;
+        ss := MemoA.Lines[i];
+        StringList.Add(copy(ss,0,sps)+copy(ss,kk,kkt-kk));
+
+    end;
+        MemoA.Lines.Clear;
+        StringList.CustomSort(MyCompare);
+        StringList.SaveToFile(IncludeTrailingPathDelimiter(ExtractFilePath(Application.ExeName))+'A-Proxy-Speed.txt');
+
+        for i := 0 to ii-1 do
+        begin
+            sps := pos(' ',StringList[i])-1;
+            ss := StringList[i];
+            MemoA.Lines.Add(copy(ss,0,sps));
+        end;
+
+        MemoA.Lines.SaveToFile(IncludeTrailingPathDelimiter(ExtractFileDir(Application.ExeName))+'A-Proxy.txt');
+        MemoA.Lines.Clear;
+        MemoA.Lines.LoadFromFile(IncludeTrailingPathDelimiter(ExtractFileDir(Application.ExeName))+'A-Proxy.txt');
+
+
+    finally
+        StringList.Free;
+   end;
+
+
+
+    //B Prpxy
+
+    StringList := nil;
+    try
+    StringList := TStringList.Create;
+    ii := MemoB.Lines.Count;
+
+    for i := 0 to ii-1 do
+    begin
+        sps := Pos('使用可能',MemoB.Lines[i])-3;
+        kk := pos('<br>）[',MemoB.Lines[i])+6;
+        kkt := pos('秒]',MemoB.Lines[i])+3;
+        ss := MemoB.Lines[i];
+        StringList.Add(copy(ss,0,sps)+copy(ss,kk,kkt-kk));
+
+    end;
+        MemoB.Lines.Clear;
+        StringList.CustomSort(MyCompare);
+        StringList.SaveToFile(IncludeTrailingPathDelimiter(ExtractFilePath(Application.ExeName))+'B-Proxy-Speed.txt');
+
+        for i := 0 to ii-1 do
+        begin
+            sps := pos(' ',StringList[i])-1;
+            ss := StringList[i];
+            MemoB.Lines.Add(copy(ss,0,sps));
+        end;
+
+        MemoB.Lines.SaveToFile(IncludeTrailingPathDelimiter(ExtractFileDir(Application.ExeName))+'B-Proxy.txt');
+        MemoB.Lines.Clear;
+        MemoB.Lines.LoadFromFile(IncludeTrailingPathDelimiter(ExtractFileDir(Application.ExeName))+'B-Proxy.txt');
+
+
+    finally
+        StringList.Free;
+   end;
+
+
+    //R Prpxy
+
+    StringList := nil;
+    try
+    StringList := TStringList.Create;
+    ii := MemoR.Lines.Count;
+
+    for i := 0 to ii-1 do
+    begin
+        sps := Pos('使用可能',MemoR.Lines[i])-3;
+        kk := pos('<br>）[',MemoR.Lines[i])+6;
+        kkt := pos('秒]',MemoR.Lines[i])+3;
+        ss := MemoR.Lines[i];
+        StringList.Add(copy(ss,0,sps)+copy(ss,kk,kkt-kk));
+
+    end;
+        MemoR.Lines.Clear;
+        StringList.CustomSort(MyCompare);
+        StringList.SaveToFile(IncludeTrailingPathDelimiter(ExtractFilePath(Application.ExeName))+'R-Proxy-Speed.txt');
+
+        for i := 0 to ii-1 do
+        begin
+            sps := pos(' ',StringList[i])-1;
+            ss := StringList[i];
+            MemoR.Lines.Add(copy(ss,0,sps));
+        end;
+
+        MemoR.Lines.SaveToFile(IncludeTrailingPathDelimiter(ExtractFileDir(Application.ExeName))+'R-Proxy.txt');
+        MemoR.Lines.Clear;
+        MemoR.Lines.LoadFromFile(IncludeTrailingPathDelimiter(ExtractFileDir(Application.ExeName))+'R-Proxy.txt');
+
+
+    finally
+        StringList.Free;
+   end;
+
+   CheckQ.Enabled :=true;
+   CheckA.Enabled :=true;
+   CheckB.Enabled :=true;
+   CheckR.Enabled :=true;
+
+end
+else
+begin
+//Ver0.941-----------------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------
+
+    ii := Memohen.Lines.Count;
+
+        for i := 0 to ii-1 do
+        begin
+
+            if AnsiPos('3128,[使用可能]　重要ＥＮＶ',Memohen.Lines[i]) > 0 then
+            begin
+
+                MemoR.Lines.Add(Memohen.Lines[i]);
+            end
+            else
+            begin
+                if AnsiPos('<font size=+2>？',Memohen.Lines[i]) > 0 then
+                begin
+                    MemoQ.Lines.Add(Memohen.Lines[i]);
+                end
+                else
+                begin
+                    if AnsiPos('<font size=+2>A',Memohen.Lines[i]) > 0 then
+                    begin
+                        MemoA.Lines.Add(Memohen.Lines[i]);
+                    end
+                    else
+                    begin
+                        if AnsiPos('<font size=+2>B',Memohen.Lines[i]) > 0 then
+                        begin
+                            MemoB.Lines.Add(Memohen.Lines[i]);
+                        end
+
+                    end;
+
+                end;
+
+            end;
+
+
+        end;
+
+//Check------------------------------------------------------------------------------------------------------------
+//Q proxy Check
+
+ii:= MemoQ.Lines.Count;
+for i := 0 to ii-1 do
+
+begin
+    if Pos('[使用可能]',MemoQ.Lines[i]) = 0 then
+    begin
+        Application.MessageBox('ソートするのに不適切な値が貼り付けられた可能性があります(エラー番号1)',pchar(Application.Title),MB_ICONINFORMATION);
+        ShowMessage(MemoQ.Lines[i]);
+        MemoQ.Lines.Clear;
+        MemoA.Lines.Clear;
+        MemoB.Lines.Clear;
+        MemoR.Lines.Clear;
+        Abort;
+    end
+    else
+    begin
+        if Pos('<br>）[',MemoQ.Lines[i]) = 0 then
+        begin
+            Application.MessageBox('ソートするのに不適切な値が貼り付けられた可能性があります(エラー番号2)',pchar(Application.Title),MB_ICONINFORMATION);
+            ShowMessage(MemoQ.Lines[i]);
+            MemoQ.Lines.Clear;
+            MemoA.Lines.Clear;
+            MemoB.Lines.Clear;
+            MemoR.Lines.Clear;
+            Abort;
+        end
+        else
+        begin
+            if Pos('秒]',MemoQ.Lines[i]) = 0 then
+            begin
+                Application.MessageBox('ソートするのに不適切な値が貼り付けられた可能性があります(エラー番号3)',pchar(Application.Title),MB_ICONINFORMATION);
+                ShowMessage(MemoQ.Lines[i]);
+                MemoQ.Lines.Clear;
+                MemoA.Lines.Clear;
+                MemoB.Lines.Clear;
+                MemoR.Lines.Clear;
+                Abort;
+            end
+            else
+            begin
+                if Pos('ミリ',MemoQ.Lines[i]) = 0 then
+                begin
+                    Application.MessageBox('ソートするのに不適切な値が貼り付けられた可能性があります(エラー番号4)',pchar(Application.Title),MB_ICONINFORMATION);
+                    ShowMessage(MemoQ.Lines[i]);
+                    MemoQ.Lines.Clear;
+                    MemoA.Lines.Clear;
+                    MemoB.Lines.Clear;
+                    MemoR.Lines.Clear;
+                    Abort;
+                end
+                else
+                begin
+Index :=AnsiPos('<br>）[', MemoQ.Lines[i]) + 7;
+Count := AnsiPos('ミリ',MemoQ.Lines[i]) - Index;
+Line := Copy(MemoQ.Lines[i], Index, Count);
+                    if StrToIntDef(Line,0) = 0  then
+                    begin
+                    Application.MessageBox('ソートするのに不適切な値が貼り付けられた可能性があります(エラー番号5)',pchar(Application.Title),MB_ICONINFORMATION);
+                    ShowMessage(MemoQ.Lines[i]);
+                    MemoQ.Lines.Clear;
+                    MemoA.Lines.Clear;
+                    MemoB.Lines.Clear;
+                    MemoR.Lines.Clear;
+                    Abort;
+                    end
+                    else
+                    begin
+                        hon := pos('<br>）[',MemoQ.Lines[i])+6;
+                        honbun := copy(MemoQ.Lines[i],0,hon);
+                        if pos('秒]',honbun) > 0 then
+                        begin
+                    Application.MessageBox('ソートするのに不適切な値が貼り付けられた可能性があります(エラー番号6)',pchar(Application.Title),MB_ICONINFORMATION);
+                    ShowMessage(MemoQ.Lines[i]);
+                    MemoQ.Lines.Clear;
+                    MemoA.Lines.Clear;
+                    MemoB.Lines.Clear;
+                    MemoR.Lines.Clear;
+                    Abort;
+                        end;
+
+                    end;
+
+                end;
+
+            end;
+
+        end;
+
+    end;
+
+end;
+
+//A proxy Check
+
+ii:= MemoA.Lines.Count;
+for i := 0 to ii-1 do
+
+begin
+    if Pos('[使用可能]',MemoA.Lines[i]) = 0 then
+    begin
+        Application.MessageBox('ソートするのに不適切な値が貼り付けられた可能性があります(エラー番号1)',pchar(Application.Title),MB_ICONINFORMATION);
+        ShowMessage(MemoA.Lines[i]);
+        MemoQ.Lines.Clear;
+        MemoA.Lines.Clear;
+        MemoB.Lines.Clear;
+        MemoR.Lines.Clear;
+        Abort;
+    end
+    else
+    begin
+        if Pos('<br>）[',MemoA.Lines[i]) = 0 then
+        begin
+            Application.MessageBox('ソートするのに不適切な値が貼り付けられた可能性があります(エラー番号2)',pchar(Application.Title),MB_ICONINFORMATION);
+            ShowMessage(MemoA.Lines[i]);
+            MemoQ.Lines.Clear;
+            MemoA.Lines.Clear;
+            MemoB.Lines.Clear;
+            MemoR.Lines.Clear;
+            Abort;
+        end
+        else
+        begin
+            if Pos('秒]',MemoA.Lines[i]) = 0 then
+            begin
+                Application.MessageBox('ソートするのに不適切な値が貼り付けられた可能性があります(エラー番号3)',pchar(Application.Title),MB_ICONINFORMATION);
+                ShowMessage(MemoA.Lines[i]);
+                MemoQ.Lines.Clear;
+                MemoA.Lines.Clear;
+                MemoB.Lines.Clear;
+                MemoR.Lines.Clear;
+                Abort;
+            end
+            else
+            begin
+                if Pos('ミリ',MemoA.Lines[i]) = 0 then
+                begin
+                    Application.MessageBox('ソートするのに不適切な値が貼り付けられた可能性があります(エラー番号4)',pchar(Application.Title),MB_ICONINFORMATION);
+                    ShowMessage(MemoA.Lines[i]);
+                    MemoQ.Lines.Clear;
+                    MemoA.Lines.Clear;
+                    MemoB.Lines.Clear;
+                    MemoR.Lines.Clear;
+                    Abort;
+                end
+                else
+                begin
+Index :=AnsiPos('<br>）[', MemoA.Lines[i]) + 7;
+Count := AnsiPos('ミリ',MemoA.Lines[i]) - Index;
+Line := Copy(MemoA.Lines[i], Index, Count);
+                    if StrToIntDef(Line,0) = 0  then
+                    begin
+                    Application.MessageBox('ソートするのに不適切な値が貼り付けられた可能性があります(エラー番号5)',pchar(Application.Title),MB_ICONINFORMATION);
+                    ShowMessage(MemoQ.Lines[i]);
+                    MemoQ.Lines.Clear;
+                    MemoA.Lines.Clear;
+                    MemoB.Lines.Clear;
+                    MemoR.Lines.Clear;
+                    Abort;
+                    end
+                    else
+                    begin
+                        hon := pos('<br>）[',MemoA.Lines[i])+6;
+                        honbun := copy(MemoA.Lines[i],0,hon);
+                        if pos('秒]',honbun) > 0 then
+                        begin
+                    Application.MessageBox('ソートするのに不適切な値が貼り付けられた可能性があります(エラー番号6)',pchar(Application.Title),MB_ICONINFORMATION);
+                    ShowMessage(MemoA.Lines[i]);
+                    MemoQ.Lines.Clear;
+                    MemoA.Lines.Clear;
+                    MemoB.Lines.Clear;
+                    MemoR.Lines.Clear;
+                    Abort;
+                        end;
+
+                    end;
+
+                end;
+
+            end;
+
+        end;
+
+    end;
+
+end;
+
+
+//B proxy Check
+
+ii:= MemoB.Lines.Count;
+for i := 0 to ii-1 do
+
+begin
+    if Pos('[使用可能]',MemoB.Lines[i]) = 0 then
+    begin
+        Application.MessageBox('ソートするのに不適切な値が貼り付けられた可能性があります(エラー番号1)',pchar(Application.Title),MB_ICONINFORMATION);
+        ShowMessage(MemoB.Lines[i]);
+        MemoQ.Lines.Clear;
+        MemoA.Lines.Clear;
+        MemoB.Lines.Clear;
+        MemoR.Lines.Clear;
+        Abort;
+    end
+    else
+    begin
+        if Pos('<br>）[',MemoB.Lines[i]) = 0 then
+        begin
+            Application.MessageBox('ソートするのに不適切な値が貼り付けられた可能性があります(エラー番号2)',pchar(Application.Title),MB_ICONINFORMATION);
+            ShowMessage(MemoB.Lines[i]);
+            MemoQ.Lines.Clear;
+            MemoA.Lines.Clear;
+            MemoB.Lines.Clear;
+            MemoR.Lines.Clear;
+            Abort;
+        end
+        else
+        begin
+            if Pos('秒]',MemoB.Lines[i]) = 0 then
+            begin
+                Application.MessageBox('ソートするのに不適切な値が貼り付けられた可能性があります(エラー番号3)',pchar(Application.Title),MB_ICONINFORMATION);
+                ShowMessage(MemoB.Lines[i]);
+                MemoQ.Lines.Clear;
+                MemoA.Lines.Clear;
+                MemoB.Lines.Clear;
+                MemoR.Lines.Clear;
+                Abort;
+            end
+            else
+            begin
+                if Pos('ミリ',MemoB.Lines[i]) = 0 then
+                begin
+                    Application.MessageBox('ソートするのに不適切な値が貼り付けられた可能性があります(エラー番号4)',pchar(Application.Title),MB_ICONINFORMATION);
+                    ShowMessage(MemoB.Lines[i]);
+                    MemoQ.Lines.Clear;
+                    MemoA.Lines.Clear;
+                    MemoB.Lines.Clear;
+                    MemoR.Lines.Clear;
+                    Abort;
+                end
+                else
+                begin
+Index :=AnsiPos('<br>）[', MemoB.Lines[i]) + 7;
+Count := AnsiPos('ミリ',MemoB.Lines[i]) - Index;
+Line := Copy(MemoB.Lines[i], Index, Count);
+                    if StrToIntDef(Line,0) = 0  then
+                    begin
+                    Application.MessageBox('ソートするのに不適切な値が貼り付けられた可能性があります(エラー番号5)',pchar(Application.Title),MB_ICONINFORMATION);
+                                        ShowMessage(MemoB.Lines[i]);
+                    MemoQ.Lines.Clear;
+                    MemoA.Lines.Clear;
+                    MemoB.Lines.Clear;
+                    MemoR.Lines.Clear;
+                    Abort;
+                    end
+                    else
+                    begin
+                        hon := pos('<br>）[',MemoB.Lines[i])+6;
+                        honbun := copy(MemoB.Lines[i],0,hon);
+                        if pos('秒]',honbun) > 0 then
+                        begin
+                    Application.MessageBox('ソートするのに不適切な値が貼り付けられた可能性があります(エラー番号6)',pchar(Application.Title),MB_ICONINFORMATION);
+                    ShowMessage(MemoB.Lines[i]);
+                    MemoQ.Lines.Clear;
+                    MemoA.Lines.Clear;
+                    MemoB.Lines.Clear;
+                    MemoR.Lines.Clear;
+                    Abort;
+                        end;
+
+                    end;
+
+                end;
+
+            end;
+
+        end;
+
+    end;
+
+end;
+
+
+//R proxy Check
+
+ii:= MemoR.Lines.Count;
+for i := 0 to ii-1 do
+
+begin
+    if Pos('[使用可能]',MemoR.Lines[i]) = 0 then
+    begin
+        Application.MessageBox('ソートするのに不適切な値が貼り付けられた可能性があります(エラー番号1)',pchar(Application.Title),MB_ICONINFORMATION);
+        ShowMessage(MemoR.Lines[i]);
+        MemoQ.Lines.Clear;
+        MemoA.Lines.Clear;
+        MemoB.Lines.Clear;
+        MemoR.Lines.Clear;
+        Abort;
+    end
+    else
+    begin
+        if Pos('<br>）[',MemoR.Lines[i]) = 0 then
+        begin
+            Application.MessageBox('ソートするのに不適切な値が貼り付けられた可能性があります(エラー番号2)',pchar(Application.Title),MB_ICONINFORMATION);
+            ShowMessage(MemoR.Lines[i]);
+            MemoR.Lines.Delete(i);
+            MemoQ.Lines.Clear;
+            MemoA.Lines.Clear;
+            MemoB.Lines.Clear;
+            MemoR.Lines.Clear;
+            Abort;
+        end
+        else
+        begin
+            if Pos('秒]',MemoR.Lines[i]) = 0 then
+            begin
+                Application.MessageBox('ソートするのに不適切な値が貼り付けられた可能性があります(エラー番号3)',pchar(Application.Title),MB_ICONINFORMATION);
+                ShowMessage(MemoR.Lines[i]);
+                MemoQ.Lines.Clear;
+                MemoA.Lines.Clear;
+                MemoB.Lines.Clear;
+                MemoR.Lines.Clear;
+                Abort;
+            end
+            else
+            begin
+                if Pos('ミリ',MemoR.Lines[i]) = 0 then
+                begin
+                    Application.MessageBox('ソートするのに不適切な値が貼り付けられた可能性があります(エラー番号4)',pchar(Application.Title),MB_ICONINFORMATION);
+                    ShowMessage(MemoR.Lines[i]);
+                    MemoQ.Lines.Clear;
+                    MemoA.Lines.Clear;
+                    MemoB.Lines.Clear;
+                    MemoR.Lines.Clear;
+                    Abort;
+                end
+                else
+                begin
+Index :=AnsiPos('<br>）[', MemoR.Lines[i]) + 7;
+Count := AnsiPos('ミリ',MemoR.Lines[i]) - Index;
+Line := Copy(MemoR.Lines[i], Index, Count);
+                    if StrToIntDef(Line,0) = 0  then
+                    begin
+                    Application.MessageBox('ソートするのに不適切な値が貼り付けられた可能性があります(エラー番号5)',pchar(Application.Title),MB_ICONINFORMATION);
+                    ShowMessage(MemoR.Lines[i]);
+                    MemoQ.Lines.Clear;
+                    MemoA.Lines.Clear;
+                    MemoB.Lines.Clear;
+                    MemoR.Lines.Clear;
+                    Abort;
+                    end
+                    else
+                    begin
+                        hon := pos('<br>）[',MemoR.Lines[i])+6;
+                        honbun := copy(MemoR.Lines[i],0,hon);
+                        if pos('秒]',honbun) > 0 then
+                        begin
+                    Application.MessageBox('ソートするのに不適切な値が貼り付けられた可能性があります(エラー番号6)',pchar(Application.Title),MB_ICONINFORMATION);
+                    ShowMessage(MemoR.Lines[i]);
+                    MemoQ.Lines.Clear;
+                    MemoA.Lines.Clear;
+                    MemoB.Lines.Clear;
+                    MemoR.Lines.Clear;
+                    Abort;
+                        end;
+
+                    end;
+
+                end;
+
+            end;
+
+        end;
+
+    end;
+
+end;
+
+
+//Sort------------------------------------------------------------------------------------------------------------
+
+
+    //Q Prpxy
+
+    StringList := nil;
+    try
+    StringList := TStringList.Create;
+    ii := MemoQ.Lines.Count;
+
+    for i := 0 to ii-1 do
+    begin
+        sps := Pos('[使用可能]',MemoQ.Lines[i])-2;
+        kk := pos('<br>）[',MemoQ.Lines[i])+6;
+        kkt := pos('秒]',MemoQ.Lines[i])+3;
+        ss := MemoQ.Lines[i];
+        StringList.Add(copy(ss,0,sps)+' '+copy(ss,kk,kkt-kk));
+
+    end;
+        MemoQ.Lines.Clear;
+        StringList.CustomSort(MyCompare);
+        StringList.SaveToFile(IncludeTrailingPathDelimiter(ExtractFilePath(Application.ExeName))+'Q-Proxy-Speed.txt');
+
+        for i := 0 to ii-1 do
+        begin
+            sps := pos(' ',StringList[i])-1;
+            ss := StringList[i];
+            MemoQ.Lines.Add(copy(ss,0,sps));
+        end;
+
+        MemoQ.Lines.SaveToFile(IncludeTrailingPathDelimiter(ExtractFileDir(Application.ExeName))+'Q-Proxy.txt');
+        MemoQ.Lines.Clear;
+        MemoQ.Lines.LoadFromFile(IncludeTrailingPathDelimiter(ExtractFileDir(Application.ExeName))+'Q-Proxy.txt');
+
+    finally
+        StringList.Free;
+   end;
+
+
+
+
+
+    //A Prpxy
+
+    StringList := nil;
+    try
+    StringList := TStringList.Create;
+    ii := MemoA.Lines.Count;
+
+    for i := 0 to ii-1 do
+    begin
+        sps := Pos('[使用可能]',MemoA.Lines[i])-2;
+        kk := pos('<br>）[',MemoA.Lines[i])+6;
+        kkt := pos('秒]',MemoA.Lines[i])+3;
+        ss := MemoA.Lines[i];
+        StringList.Add(copy(ss,0,sps)+' '+copy(ss,kk,kkt-kk));
+
+    end;
+        MemoA.Lines.Clear;
+        StringList.CustomSort(MyCompare);
+        StringList.SaveToFile(IncludeTrailingPathDelimiter(ExtractFilePath(Application.ExeName))+'A-Proxy-Speed.txt');
+
+        for i := 0 to ii-1 do
+        begin
+            sps := pos(' ',StringList[i])-1;
+            ss := StringList[i];
+            MemoA.Lines.Add(copy(ss,0,sps));
+        end;
+
+        MemoA.Lines.SaveToFile(IncludeTrailingPathDelimiter(ExtractFileDir(Application.ExeName))+'A-Proxy.txt');
+        MemoA.Lines.Clear;
+        MemoA.Lines.LoadFromFile(IncludeTrailingPathDelimiter(ExtractFileDir(Application.ExeName))+'A-Proxy.txt');
+
+
+    finally
+        StringList.Free;
+   end;
+
+
+
+    //B Prpxy
+
+    StringList := nil;
+    try
+    StringList := TStringList.Create;
+    ii := MemoB.Lines.Count;
+
+    for i := 0 to ii-1 do
+    begin
+        sps := Pos('[使用可能]',MemoB.Lines[i])-2;
+        kk := pos('<br>）[',MemoB.Lines[i])+6;
+        kkt := pos('秒]',MemoB.Lines[i])+3;
+        ss := MemoB.Lines[i];
+        StringList.Add(copy(ss,0,sps)+' '+copy(ss,kk,kkt-kk));
+
+    end;
+        MemoB.Lines.Clear;
+        StringList.CustomSort(MyCompare);
+        StringList.SaveToFile(IncludeTrailingPathDelimiter(ExtractFilePath(Application.ExeName))+'B-Proxy-Speed.txt');
+
+        for i := 0 to ii-1 do
+        begin
+            sps := pos(' ',StringList[i])-1;
+            ss := StringList[i];
+            MemoB.Lines.Add(copy(ss,0,sps));
+        end;
+
+        MemoB.Lines.SaveToFile(IncludeTrailingPathDelimiter(ExtractFileDir(Application.ExeName))+'B-Proxy.txt');
+        MemoB.Lines.Clear;
+        MemoB.Lines.LoadFromFile(IncludeTrailingPathDelimiter(ExtractFileDir(Application.ExeName))+'B-Proxy.txt');
+
+
+    finally
+        StringList.Free;
+   end;
+
+
+    //R Prpxy
+
+    StringList := nil;
+    try
+    StringList := TStringList.Create;
+    ii := MemoR.Lines.Count;
+
+    for i := 0 to ii-1 do
+    begin
+        sps := Pos('[使用可能]',MemoR.Lines[i])-2;
+        kk := pos('<br>）[',MemoR.Lines[i])+6;
+        kkt := pos('秒]',MemoR.Lines[i])+3;
+        ss := MemoR.Lines[i];
+        StringList.Add(copy(ss,0,sps)+' '+copy(ss,kk,kkt-kk));
+
+    end;
+        MemoR.Lines.Clear;
+        StringList.CustomSort(MyCompare);
+        StringList.SaveToFile(IncludeTrailingPathDelimiter(ExtractFilePath(Application.ExeName))+'R-Proxy-Speed.txt');
+
+        for i := 0 to ii-1 do
+        begin
+            sps := pos(' ',StringList[i])-1;
+            ss := StringList[i];
+            MemoR.Lines.Add(copy(ss,0,sps));
+        end;
+
+        MemoR.Lines.SaveToFile(IncludeTrailingPathDelimiter(ExtractFileDir(Application.ExeName))+'R-Proxy.txt');
+        MemoR.Lines.Clear;
+        MemoR.Lines.LoadFromFile(IncludeTrailingPathDelimiter(ExtractFileDir(Application.ExeName))+'R-Proxy.txt');
+
+
+    finally
+        StringList.Free;
+   end;
+
+   CheckQ.Enabled :=true;
+   CheckA.Enabled :=true;
+   CheckB.Enabled :=true;
+   CheckR.Enabled :=true;
+end;
+
+
+
+
+
+
+
+
+
+
+
+end;
+
+procedure TMainForm.MemohenDblClick(Sender: TObject);
+begin
+    Memohen.SelectAll;
+end;
+
+procedure TMainForm.MemoQDblClick(Sender: TObject);
+begin
+    MemoQ.SelectAll;
+end;
+
+procedure TMainForm.MemoADblClick(Sender: TObject);
+begin
+    MemoA.SelectAll;
+end;
+
+procedure TMainForm.MemoBDblClick(Sender: TObject);
+begin
+    MemoB.SelectAll;
+end;
+
+procedure TMainForm.MemoRDblClick(Sender: TObject);
+begin
+    MemoR.SelectAll;
+end;
+
+procedure TMainForm.CheckQClick(Sender: TObject);
+begin
+    if MemoQ.Lines.Count <> 0 then
+    begin
+
+        if CheckQ.Checked then
+        begin
+            MemoQ.Lines.LoadFromFile(IncludeTrailingPathDelimiter(ExtractFileDir(Application.ExeName))+'Q-Proxy-Speed.txt');
+        end
+        else
+        begin
+            MemoQ.Lines.LoadFromFile(IncludeTrailingPathDelimiter(ExtractFileDir(Application.ExeName))+'Q-Proxy.txt');
+        end;
+    end ;
+
+
+
+end;
+
+
+
+procedure TMainForm.CheckAClick(Sender: TObject);
+begin
+    if MemoA.Lines.Count <> 0 then
+    begin
+
+        if CheckA.Checked then
+        begin
+            MemoA.Lines.LoadFromFile(IncludeTrailingPathDelimiter(ExtractFileDir(Application.ExeName))+'A-Proxy-Speed.txt');
+        end
+        else
+        begin
+            MemoA.Lines.LoadFromFile(IncludeTrailingPathDelimiter(ExtractFileDir(Application.ExeName))+'A-Proxy.txt');
+        end;
+    end ;
+end;
+
+procedure TMainForm.CheckBClick(Sender: TObject);
+begin
+    if MemoB.Lines.Count <> 0 then
+    begin
+
+        if CheckB.Checked then
+        begin
+            MemoB.Lines.LoadFromFile(IncludeTrailingPathDelimiter(ExtractFileDir(Application.ExeName))+'B-Proxy-Speed.txt');
+        end
+        else
+        begin
+            MemoB.Lines.LoadFromFile(IncludeTrailingPathDelimiter(ExtractFileDir(Application.ExeName))+'B-Proxy.txt');
+        end;
+    end ;
+end;
+
+procedure TMainForm.CheckRClick(Sender: TObject);
+begin
+    if MemoR.Lines.Count <> 0 then
+    begin
+
+        if CheckR.Checked then
+        begin
+            MemoR.Lines.LoadFromFile(IncludeTrailingPathDelimiter(ExtractFileDir(Application.ExeName))+'R-Proxy-Speed.txt');
+        end
+        else
+        begin
+            MemoR.Lines.LoadFromFile(IncludeTrailingPathDelimiter(ExtractFileDir(Application.ExeName))+'R-Proxy.txt');
+        end;
+    end ;
+end;
+
+procedure TMainForm.BtnClerClick(Sender: TObject);
+begin
+    Memohen.Lines.Clear;
+    Memohen.Lines[0] := 'ここに折れ串漏れ串チェッカーで出た値を、そのまま貼り付けてて下さい';
+    MemoQ.Lines.Clear;
+    MemoA.Lines.Clear;
+    MemoB.Lines.Clear;
+    MemoR.Lines.Clear;
+
+    CheckQ.Checked := False;
+    CheckA.Checked := False;
+    CheckB.Checked := False;
+    CheckR.Checked := False;
+
+    CheckQ.Enabled := False;
+    CheckA.Enabled := False;
+    CheckB.Enabled := False;
+    CheckR.Enabled := False;
+
+end;
+
+procedure TMainForm.FormCreate(Sender: TObject);
+begin
+    MainForm.Caption := Application.Title;
+end;
+
+end.
+

@@ -1,0 +1,94 @@
+unit Unit1;
+
+interface
+uses
+  Windows, Messages, SysUtils, Classes,
+  Graphics, Controls, Forms, Dialogs,
+  ExtCtrls, ShellAPI, StdCtrls;
+type
+  TLaunchIcon=Class(TImage)
+  private
+    FileName: String;
+    FIconIndex: Integer;
+  public
+    function Init(ExePath: String;
+      IconIndex: Integer): Boolean;
+  end;
+  TForm1 = class(TForm)
+    Button1: TButton;
+    OpenDialog1: TOpenDialog;
+    procedure Button1Click(Sender: TObject);
+  private { Private éŒ¾ }
+  public { Public éŒ¾ }
+  end;
+var
+  Form1: TForm1;
+implementation {$R *.DFM}
+
+function TLaunchIcon.Init(ExePath: String;
+  IconIndex: Integer): Boolean;
+var
+  Count, i: Integer;
+  NulIcon: HIcon;
+  lpIcon: Word;
+  LargeIcons, SmallIcons: array of HIcon;
+begin
+  Result := False;
+  if not FileExists(ExePath) then Exit;
+  NulIcon := 0;
+  Count := ExtractIconEx(PChar(ExePath),
+    -1, NulIcon, NulIcon, 0);
+  if Count = 0 then
+  begin
+    SetLength(LargeIcons, 1);
+    lpIcon := 0;
+    LargeIcons[0] := ExtractAssociatedIcon
+      (Application.Handle, PChar(ExePath),
+      lpIcon);
+    if LargeIcons[0] = 0 then Exit;
+  end
+  else
+  begin
+    if IconIndex >= Count then Exit;
+    SetLength(LargeIcons, Count);
+    SetLength(SmallIcons, Count);
+    if ExtractIconEx(PChar(ExePath), 0,
+      LargeIcons[0], SmallIcons[0], Count)
+      <= 1 then Exit;
+  end;
+
+  Picture.Icon.ReleaseHandle;
+  Picture.Icon.Handle := LargeIcons[IconIndex];
+  FIconIndex := IconIndex;
+  for i := Low(LargeIcons) to
+    High(LargeIcons) do
+    if i <> IconIndex then
+      DestroyIcon(LargeIcons[i]);
+  for i := Low(SmallIcons) to
+    High(SmallIcons) do
+    DestroyIcon(SmallIcons[i]);
+  Hint := ExtractFileName(ExePath);
+  FileName := ExePath;
+  ShowHint := True;
+  AutoSize := True;
+  Result := True;
+end;
+
+procedure TForm1.Button1Click(Sender: TObject);
+var
+  NewIcon: TLaunchIcon;
+begin
+  if OpenDialog1.Execute then
+  begin
+    NewIcon := TLaunchIcon.Create(Self);
+    if not NewIcon.Init(OpenDialog1.FileName,
+      0) then NewIcon.Free
+    else NewIcon.Parent := Self;
+  end;
+end;
+end.
+
+
+
+TITLE:\\Mebius\d\delphi\ŠÈ’PDelphi\source\3_02\list5\UNIT1.PAS - EmEditor
+DATE:2002/06/12 14:26

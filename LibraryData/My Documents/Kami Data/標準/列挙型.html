@@ -1,0 +1,36 @@
+<HTML><HEAD><meta http-equiv="content-type" content="text/html;charset=Shift_JIS">
+<TITLE>第3回　変数とデータ型</TITLE></HEAD>
+
+<BODY>
+<P><B><U><FONT size=+1>列挙型</FONT></U></B><BR><BR>　列挙型は次のように宣言します。</P><PRE>  var
+    Color: (Red, Blue, Green, Yellow);</PRE>
+<P>　これは、Colorという変数にRed、Blue、Green、Yellowのどれかを代入できます。代入文は次のようになります。</P><PRE>    Color := Blue;</PRE>
+<P>　ColorをInteger型で宣言して、0は赤、1は青とするよりも列挙型を使った方が分かりやすくなります。このように値のパターンが決まっているときに、列挙型を使います。<BR>　ただし、次の宣言はできません。エラーになります。</P><PRE>  var
+    Color:  (Red, Blue, Green, Yellow);
+    Color2: (Red, Blue, Green, Yellow);</PRE>
+<P>　このように列挙型の同じ組み合わせを2回以上宣言できません。このときは、次のような宣言にします。</P><PRE>  var
+    Color, Color2: (Red, Blue, Green, Yellow);</PRE>
+<P>　これだとエラーになりません。またユーザ定義型を使うと、何度も宣言できます。ユーザ定義型は、まず型宣言する必要があります。列挙型の型宣言は次のようになります。</P><PRE>  type
+    型名 = 列挙型;</PRE>
+<P>　型名はユーザ定義型に付ける名前で、変数名と同じルールで付けます。ただし、型名の1文字目はTにするのが一般的です。型名と列挙型は 
+=(イコール)で結びます。上記の例だと、次のようになります。</P><PRE>  type
+    TMyColor = (Red, Blue, Green, Yellow);
+
+  var
+    Color: TMyColor;
+    Color2: TMyColor;</PRE>
+<P>　TMyColor型という新しい型を作ると、何度でも変数宣言に使うことができます。<BR>　ところで、次の場合を考えてみましょう。</P><PRE>  type
+    TPosition = (First, Middle, End);
+
+  var
+    Position: TPosition;</PRE>
+<P>　TPositon型を宣言して、Positionという変数をTPosition型にしています。この中で、1ヶ所エラーの原因があります。それは、TPosition型の宣言で、Endという値を使っているところです。Endは予約語のため、エラーになります。<BR>　このようなことを避けるため、普通は次のように宣言します。</P><PRE>  type
+    TPosition = (psFirst, psMiddle, psEnd);</PRE>
+<P>　これでエラーを防ぐことができます。このように先頭に型を表す文字(プリフィックス)を付ける方法を、ハンガリー記法といいます。ところで、このような値を見たことがあると思います。フォームのPositionプロパティで、poDefaultPosOnlyなどがあったはずです。このPositionプロパティは列挙型です。<BR>　コンポーネントのプロパティに列挙型が使われていることはよくあります。<BR><BR></P><BR>
+<FONT SIZE="-1">
+TITLE:第3回　変数とデータ型<BR>
+DATE:2002/12/29 16:31<BR>
+URL:<A HREF="http://wblue.hp.infoseek.co.jp/prog/c2_03.htm" TARGET="_blank">http://wblue.hp.infoseek.co.jp/prog/c2_03.htm</A><BR>
+</FONT>
+</BODY>
+</HTML>

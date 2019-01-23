@@ -1,0 +1,63 @@
+procedure TMainForm.AppShowHint(var HintStr: string; var CanShow: Boolean;
+  var HintInfo: THintInfo);
+var
+  P: TPoint;
+  Node: TTreeNode;
+  R: TRect;
+  strName, strData, strComment: String;
+  Style: DWORD;
+begin
+  if HintInfo.HintControl = MacroTreeView then
+  begin
+    //CanShow := False;
+    [[GetCursorPos(P);]]
+    P := MacroTreeView.ScreenToClient(P);
+    Node := MacroTreeView.GetNodeAt(P.X, P.Y);
+    if Assigned(Node) = False then Exit;
+    strName := PDataItem(Node.Data)^.FName;
+    strData := PDataItem(Node.Data)^.FData;
+    strComment := PDataItem(Node.Data)^.FComment;
+    case PDataItem(Node.Data)^.FKind of
+      MACRO_KIND:
+      begin
+        if strComment = '' then
+        begin
+          HintStr :=  '[' + strName + ']' +  #13#10 + #13#10 + strData;
+        end
+        else
+        begin
+          HintStr := '[' + strName + ']' +  #13#10 + #13#10 + strData + #13#10 + #13#10 + strComment;
+        end;
+      end;
+    else
+        if strComment = '' then
+        begin
+          HintStr :=  '[' + strName + ']' ;
+        end
+        else
+        begin
+          [[HintStr]] :=  '[' + strName + ']' +  #13#10 + #13#10 + strComment;
+        end;
+    end;
+
+[[    r := Node.DisplayRect(True);
+    HintInfo.CursorRect := R;]]
+    //HintInfo.ReshowTimeout := 5000;
+    HintInfo.HideTimeout := 7000;
+    HintInfo.HintMaxWidth := 300;
+    //Application.HintHidePause := 5000;
+
+[[    Style := GetWindowLong(MacroTreeView.Handle, GWL_STYLE);
+    Style := Style or TVS_NOTOOLTIPS;
+    SetWindowLong(MacroTreeView.Handle, GWL_STYLE, Style);]]
+  end;
+
+end;
+
+procedure TMainForm.MacroTreeViewMouseMove(Sender: TObject;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  //ShowMessage(IntToStr(x)+','+IntToStr(y));
+  Application.OnShowHint :=AppShowHint;
+
+end;

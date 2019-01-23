@@ -1,0 +1,106 @@
+unit Unitcolor;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls;
+
+type
+  TForm1 = class(TForm)
+    Label1: TLabel;
+    cbBold: TCheckBox;
+    cbItalic: TCheckBox;
+    cbUnder: TCheckBox;
+    cbStrikeout: TCheckBox;
+    rbBlack: TRadioButton;
+    rbMalon: TRadioButton;
+    rbGreen: TRadioButton;
+    rbRed: TRadioButton;
+    btnEnd: TButton;
+    procedure btnEndClick(Sender: TObject);
+    procedure cbBoldClick(Sender: TObject);
+    procedure cbItalicClick(Sender: TObject);
+    procedure cbUnderClick(Sender: TObject);
+    procedure cbStrikeoutClick(Sender: TObject);
+    procedure rbBlackClick(Sender: TObject);
+    procedure rbMalonClick(Sender: TObject);
+    procedure rbGreenClick(Sender: TObject);
+    procedure rbRedClick(Sender: TObject);
+  private
+    { Private êÈåæ }
+  public
+    { Public êÈåæ }
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+{$R *.dfm}
+
+procedure TForm1.btnEndClick(Sender: TObject);
+begin
+    Close;
+end;
+
+procedure TForm1.cbBoldClick(Sender: TObject);
+begin
+    if cbBold.Checked then
+    begin
+        Label1.Font.Style:=Label1.Font.Style + [fsbold];
+    end
+    else
+    begin
+        Label1.Font.Style:=Label1.Font.Style - [fsbold];
+    end;
+
+end;
+
+procedure TForm1.cbItalicClick(Sender: TObject);
+begin
+    if cbItalic.Checked then
+    Label1.Font.Style := Label1.Font.Style + [fsItalic]
+    else
+    Label1.Font.Style := Label1.Font.Style - [fsItalic] ;
+
+end;
+
+procedure TForm1.cbUnderClick(Sender: TObject);
+begin
+    if cbUnder.Checked then
+    Label1.Font.Style := Label1.Font.Style + [fsUnderline]
+    else
+    Label1.Font.Style := Label1.Font.Style - [fsUnderline];
+end;
+
+procedure TForm1.cbStrikeoutClick(Sender: TObject);
+begin
+    if cbStrikeout.Checked then
+    Label1.Font.Style := Label1.Font.Style + [fsStrikeOut]
+    else
+    Label1.Font.Style := Label1.Font.Style - [fsStrikeOut];
+end;
+
+procedure TForm1.rbBlackClick(Sender: TObject);
+begin
+    Label1.Font.Color := clBlack;
+end;
+
+procedure TForm1.rbMalonClick(Sender: TObject);
+begin
+    Label1.Font.Color := clMaroon;
+end;
+
+procedure TForm1.rbGreenClick(Sender: TObject);
+begin
+    Label1.Font.Color := clGreen;
+end;
+
+procedure TForm1.rbRedClick(Sender: TObject);
+begin
+    Label1.Font.Color := clRed;
+end;
+
+end.

@@ -1,0 +1,23 @@
+{ メール受信処理　メールの取得 }
+
+procedure TSDIAppForm.MailListSelectItem(Sender: TObject; Item: TListItem;
+  Selected: Boolean);
+var
+  MesNumber : Integer;
+begin
+
+  Memo1.Lines.Clear;
+
+  if Assigned( MailList.Selected ) then
+    MesNumber := Integer( MailList.Selected.Data)
+  else
+    Exit;
+
+  if not NMPOP31.Connected then NMPOP31.Connect;
+
+  NMPOP31.GetMailMessage(MesNumber);
+
+  Memo1.Lines.AddStrings(NMPOP31.MailMessage.Head);
+  Memo1.Lines.AddStrings(NMPOP31.MailMessage.Body);
+
+end;

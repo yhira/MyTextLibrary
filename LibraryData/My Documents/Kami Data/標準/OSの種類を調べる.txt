@@ -1,0 +1,26 @@
+
+
+OSの種類(3.1/95/NT)を調べるには GetVersionEx APIを使用します。使い方は簡単です。以下のサンプルはOSのバージョン情報をリストボックスに追加します。
+
+■ OSの種類を調べる例 
+var
+  OSver : TOSVERSIONINFO;
+begin
+  OSver.dwOSVersionInfoSize  :=  SizeOf(OSver);
+  GetVersionEx(OSver);
+  ListBox1.Items.Add( IntToStr(OSver.dwMajorVersion)); //メジャーバージョン
+  ListBox1.Items.Add( IntToStr(OSver.dwMinorVersion)); //マイナーバージョン
+  ListBox1.Items.Add( IntToStr(OSver.dwBuildNumber));  //ビルド番号
+  case  OSver.dwPlatformId  of
+     //Windows3.1
+     VER_PLATFORM_WIN32s        : ListBox1.Items.Add('Win32s on Windows 3.1'); 
+     //Windows95
+     VER_PLATFORM_WIN32_WINDOWS : ListBox1.Items.Add('Win32 on Windows 95'); 
+     //WindowsNT
+     VER_PLATFORM_WIN32_NT      : ListBox1.Items.Add('Windows NT'); 
+  else 
+     ListBox1.Items.Add('Windows??'); ; 
+  end;
+end;
+ 
+

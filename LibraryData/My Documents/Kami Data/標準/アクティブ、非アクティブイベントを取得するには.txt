@@ -1,0 +1,32 @@
+
+--------------------------------------------------------------------------------
+ 
+アプリケーション自身のアクティブ、非アクティブイベントを取得するには、Applicationのイベントハンドラを宣言して、イベントと結びつける必要があります。
+
+//// 
+  public
+    { Public 宣言 } 
+    //アクティブ時のイベントハンドラ 
+    procedure ApplicationOnActivate  (Sender: TObject); 
+    //非アクティブ時のイベントハンドラ 
+    procedure ApplicationOnDeactivate(Sender: TObject);
+  end;
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  Application.OnActivate:= ApplicationOnActivate;
+  Application.OnDeactivate:= ApplicationOnDeactivate;
+end;
+
+procedure TForm1.ApplicationOnActivate(Sender: TObject);
+begin
+  //アクティブ 
+  Label1.Caption := 'アクティブです。';
+end;
+
+procedure TForm1.ApplicationOnDeactivate(Sender: TObject);
+begin
+  //非アクティブ 
+  Label1.Caption := '非アクティブです。';
+end;
+//// 

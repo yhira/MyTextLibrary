@@ -1,0 +1,16 @@
+
+--------------------------------------------------------------------------------
+ 
+2階層以上のフォルダを一度に生成するには、ForceDirectoriesを利用します。
+フォルダの存在を確認するときは、DirectoryExistsを利用します。
+
+//uses節にFileCtrlを追加 
+
+procedure TForm1.Button1Click(Sender: TObject);
+var
+  Dir: string;
+begin
+  Dir := 'C:\TESTDIR\TEMP\DATA';
+  ForceDirectories(Dir);
+  if DirectoryExists(Dir) then Label1.Caption := Dir + 'を生成しました。'
+end 

@@ -1,0 +1,43 @@
+
+ＩＭＥが編集を開始する直前にWM_IMESTARTCOMPOSITION というメッセージを送って来るので、そのメッセージを捕らえて設定してやります。
+
+class TCustom : public TCustomControl
+{
+  ・・・・・・・・・・・・
+
+   void __fastcall IMEStart(TMessage& Message);
+
+   BEGIN_MESSAGE_MAP
+      MESSAGE_HANDLER( WM_IME_STARTCOMPOSITION ,TMessage,IMEStart)
+   END_MESSAGE_MAP(TCustomControl)
+};
+
+void __fastcall TCustom::IMEStart(TMessage& Message)
+{
+  //  ＩＭＥの位置をキャレットのポジションに設定
+  COMPOSITIONFORM CompForm;
+  POINT pt;
+  LOGFONT lf;
+  HIMC hImc=ImmGetContext(Handle);
+
+  //キャンバスのフォントと同じに設定する
+  GetObject(Canvas->Font->Handle,sizeof(LOGFONT),&lf);
+  ImmSetCompositionFont(hImc,&lf);
+
+  //キャレットのポジションに設定する
+  ImmGetCompositionWindow(hImc,&CompForm);
+  CompForm.dwStyle=CFS_POINT;
+  GetCaretPos(&pt);
+  CompForm.ptCurrentPos=pt;
+  ImmSetCompositionWindow(hImc,&CompForm);
+
+  ImmReleaseContext(Handle, hImc);
+
+  // その他の処理
+  ・・・・・・・・・・・・・
+}
+ 
+ 
+ 
+参照： [builder:5269] <その他Windows関連> <コンポーネント開発> <Windows> <コンポーネント > <Standard>  
+ 

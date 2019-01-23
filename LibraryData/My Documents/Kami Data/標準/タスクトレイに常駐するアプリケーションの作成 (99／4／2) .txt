@@ -1,0 +1,140 @@
+
+
+--------------------------------------------------------------------------------
+該当するバージョン:Delphi 2.0,Delphi 3.0/Delphi3.1,Delphi4
+ タスクトレイに常駐アプリケーションを作成したいのですが，どうのようにすればいいでしょうか？ 
+
+ 
+ Win32API の Shell_NotifyIcon を使います。
+以下のサンプルは, 実行するとタスクトレイに常駐します。
+このとき, 左クリックでフォーム表示（タスクトレイから離別）また, 右クリックでアプリケーション終了します。
+
+
+unit Unit1;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls,
+  Forms, Dialogs, ShellAPI, StdCtrls;
+
+const
+  WM_NotifyTasktray = WM_USER + 100;
+
+type
+  TForm1 = class(TForm)
+    Button1: TButton;
+    procedure Button1Click(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+  private
+    { Private 宣言 }
+    IsLiveTasktray: boolean;
+    NotifyIcon: TNotifyIconData;
+    procedure InitTasktray;
+    procedure FinishTasktray;
+    procedure MovetoTasktray;
+    procedure LeaveTasktray;
+  protected
+    procedure WndProc(var Message: TMessage); override;
+  public
+    { Public 宣言 }
+    constructor Create(AOwner: TComponent); override;
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+{$R *.DFM}
+
+constructor TForm1.Create(AOwner: TComponent);
+begin
+  inherited;
+  IsLiveTaskTray := False;
+end;
+
+
+procedure TForm1.WndProc(var Message: TMessage);
+begin
+
+  if Message.Msg = WM_NotifyTasktray then
+  begin
+    case Message.LParam of
+      WM_LBUTTONDOWN:
+      begin
+        LeaveTasktray;
+      end;
+      WM_RBUTTONDOWN:
+        Close;
+    end;
+  end
+  else
+    inherited;
+end;
+
+
+procedure TForm1.InitTasktray;
+begin
+  if IsLiveTasktray then exit;
+  with NotifyIcon do
+  begin
+    cbSize := SizeOf(TNotifyIconData);
+    Wnd := Handle;
+    uID := 1;
+    uFlags := NIF_ICON or NIF_MESSAGE or NIF_TIP;
+    uCallbackMessage := WM_NotifyTasktray;
+    hIcon := Application.Icon.Handle;
+    szTip := 'Tasktary...';
+  end;
+  Shell_NotifyIcon(NIM_ADD,@NotifyIcon);
+  IsLiveTasktray := True;
+end;
+
+procedure TForm1.FinishTasktray;
+begin
+  if IsLiveTasktray = False then exit;
+  with NotifyIcon do
+  begin
+    cbSize := SizeOf(TNotifyIconData);
+    Wnd := Handle;
+    uID := 1;
+  end;
+  Shell_NotifyIcon(NIM_DELETE,@NotifyIcon);
+  IsLiveTasktray := False;
+end;
+
+procedure TForm1.MovetoTasktray;
+begin
+  InitTasktray;
+  Hide;
+end;
+
+procedure TForm1.LeaveTasktray;
+begin
+  FinishTasktray;
+  Show;
+end;
+
+
+procedure TForm1.Button1Click(Sender: TObject);
+begin
+  MoveToTasktray;
+end;
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  Application.ShowMainForm := False;
+  MoveToTaskTray;
+end;
+
+procedure TForm1.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  FinishTasktray;
+end;
+
+end.
+
+ 
+

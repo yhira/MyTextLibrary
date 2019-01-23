@@ -1,0 +1,49 @@
+操作できるソフトを作りたいのですがどのようにすれば 
+よいのでしょうか？ 
+例えばwinに付いているスクリーン キーボードなどは 
+スクリーン キーボードを操作してもキャレットが残ったままになっていて 
+あのような感じです。 
+また、例えばButton1を押すとキャレットに「あ」と出力させるにはどうすれば出来ますか？ 
+
+
+
+116 名前：デフォルトの名無しさん 投稿日：02/10/12 05:09
+>>113 
+
+アプリひとつまるごと作り方教えろや、って言ってるような 
+
+
+117 名前：デフォルトの名無しさん 投稿日：02/10/12 11:55
+>>113 
+メッセージを使う。 
+自分の作ったウィンドウやコントロールののWM_SETFOCUSを拾ってSetFocus(wParam)を実行。 
+文字を送るには、WM_CHARやWM_IME_CHARを送る。 
+
+
+
+
+118 名前：113じゃないけど 投稿日：02/10/12 17:52
+>>117 
+>文字を送るには、WM_CHARやWM_IME_CHARを送る。 
+WM_KEYDOWNとWM_KEYUPじゃダメ？ 
+
+
+119 名前：117 投稿日：02/10/12 20:52
+WM_KEYDOWNじゃうまくいかなかったと思うが。 
+IMEの状態とか、キーのシフト状態の影響を受けてしまうし。 
+
+Edit1へ文字を送る例。 
+SendMessage(Edit1.Handle,WM_CHAR,Integer(#$41),Integer(0)); 
+SendMessage(Edit1.Handle,WM_IME_CHAR,Integer(#$82a0),Integer(0)); 
+
+
+procedure TForm1.Button1Click(Sender: TObject);
+begin
+  SendMessage(Edit1.Handle,WM_CHAR,Integer(#$41),Integer(0));
+end;
+
+procedure TForm1.Button2Click(Sender: TObject);
+begin
+  SendMessage(Edit1.Handle,WM_IME_CHAR,Integer(#$82a0),Integer(0));
+end;
+

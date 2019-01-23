@@ -1,0 +1,100 @@
+D:\delphi\MyTextLibrary\TextLibrary081\LibraryData\新規テキストファイル.txt
+D:\delphi\MyTextLibrary\TextLibrary081\LibraryData\Readme.txt
+D:\delphi\MyTextLibrary\TextLibrary081\LibraryData\My Documents\Kami Data\標準\【作成】タブブラウザunit MAIN；.txt
+D:\delphi\MyTextLibrary\TextLibrary081\LibraryData\My Documents\Kami Data\標準\StringListでTreeViewの読み込み.txt
+D:\delphi\MyTextLibrary\TextLibrary081\LibraryData\My Documents\Project2.dpr
+D:\delphi\MyTextLibrary\TextLibrary081\LibraryData\My Documents\Unit1.pas
+D:\delphi\MyTextLibrary\TextLibrary081\LibraryData\My Documents\Project1.dpr
+D:\delphi\MyTextLibrary\TextLibrary081\LibraryData\My Documents\index.html
+D:\delphi\MyTextLibrary\TextLibrary079\LibraryData\Readme.txt
+D:\delphi\MyTextLibrary\TextLibrary079\LibraryData\新規テキストファイル.txt
+D:\delphi\MyTextLibrary\TextLibrary079\LibraryData\My Documents\Unit1.pas
+D:\delphi\MyTextLibrary\TextLibrary079\LibraryData\My Documents\Project1.dpr
+D:\delphi\MyTextLibrary\TextLibrary079\LibraryData\My Documents\index.html
+D:\delphi\MyTextLibrary\TextLibrary079\LibraryData\My Documents\index.htm
+D:\delphi\MyTextLibrary\TextLibrary079\LibraryData\My Documents\Kami Data\標準\APIを使ってファイルの属性を取得する.txt
+D:\delphi\MyTextLibrary\TextLibrary078\LibraryData\新規テキストファイル.txt
+D:\delphi\MyTextLibrary\TextLibrary078\LibraryData\Readme.txt
+D:\delphi\MyTextLibrary\TextLibrary078\LibraryData\My Documents\index.htm
+D:\delphi\MyTextLibrary\TextLibrary078\LibraryData\My Documents\Project1.dpr
+D:\delphi\MyTextLibrary\TextLibrary078\LibraryData\My Documents\index.html
+\\Dosv2k\d\Delphi\TextLibrary\TextLibrary077\LibraryData\新規テキストファイル.txt
+\\Dosv2k\d\Delphi\TextLibrary\TextLibrary077\LibraryData\Readme.txt
+D:\Delphi\TextLibrary\TextLibrary075b02\LibraryData\Readme.txt
+\\Dosv2k\D\Delphi\TextLibrary\TextLibrary075b02\LibraryData\Readme.txt
+\\Dosv2k\D\Delphi\TextLibrary\TextLibrary075b02\LibraryData\新規テキストファイル.txt
+\\Dosv2k\D\Delphi\TextLibrary\TextLibrary075b01\LibraryData\新規テキストファイル.txt
+\\Dosv2k\D\Delphi\TextLibrary\TextLibrary074b03\LibraryData\新規テキストファイル.txt
+\\Dosv2k\D\Delphi\TextLibrary\TextLibrary074b03\LibraryData\My Documents\Kami Data\標準\集合演算子.html
+\\Dosv2k\D\Delphi\TextLibrary\TextLibrary074b03\LibraryData\My Documents\Kami Data\標準\配列.html
+\\Dosv2k\D\Delphi\TextLibrary\TextLibrary074b03\LibraryData\Readme.txt
+\\Dosv2k\D\Delphi\TextLibrary\TextLibrary074b03\LibraryData\My Documents\Kami Data\HtmlImage\HtmlImage.html
+\\Dosv2k\D\Delphi\TextLibrary\TextLibrary074b03\LibraryData\My Documents\Kami Data\標準\MoveTo と LineTo.html
+\\Dosv2k\D\Delphi\TextLibrary\TextLibrary074b03\LibraryData\My Documents\Kami Data\標準\TrackBar の基礎.html
+\\Dosv2k\D\Delphi\TextLibrary\TextLibrary074b03\LibraryData\My Documents\Kami Data\標準\ビット演算子.html
+\\Dosv2k\D\Delphi\TextLibrary\TextLibrary074b03\LibraryData\My Documents\Kami Data\標準\STEP1 STEP2 STEP3 STEP4 STEP5.html
+D:\Delphi\TextLibrary\TextLibrary074b01\LibraryData\My Documents\Kami Data\標準\STEP1 STEP2 STEP3 STEP4 STEP5.html
+D:\Delphi\TextLibrary\TextLibrary074b01\LibraryData\My Documents\index.htm
+D:\Delphi\TextLibrary\TextLibrary074b01\LibraryData\新規テキストファイル.txt
+D:\Delphi\TextLibrary\TextLibrary074\LibraryData\新規テキストファイル.txt
+D:\Delphi\TextLibrary\TextLibrary074\LibraryData\Readme.txt
+\\YESMAN-9QNN6CCO\I\BUCKUP\PROGRAMBACKUP\TEXTLIBRARY073B01\LibraryData\Readme.txt
+\\YESMAN-9QNN6CCO\I\BUCKUP\PROGRAMBACKUP\TEXTLIBRARY073B01\LibraryData\My Documents\index.htm
+\\YESMAN-9QNN6CCO\I\BUCKUP\PROGRAMBACKUP\TEXTLIBRARY073B01\LibraryData\新規テキストファイル.txt
+\\Mebius\c\Documents and Settings\Administrator\デスクトップ\TextLibrary073b01\LibraryData\新規テキストファイル.txt
+\\Mebius\c\Documents and Settings\Administrator\デスクトップ\TextLibrary073b01\LibraryData\Readme.txt
+C:\Documents and Settings\Administrator\デスクトップ\TextLibrary072b07\LibraryData\Readme.txt
+C:\Documents and Settings\Administrator\デスクトップ\TextLibrary072b06\LibraryData\Program Files\Borland\Delphi6\Source\Rtl\Sys\SysUtils.pas
+C:\Documents and Settings\Administrator\デスクトップ\TextLibrary072b06\LibraryData\Program Files\Borland\Delphi6\Demos\FastNet\Uue\UUEDEMO.DPR
+C:\Documents and Settings\Administrator\デスクトップ\TextLibrary072b06\LibraryData\Program Files\swfscanner\license.txt
+C:\Documents and Settings\Administrator\デスクトップ\TextLibrary072b06\LibraryData\Program Files\Tsk\begin-end.txt
+C:\Documents and Settings\Administrator\デスクトップ\TextLibrary072b06\LibraryData\Program Files\Tsk\ctrl + j.txt
+C:\Documents and Settings\Administrator\デスクトップ\TextLibrary072b06\LibraryData\Program Files\Tsk\ctrl + V.txt
+C:\Documents and Settings\Administrator\デスクトップ\TextLibrary072b06\LibraryData\Program Files\Tsk\False.txt
+C:\Documents and Settings\Administrator\デスクトップ\TextLibrary072b06\LibraryData\Program Files\Tsk\license.txt
+C:\Documents and Settings\Administrator\デスクトップ\TextLibrary072b06\LibraryData\Program Files\Tsk\Procedure.txt
+C:\Documents and Settings\Administrator\デスクトップ\TextLibrary072b06\LibraryData\Program Files\NextFTP\TIPS.TXT
+C:\Documents and Settings\Administrator\デスクトップ\TextLibrary072b06\LibraryData\Program Files\NextFTP\LICENSE.TXT
+C:\Documents and Settings\Administrator\デスクトップ\TextLibrary072b06\LibraryData\Program Files\NextFTP\NEXTFTP.TXT
+C:\Documents and Settings\Administrator\デスクトップ\TextLibrary072b06\LibraryData\Program Files\JTrim\readme.txt
+C:\Documents and Settings\Administrator\デスクトップ\TextLibrary072b06\LibraryData\Program Files\JTrim\license.txt
+C:\Documents and Settings\Administrator\デスクトップ\TextLibrary072b06\LibraryData\Program Files\IBM Homepage Builder V6\README.HTM
+C:\Documents and Settings\Administrator\デスクトップ\TextLibrary072b06\LibraryData\Program Files\IBM Homepage Builder V6\ESUPPORT.HTM
+C:\Documents and Settings\Administrator\デスクトップ\TextLibrary072b06\LibraryData\Program Files\Internet Explorer\readme.txt
+C:\Documents and Settings\Administrator\デスクトップ\TextLibrary072b06\LibraryData\Program Files\Internet Explorer\support.txt
+C:\Documents and Settings\Administrator\デスクトップ\TextLibrary072b06\LibraryData\Program Files\DivX\DivX Codec\README.txt
+C:\Documents and Settings\Administrator\デスクトップ\TextLibrary072b06\LibraryData\Program Files\DivX\DivX Codec\LICENSE.TXT
+C:\Documents and Settings\Administrator\デスクトップ\TextLibrary072b06\LibraryData\Program Files\Grisoft\AVG6\README.TXT
+C:\Documents and Settings\Administrator\デスクトップ\TextLibrary072b06\LibraryData\Program Files\Grisoft\AVG6\LICENSE.TXT
+C:\Documents and Settings\Administrator\デスクトップ\TextLibrary072b06\LibraryData\Program Files\Java\j2re1.4.1\README.txt
+C:\Documents and Settings\Administrator\デスクトップ\TextLibrary072b06\LibraryData\Program Files\gikoNavi\Log\2ch\company\subject.txt
+C:\Documents and Settings\Administrator\デスクトップ\TextLibrary072b06\LibraryData\My Documents\Kami Data\HtmlImage\HtmlImage.html
+C:\Documents and Settings\Administrator\デスクトップ\TextLibrary072b06\LibraryData\My Documents\My Music\CDDB\CDexGenres.txt
+C:\Documents and Settings\Administrator\デスクトップ\TextLibrary072b06\LibraryData\My Documents\My Music\CDDB\CDDB_Batch.txt
+C:\Documents and Settings\Administrator\デスクトップ\TextLibrary072b06\LibraryData\My Documents\My Pictures\Desktop.ini
+C:\Documents and Settings\Administrator\デスクトップ\TextLibrary072b06\LibraryData\My Documents\2000用デバイス\EXUPDATE\relnote.txt
+C:\Documents and Settings\Administrator\デスクトップ\TextLibrary072b06\LibraryData\My Documents\2000用デバイス\DISPLAY\setup.ini
+D:\delphi\TextLibrary\TextLibrary072b05\LibraryData\シリアル\Pandora2002R1011\Pandora2002 English.txt
+D:\delphi\TextLibrary\TextLibrary072b05\LibraryData\シリアル\SPHINX2001_6.24\Siri-Q\2000-11.txt
+D:\delphi\TextLibrary\TextLibrary072b05\LibraryData\シリアル\SPHINX2001B303\SPHINX2001 .txt
+D:\delphi\TextLibrary\TextLibrary072b05\LibraryData\シリアル\SPHINX2001_6.24\Siri-Q\2001-07.txt
+D:\delphi\TextLibrary\TextLibrary072b05\LibraryData\シリアル\SPHINX2001_6.24\SPHINX R1001\SPHINX2001 English.txt
+D:\delphi\TextLibrary\TextLibrary072b05\LibraryData\シリアル\SPHINX2001_6.24\Cyclone2001\Cyclone2001.txt
+D:\delphi\TextLibrary\TextLibrary072b05\LibraryData\シリアル\SPHINX2001_6.24\Siri-Q\2001-10.txt
+D:\delphi\TextLibrary\TextLibrary072b05\LibraryData\シリアル\20010424004415.2x2\0325\data\c.txt
+D:\delphi\TextLibrary\TextLibrary072b05\LibraryData\シリアル\Pandora2002R0314\Pandora2002  Binchag(J).txt
+D:\delphi\TextLibrary\TextLibrary072b05\LibraryData\シリアル\尻R10b.txt
+D:\delphi\TextLibrary\TextLibrary072b05\LibraryData\シリアル\尻R2001\README.TXT
+D:\delphi\TextLibrary\TextLibrary072b05\LibraryData\begin.txt
+D:\delphi\TextLibrary\TextLibrary072b05\LibraryData\／／／ShowMessage(sName)；(2).txt
+D:\delphi\TextLibrary\TextLibrary072b05\LibraryData\／／／ShowMessage(sName)；(3).txt
+D:\delphi\TextLibrary\TextLibrary072b05\LibraryData\書籍付録サンプル\Delphiプログラミングバイブル\readmej.txt
+C:\Documents and Settings\Administrator\デスクトップ\TextLibrary072b04\LibraryData\begin.txt
+C:\Documents and Settings\Administrator\デスクトップ\TextLibrary072b04\LibraryData\／／／ShowMessage(sName)；(2).txt
+C:\Documents and Settings\Administrator\デスクトップ\TextLibrary072b04\LibraryData\／／／ShowMessage(sName)；(3).txt
+C:\Documents and Settings\Administrator\デスクトップ\TextLibrary072b04\LibraryData\／／／ShowMessage(sName)；.txt
+C:\Documents and Settings\Administrator\デスクトップ\TextLibrary072b04\LibraryData\delphi\test\Both.pas
+C:\Documents and Settings\Administrator\デスクトップ\TextLibrary072b04\LibraryData\delphi\test\PassInput.pas
+C:\Documents and Settings\Administrator\デスクトップ\TextLibrary072b04\LibraryData\delphi\test\Import.pas
+C:\Documents and Settings\Administrator\デスクトップ\TextLibrary072b04\LibraryData\delphi\test\MAIN.pas
+C:\Documents and Settings\Administrator\デスクトップ\TextLibrary072b04\LibraryData\delphi\test\About.pas

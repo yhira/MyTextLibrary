@@ -1,0 +1,24 @@
+procedure TMainForm.MacroTreeViewCompare(Sender: TObject; Node1,
+  Node2: TTreeNode; Data: Integer; var Compare: Integer);
+begin
+  if not (Sender is TTreeView) then Exit;
+
+  case OptionDlg.SortComboBox.ItemIndex of
+    0://並び替えしない
+    begin
+      Exit;
+    end;
+    1://アルファベット降順
+    begin
+      Compare := AnsiCompareText(Node2.Text, Node1.Text);
+    end;
+    2://アルファベット昇順
+    begin
+      Compare := AnsiCompareStr(Node1.Text, Node2.Text);
+    end;
+    3://使用頻度
+    begin
+      Compare := PDataItem(Node2.Data)^.FCount - PDataItem(Node1.Data)^.FCount;
+    end;
+  end;
+end;

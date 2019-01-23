@@ -1,0 +1,38 @@
+になります。
+
+まず、これらを使うには「uses節」に「Clipbrd」というのを追加します 
+「uses節」というのはプログラムの一番上の方に、「Form,Dialogs」などというのがあります 
+C言語の経験ある方は などと同じです 
+ここでどんな機能を使うかによって、「uses節」に追加する事も必要な時があります 
+「uses節」というのは重要です。 もちろん、言語には各役割を持ったものが存在します。最初からすべての情報を搭載していたのでは、 膨大な量になってしまいます。そこで、必要最低限の機能だけを使うようにしています。
+
+「Dialogs」というのがありますが、 これは主に「メッセージボックス」や「オープンファイルダイアログ」を制御するものと思って下さい。 「Form」は文字通り、「フォーム」を制御するものです。各役割が分担されていて、 用途に応じて呼び出すようにしているのです。
+
+
+procedure TForm1.mnuCutClick(Sender: TObject);
+begin
+   Memo1.CutToClipboard ;
+end;
+
+
+
+procedure TForm1.mnuCopyClick(Sender: TObject);
+begin
+   Memo1.CopyToClipboard ;
+end;
+
+
+
+procedure TForm1.mnuPasteClick(Sender: TObject);
+begin
+   Memo1.PasteFromClipboard ;
+end; 
+
+
+
+procedure TForm1.mnuDelete(Sender: TObject);
+begin
+   Memo1.SelText := '' ;
+end; 
+となります。何となく分かると思いますが、 最後はちょっと分かりにくいので説明します。 「削除」というのは選択文字列を削除するというものです。 現在選択されているテキストは、「SelText」で取り出す事ができますので、これを「’’」（空）にする事で、 選択されている文字列を空にするという事で削除する事ができています。
+

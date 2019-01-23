@@ -1,0 +1,32 @@
+<HTML><HEAD><meta http-equiv="content-type" content="text/html;charset=Shift_JIS">
+<TITLE>リッチエディットでスクロールさせる</TITLE></HEAD>
+
+<BODY bgColor=#ffffff>
+<P><B><FONT size=+2>リッチエディットでスクロールさせる<BR></FONT></B></P>
+<P>リッチエディットでテキストをスクロールさせるには EM_LINESCROLL メッセージを使用します。</P>
+<P>
+<TABLE cellSpacing=0 cellPadding=0 border=1>
+<TBODY>
+<TR>
+<TD width="100%" bgColor=#330099><FONT 
+color=#ffffff>■リッチエディットをスクロールさせる例</FONT></TD></TR>
+<TR>
+<TD width="100%" bgColor=#ffffff><PRE><FONT color=#000000>  <B>procedure</B> TForm1.Button1Click(Sender: TObject);</FONT>
+<FONT color=#000000>  <B>begin</B></FONT>
+<FONT color=#000000>    RichEdit1.SetFocus;</FONT>
+<FONT color=#000000>    <B>if</B>  CheckBox1.Checked <B>then</B></FONT>
+<FONT color=#000000>    <B>begin</B></FONT>
+<FONT color=#008000>      { 上にスクロール }</FONT>
+<FONT color=#000000>      RichEdit1.</FONT><FONT color=#ff0000>Perform</FONT><FONT color=#000000>(</FONT><FONT color=#ff0000>EM_LINESCROLL</FONT><FONT color=#000000>, 0, </FONT><FONT color=#000099>-1</FONT><FONT color=#000000>);</FONT>
+<FONT color=#000000>   <B> end else begin</B></FONT>
+<FONT color=#008000>      { 下にスクロール }</FONT>
+<FONT color=#000000>      RichEdit1.</FONT><FONT color=#ff0000>Perform</FONT><FONT color=#000000>(</FONT><FONT color=#ff0000>EM_LINESCROLL</FONT><FONT color=#000000>, 0, 1);</FONT>
+<FONT color=#000000>    <B>end</B>;</FONT>
+<FONT color=#000000>  <B>end</B>;</FONT></PRE></TD></TR></TBODY></TABLE></P><BR>
+<FONT SIZE="-1">
+TITLE:リッチエディットでスクロールさせる<BR>
+DATE:2002/06/01 18:28<BR>
+URL:<A HREF="http://www.wwlnk.com/boheme/delphi/tips/tec0280.htm" TARGET="_blank">http://www.wwlnk.com/boheme/delphi/tips/tec0280.htm</A><BR>
+</FONT>
+</BODY>
+</HTML>

@@ -1,0 +1,25 @@
+> 申し訳ないですが、何に足せばいいかおしえてください。
+> カーソルの行移動は
+> RichiEdit1.SelStart := SendMessage(Handle,EM_LINEINDEX,LineNo,0);
+> ですよね。
+
+たぶん、上記の Handle は、Form のハンドルにメッセージを送信しているの
+ではないでしょうか？ RichEdit1.Handle では？
+
+--- 以下 例文 ---
+var
+  n, x, y: Integer;
+begin
+  with Memo1 do
+  begin
+    y := Perform(EM_LINEFROMCHAR, -1, 0);         // カーソル行
+    x := SelStart - Perform(EM_LINEINDEX, -1, 0); // 桁位置
+    SelText := '+++';  // カーソル位置に挿入
+    n := Perform(EM_LINEINDEX, y + 1, 0); // 下の行の先頭位置
+    SelStart := n + x; // 下の行のカーソル桁に移動
+    SelText := '---';  // OK OK (^^)/
+  end;
+end;
+
+-----
+// 鈴木 充 / suzukim@alpha.co.jp 

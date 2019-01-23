@@ -1,0 +1,19 @@
+フォームにもメッセージが来てますので簡単です。
+
+  TForm1 = class(TForm)
+  private
+      :
+    procedure WMActivateAPP(var Msg: TWMActivateAPP); 
+              message WM_ACTIVATEAPP;
+      :
+  end;
+      :
+      :
+
+procedure TForm1.WMActivateAPP(var Msg: TWMActivateAPP);
+begin
+  inherited;
+  // ここで捕まえる。
+end;
+
+---------------------------

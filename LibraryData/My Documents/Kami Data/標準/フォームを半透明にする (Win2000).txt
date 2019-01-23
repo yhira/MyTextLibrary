@@ -1,0 +1,13 @@
+
+Delphi 6 以上
+API があるようですが、Delphi 6 からは TForm のプロパティとして実装されています。TForm の AlphaBlend プロパティを True の場合に AlphaBlendValue に数値を入れるとその値に応じた透明度でフォームが描画されます。値は 0～255 の範囲で、 0 にするとフォームは見えなくなります。
+
+■ フォームを半透明にする例 
+procedure TForm1.BitBtn1Click(Sender: TObject);  
+begin
+  Form1.AlphaBlend        :=  True;
+  Form1.AlphaBlendValue   :=  50;
+end; 
+
+
+API を直接使う場合はこの辺かDEKOさんの 『DEKOのアヤシいお部屋』 ( http://homepage1.nifty.com/ht_deko/ ) の Tips を参考にしてみてください。 

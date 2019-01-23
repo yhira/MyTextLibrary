@@ -1,0 +1,61 @@
+procedure TMainForm.FormCreate(Sender: TObject);
+var
+  P:PBookMarkItem;
+  Node:TTreeNode;
+  SL1:TStringList;
+  strTitle,strLine:string;
+  i,n,intLevelA,intLevelB,intA,intB:integer;
+begin
+  if FileExists('BookMark.txt') = True then
+  begin
+    SL1 := TStringList.Create;
+    try
+      SL1.LoadFromFile('BookMark.txt');   //ブックマークは、
+     [[ intLevelB ]]:= 0;                     //ノードの階層レベル，タイトル，URL
+      Node := nil;                        //の形式で格納してある。
+      for i := 0 to SL1.Count -1 do
+      begin
+        strLine := SL1.Strings[i];
+        intA := Pos(',',strLine);
+        for n := Length(strLine) downto 1 do
+        begin
+          if strLine[n] = ',' then
+          begin
+            intB := n;
+            Break;
+          end;
+        end;
+        try
+          intLevelA := StrToInt(Copy(strLine,1,intA-1));
+        except
+          on EConvertError do
+          begin
+            ShowMessage('ブックマークの読み込みに失敗しました。');
+            Exit;
+          end;
+        end;
+        strTitle := Copy(strLine,intA+1,intB-intA-1);
+        New(P);
+        P^.URL := Copy(strLine,intB+1,Length(strLine)-intB);
+        Node := TreeView1.Items.AddObject(Node,strTitle,P);
+        if [[intLevelB]] > intLevelA then
+        begin
+          intLevelB := intLevelA;
+          while Node.Level > intLevelA do
+          begin
+            Node.MoveTo(Node.Parent,naAdd);
+          end;
+        end
+        else if intLevelB < intLevelA then
+        begin
+          Node.MoveTo(Node.GetPrev,naAddChild);
+          intLevelB := intLevelA;
+        end;
+      end;
+      TreeView1.FullCollapse;
+    finally
+      SL1.Free;
+    end;
+  end;
+end;
+

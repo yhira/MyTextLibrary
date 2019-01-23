@@ -1,0 +1,23 @@
+
+--------------------------------------------------------------------------------
+ 
+出来合いのダイアログはフォントの変更ができませんが、その場で生成したダイアログはフォントの変更ができます。
+ただし、ボタンのフォントも変わってしまうので注意が必要です。
+
+procedure TForm1.Button1Click(Sender: TObject);
+var
+  Result: integer;
+begin
+   with CreateMessageDialog('メッセージ', mtWarning, mbOKCancel) do
+   begin
+     try
+       Left := 10;
+       Top := 10;
+       Font.Name := 'ＭＳ Ｐ明朝';
+       Font.Size := 8;
+       Result := ShowModal;
+     finally
+       Free;
+     end;
+   end;
+end; 

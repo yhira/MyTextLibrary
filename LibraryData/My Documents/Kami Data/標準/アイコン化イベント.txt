@@ -1,0 +1,42 @@
+
+
+(Delphi 5 以前用 Tips) アプリケーションがアイコン化されたときのイベントはフォームのResize等で処理するしかないように思えるがTApplicationのMinimizeイベントを使用すれば簡単に処理できる。逆にアイコン化から標準ウィンドウに戻された時のイベントもつくることができる。こちらはRestoreイベントを使用する。
+以下の例はアプリケーションが非アクティブ時とアクティブ時にタスクバーのアプリケーション文字列の内容を更新します。
+
+■ アイコン化のイベント 
+type
+  TForm1  =  class(TForm);
+    procedure FormCreate(Sender: TObject);
+  private
+    { プライベート宣言 }
+    procedure AppOnMinimize  (Sender: TObject); 
+    procedure AppOnRestore   (Sender: TObject); 
+  public
+    { パブリック宣言 }
+  end;
+
+  var
+    Form1 : TForm1;
+
+  implementation
+
+  { $R *.DFM }
+
+  procedure TForm1.FormCreate(Sender: TObject);
+  begin
+    Appliaction.OnMinimize  :=   AppOnMinimize;
+    Appliaction.OnRestore   :=   AppOnRestore;
+  end;
+
+  procedure TForm1.AppOnMinimize(Sender: TObject);
+  begin
+     //アイコン化の処理
+     Application.Title   :=   'Minimize';
+  end;
+
+  procedure TForm1.AppOnRestore(Sender: TObject);
+  begin
+     //復元時の処理
+     Application.Title   :=   'Normal';
+  end; 
+

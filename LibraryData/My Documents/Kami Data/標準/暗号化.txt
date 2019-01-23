@@ -1,0 +1,102 @@
+77 名前：デフォルトの名無しさん 投稿日：02/04/04 12:32
+とりあえず作ってあげたよ >>66
+
+function　 MyCipherStr(const s:String;decode:Boolean):string;
+var i,n,siz:Integer;
+const k='ひみつのアッコちゃん';
+begin
+RandSeed:=(ord(k[3])*$10000+ord(k[1])*$100+ord(k[2]));
+Result:='';
+siz:=Length(s);
+if decode then siz:=siz div 2;
+for i:=1 to siz do begin
+if decode then　n:= StrToInt('$'+copy(s,i*2-1,2))
+　　　　　 else　n:= ord(s[i]);
+　n:= ( n xor ord(k[1+(i mod Length(k))]) xor random(256));
+if decode then　Result:=Result+Char(n)
+　　　　　 else　Result:=Result+IntToHex(n,2);
+end;
+end;
+
+レジストリに書く文字列をstrとして
+MyCipherStr(str,false)
+　を書いて
+
+レジストリから読む時は
+str := MyCipherStr(ReadString(何とか),true);
+
+
+84 名前：デフォルトの名無しさん 投稿日：02/04/04 13:14
+あっと、でも１つでも原文が判るとダメ＝原文とXORしたら別の暗号文も解けるか
+だから、もう少しだけ強力にする
+
+function　 MyCipherStr(const s:String;decode:Boolean):string;
+var i,n,m,siz,r:Integer;
+const k='ひみつ';
+begin
+RandSeed:=(ord(k[3])*$10000+ord(k[1])*$100+ord(k[2]));
+Result:='';
+siz:=Length(s);
+r:=random($FFFF);
+if decode then siz:=siz div 2;
+for i:=1 to siz do begin
+if decode then　n:= StrToInt('$'+copy(s,i*2-1,2))
+　　　　　 else　n:= ord(s[i]);
+　m:= ( n xor ord(k[1+(i mod Length(k))]) xor random(256)) xor (r and $FF);
+if decode then　r:=(r*331 + m) else r:=(r*331 +n) ;
+if decode then　Result:=Result+Char(m)
+　　　　　 else　Result:=Result+IntToHex(m,2);
+end;
+end;
+
+kの文字列の他に途中の331もパラメータになるから、
+クラックする場合の苦労は100倍程度に増える筈
+
+
+99 名前：デフォルトの名無しさん 投稿日：02/04/04 15:30
+ファイルの簡単な暗号化なら、これつかえ。
+function XOR(InFile, OutFile:string);
+var
+　P:Byte;
+　InStream, OutStream: TFileStream;
+begin
+　InStream := TFileStream.Create;
+　OutStream := TFileStream.Create;
+
+　InStream.LoadFromFile( InFile );
+　while InStream.Position < InStream.Size do begin
+　　InStream.ReadBuffer( P, 1 );
+　　OutStream.WriteBuffer( P xor $FF, 1 );
+　end;
+
+　OutStream.SaveToFile( OutFile );
+
+　InStream.Free;
+　OutStream.Free;
+end;
+
+
+108 名前：デフォルトの名無しさん 投稿日：02/04/04 15:42
+ファイルのさらなる暗号化なら、これ。
+XOR で、さらに逆向きに記録
+function FileXORRev(InFile, OutFile:string);
+var
+　I: Integer;
+　P:Byte;
+　InStream, OutStream: TFileStream;
+begin
+　InStream := TFileStream.Create;
+　OutStream := TFileStream.Create;
+
+　InStream.LoadFromFile( InFile );
+　for I := InStream.Size-1 downto 0 do begin
+　InStream.Position := I;
+　　InStream.ReadBuffer( P, 1 );
+　　OutStream.WriteBuffer( P xor $FF, 1 );
+　end;
+
+　OutStream.SaveToFile( OutFile );
+
+　InStream.Free;
+　OutStream.Free;
+end;

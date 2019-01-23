@@ -1,0 +1,56 @@
+<HTML><HEAD><meta http-equiv="content-type" content="text/html;charset=Shift_JIS">
+<TITLE>第3回　変数とデータ型</TITLE></HEAD>
+
+<BODY>
+<P><B><U><FONT 
+size=+1>整数型</FONT></U></B><BR><BR>　整数型はその名のとおり、整数を記憶するためのデータ型です。小数点のついた数値は扱えません。整数型には扱える数値の大きさ(データサイズ)に応じて、次のものがあります。</P>
+<TABLE cellSpacing=0 width=610 border=1>
+<TBODY>
+<TR>
+<TD align=middle bgColor=#e6e6f2>型名</TD>
+<TD align=middle bgColor=#e6e6f2>数値の範囲</TD>
+<TD align=middle bgColor=#e6e6f2>データサイズ</TD></TR>
+<TR>
+<TD>Integer</TD>
+<TD>-2147483648　～　2147483647</TD>
+<TD>4バイト</TD></TR>
+<TR>
+<TD>Cardinal</TD>
+<TD>0　～　4294967295</TD>
+<TD>4バイト</TD></TR>
+<TR>
+<TD>ShortInt</TD>
+<TD>-128　～　127</TD>
+<TD>1バイト</TD></TR>
+<TR>
+<TD>SmallInt</TD>
+<TD>-32768　～　32767</TD>
+<TD>2バイト</TD></TR>
+<TR>
+<TD>LongInt</TD>
+<TD>-2147483648　～　2147483647</TD>
+<TD>4バイト</TD></TR>
+<TR>
+<TD>Int64</TD>
+<TD>-9223372036854775806　～　9223372036854775807</TD>
+<TD>8バイト</TD></TR>
+<TR>
+<TD>Byte</TD>
+<TD>0　～　255</TD>
+<TD>1バイト</TD></TR>
+<TR>
+<TD>Word</TD>
+<TD>0　～　65535</TD>
+<TD>2バイト</TD></TR>
+<TR>
+<TD>LongWord</TD>
+<TD>0　～　4294967295</TD>
+<TD>4バイト</TD></TR></TBODY></TABLE>
+<P>　この中で、IntegerとCardinalは基本型と呼ばれています。普段は、このどちらかの型を使います。基本型はもっとも効率よく処理ができるからです。<BR>　ただし、基本型は使用するOSやCPUによって、扱える数値の範囲が変わる可能性があります。また、小さい数値を扱うのにInteger型などを使うのはメモリの無駄にもなります。<BR>　時と場合に合わせて、型を選ぶ必要があります。</P><BR>
+<FONT SIZE="-1">
+TITLE:第3回　変数とデータ型<BR>
+DATE:2002/12/29 16:24<BR>
+URL:<A HREF="http://wblue.hp.infoseek.co.jp/prog/c2_03.htm" TARGET="_blank">http://wblue.hp.infoseek.co.jp/prog/c2_03.htm</A><BR>
+</FONT>
+</BODY>
+</HTML>

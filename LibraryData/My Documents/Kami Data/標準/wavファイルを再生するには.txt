@@ -1,0 +1,23 @@
+
+--------------------------------------------------------------------------------
+ 
+midiファイルやwavファイルはmedia playerを使えば簡単に再生可能ですが、wavファイルならばAPIを使って、より手軽に再生することができます。これらはmedia playerで音楽を流しながら再生することもできるので、ゲームなどを作るとき、media playerでBGMを流しながら、効果音を鳴らすようにする、なんてこともできます。
+以下の例では、Button1Clickで非同期再生、Button2Clickで同期再生が可能です。
+
+////////// 
+uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  Dialogs, mmsystem, StdCtrls;
+
+...中略...
+
+procedure TForm026.Button1Click(Sender: TObject);
+begin
+  sndPlaySound('tada.wav',SND_ASYNC);
+end;
+
+procedure TForm026.Button2Click(Sender: TObject);
+begin
+  sndPlaySound('tada.wav',SND_SYNC);
+end;
+////////// 

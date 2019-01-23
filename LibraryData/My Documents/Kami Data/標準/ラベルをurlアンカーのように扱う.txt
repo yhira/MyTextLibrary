@@ -1,0 +1,18 @@
+
+--------------------------------------------------------------------------------
+ 
+ActiveDeskTopインストールシステムに限定されますが、ラベルをurlアンカーのように扱えるように工夫ができます。
+ラベルのFontプロパティで下線をチェック、フォントの色を赤などの原色に変更。
+Hintプロパティに転送先のurlを入力。
+ShowHintプロパティをTrueに変更。
+uses節に「ShellAPI」ユニットを組み込み、ラベルのOnClickイベントにShellExecute APIでコンテナフォルダをオープンする手続きを入力して完成です。
+
+procedure TForm1.Label1Click(Sender: TObject);
+begin
+   with label1 do
+   begin
+      ShellExecute(Application.Handle,
+                   PChar('open'), PChar(Label1.Hint),
+                   PChar(0), nil, SW_NORMAL);
+   end;
+end; 

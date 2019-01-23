@@ -1,0 +1,8 @@
+procedure TForm1.btnOpenClick(Sender: TObject);
+var
+  strm: TStream;
+begin
+  strm := TFileStream.Create(ExtractFilePath(Application.ExeName) + 'load.txt', fmOpenRead);
+  tv1.LoadFromStream(strm);
+  strm.Free;
+end;

@@ -1,0 +1,14 @@
+
+--------------------------------------------------------------------------------
+ 
+ダイアログのOnShowイベントで、SendMessage APIを使ってCDM_SETCONTROLTEXTに変更メッセージを送り込めば実現しますが、ダイアログの親ハンドルを取得するためにGetParent APIをつかいます。
+CDM_SETCONTROLTEXT定数はCommDlgユニットに実装されていますので、uses節に組み込んでください。
+
+procedure TForm1.SaveDialog1Show(Sender: TObject);
+var
+  CapStr: array[0..30] of Char;
+begin
+  StrCopy(@CapStr, '新規');
+  SendMessage(GetParent((Sender as TSaveDialog).Handle), CDM_SETCONTROLTEXT,
+              IDOK, integer(@CapStr));
+end; 

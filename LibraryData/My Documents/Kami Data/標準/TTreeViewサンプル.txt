@@ -1,0 +1,159 @@
+unit Unit1;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  StdCtrls, ComCtrls;
+
+type
+  TForm1 = class(TForm)
+    GroupBox1: TGroupBox;
+    GroupBox2: TGroupBox;
+    btnAddLast: TButton;
+    btnAddFirst: TButton;
+    GroupBox3: TGroupBox;
+    btnAddSubItem: TButton;
+    btnDelete: TButton;
+    btnClear: TButton;
+    btnFullExpand: TButton;
+    btnFullCollapse: TButton;
+    btnOpen: TButton;
+    btnSave: TButton;
+    GroupBox4: TGroupBox;
+    tv1: TTreeView;
+    Edit1: TEdit;
+    Edit2: TEdit;
+    Memo1: TMemo;
+    btnTree2Memo: TButton;
+    btnMemo2Tree: TButton;
+    Label1: TLabel;
+    procedure btnAddFirstClick(Sender: TObject);
+    procedure btnAddLastClick(Sender: TObject);
+    procedure btnAddSubItemClick(Sender: TObject);
+    procedure btnDeleteClick(Sender: TObject);
+    procedure btnClearClick(Sender: TObject);
+    procedure btnFullExpandClick(Sender: TObject);
+    procedure btnFullCollapseClick(Sender: TObject);
+    procedure btnOpenClick(Sender: TObject);
+    procedure btnSaveClick(Sender: TObject);
+    procedure btnTree2MemoClick(Sender: TObject);
+    procedure btnMemo2TreeClick(Sender: TObject);
+  private
+    { Private 宣言 }
+  public
+    { Public 宣言 }
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+{$R *.DFM}
+
+//先頭にアイテムを追加
+procedure TForm1.btnAddFirstClick(Sender: TObject);
+begin
+  tv1.Items.AddFirst(nil, Edit1.Text);
+end;
+
+//最後尾にアイテムを追加
+//ただ単にAddしてるだけです。AddFirstとの違いは
+//トップノードを引数にしているところです。
+procedure TForm1.btnAddLastClick(Sender: TObject);
+var
+  trnd: TTreeNode;
+  i: Integer;
+begin
+  if tv1.Items.Count = 0 then
+    trnd := tv1.Items.Add(nil, Edit1.Text)
+  else
+    trnd := tv1.Items.Add(tv1.Items[0], Edit1.Text);
+end;
+
+[[//サブアイテムの追加
+//Selectedは現在選択されているノード
+procedure TForm1.btnAddSubItemClick(Sender: TObject);
+var
+  trnd: TTreeNode;
+begin
+  if tv1.Selected <> nil then
+    trnd := tv1.Items.AddChild(tv1.Selected, Edit2.Text)
+  else
+    ShowMessage('ノードが選択されていません。');
+end;]]
+
+//アイテムの削除
+procedure TForm1.btnDeleteClick(Sender: TObject);
+var
+  trnd: TTreeNode;
+begin
+  if tv1.Selected <> nil then
+    tv1.Selected.Delete
+  else
+    ShowMessage('ノードが選択されていません。');
+end;
+
+//全アイテムを消去
+procedure TForm1.btnClearClick(Sender: TObject);
+begin
+  tv1.Items.Clear;
+end;
+
+//全てのノードを展開
+procedure TForm1.btnFullExpandClick(Sender: TObject);
+begin
+  tv1.FullExpand;
+end;
+
+//全てのノードを縮小
+procedure TForm1.btnFullCollapseClick(Sender: TObject);
+begin
+  tv1.FullCollapse;
+end;
+
+//ファイルから読み込む
+procedure TForm1.btnOpenClick(Sender: TObject);
+var
+  strm: TStream;
+begin
+  strm := TFileStream.Create(ExtractFilePath(Application.ExeName) + 'load.txt', fmOpenRead);
+  tv1.LoadFromStream(strm);
+  strm.Free;
+end;
+
+//ファイルに保存
+procedure TForm1.btnSaveClick(Sender: TObject);
+var
+  strm: TStream;
+begin
+  strm := TFileStream.Create(ExtractFilePath(Application.ExeName) + 'save.txt', fmCreate);
+  tv1.SaveToStream(strm);
+  strm.Free;
+end;
+
+//メモに読込み
+procedure TForm1.btnTree2MemoClick(Sender: TObject);
+var
+  strm: TStream;
+begin
+  strm := TStringStream.Create('');
+  tv1.SaveToStream(strm);
+  //SaveToStreamでストリームのポジションが一番後ろに移動しているので、先頭に戻す。
+  strm.Position := 0;
+  Memo1.Lines.LoadFromStream(strm);
+  strm.Free;
+end;
+
+//ツリーに書出し
+procedure TForm1.btnMemo2TreeClick(Sender: TObject);
+var
+  strm: TStream;
+begin
+  strm := TStringStream.Create(Memo1.Lines.Text);
+  tv1.LoadFromStream(strm);
+  strm.Free;
+end;
+
+end.

@@ -1,0 +1,26 @@
+
+--------------------------------------------------------------------------------
+ 
+GetFileVersionInfo APIで取得できます。
+このAPIを実行するには、事前にGetFileVersionInfoSize APIでVSFixedFileInfo構造体の格納メモリを取得しておく必要があります。
+
+procedure TForm1.FormCreate(Sender: TObject);
+var
+  VerInfoSize, VerValSize, Dummy: DWORD;
+  VerInfo: Pointer;
+  V1, V2, V3, V4: Word;
+  VerValue: PVSFixedFileInfo;
+begin
+  VerInfoSize := GetFileVersionInfoSize(PChar('explorer.exe'), Dummy);
+  Getmem(VerInfo, VerInfoSize);
+  if GetFileVersionInfo(PChar('explorer.exe'), 0, VerInfoSize, VerInfo) then
+  begin
+    VerQueryValue(VerInfo, '\', Pointer(VerValue), VerValSize);
+    V1 := VerValue.dwFileVersionMS shr 16;
+    V2 := VerValue.dwFileVersionMS and $FFFF;
+    V3 := VerValue.dwFileVersionLS shr 16;
+    V4 := VerValue.dwFileVersionLS and $FFFF;
+    Edit1.Text := Format('%d.%d.%d.%d', [V1, V2, V3, V4]);
+  end;
+  FreeMem(VerInfo, VerInfoSize);
+end; 

@@ -1,0 +1,15 @@
+
+
+Editや RichEditのキャレットの位置を取得するには GetCaretPos APIを使用します。以下のサンプルは現在のキャレットの位置にリストボックスを表示します。
+
+■ キャレットの位置を取得する例 
+  procedure TForm1.Button6Click(Sender: TObject);
+  var
+    pntCaret  : TPoint;
+  begin
+    GetCaretpos(pntCaret);
+    ListBox1.Top    :=  RichEdit1.Top   + pntCaret.y  + Abs(RichEdit1.Font.Height);
+    ListBox1.Left   :=  RichEdit1.Left  + pntCaret.X;
+  end;
+ 
+

@@ -1,0 +1,21 @@
+
+
+--------------------------------------------------------------------------------
+該当するバージョン:Delphi 1.0,Delphi 2.0,Delphi 3.0/Delphi3.1,Delphi4
+ マウスポインタを任意の位置に移動させるには，どうしますか？ 
+
+ 
+ WinAPI の SetCursorPos() を使用することでマウスポインタを移動できます。
+次のコードは，Button2 をクリックすると，Button1 の中央にマウスポインタを移動します。
+
+
+   procedure TForm1.Button3Click(Sender: TObject);
+   var
+     Q: TPoint;
+   begin
+     Q := Point(Button1.Width div 2, Button1.Height div 2);
+     Q := Button1.ClientToScreen(Q);
+     SetCursorPos(Q.X, Q.Y);
+  end;
+ 
+

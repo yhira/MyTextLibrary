@@ -1,0 +1,68 @@
+ここでは、３分で作れる簡単なプログラムを紹介したいと思います。ぜひ、作って遊んでみてください。 
+
+パネルにランダムな色を表示させます。まず、フォーム( Form )にボタン( Button )とパネル( Panel )を貼り付けてください。(共に Standard のページにあります。) そして、以下のプログラムを書いてください。(手書きをする部分は、文字が青くなっています) 
+
+
+  unit Unit1;
+  
+  interface
+  
+  uses
+    Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+    Dialogs, StdCtrls, ExtCtrls;
+  
+  type
+    TForm1 = class(TForm)
+      Panel1: TPanel;
+      Button1: TButton;
+      procedure Button1Click(Sender: TObject);
+      procedure FormCreate(Sender: TObject);
+      procedure Button2Click(Sender: TObject);
+    private
+      { Private 宣言 }
+    public
+      { Public 宣言 }
+    end;
+  
+  var
+    Form1: TForm1;
+  
+  implementation
+  
+  {$R *.dfm}
+  
+  procedure TForm1.Button1Click(Sender: TObject);
+  var
+    i1, i2, i3: Integer;
+  begin
+    
+    i1 := Random(256);
+    i2 := Random(256);
+    i3 := Random(256);
+  
+    Panel1.Color := RGB(i1, i2, i3);
+  end;
+  
+  procedure TForm1.FormCreate(Sender: TObject);
+  begin
+    Randomize;
+  end;
+         
+
+たった数行のプログラムですが、ボタンを押せば、ちゃんとランダムな色に変わってくれます。これを使って、いろいろ拡張していけば面白いものが出来るかもしれませんね。ぜひ、やってみてください。（何かアイディアがあったら、教えてください（＾＾；） 
+
+
+  procedure TForm1.Button1Click(Sender: TObject);
+  begin
+  
+  end;
+  
+  procedure TForm1.FormCreate(Sender: TObject);
+  begin
+  
+  end; 
+        の部分はどのようにすれば良いか分からない人は、こちらを参考にして下さい。 
+
+supplement
+パネルの色をランダムで得るとき、３つの整数の組み合わせで、やってきましたが実際 RGB は $000000～$FFFFFF の間の値をとるので、
+Panel1.Color := TColor(Random($1000000)); でも良いことになります。 

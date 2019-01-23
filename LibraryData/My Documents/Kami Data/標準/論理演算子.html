@@ -1,0 +1,43 @@
+<HTML><HEAD><meta http-equiv="content-type" content="text/html;charset=Shift_JIS">
+<TITLE>第5回　Pascalの基礎</TITLE></HEAD>
+
+<BODY>
+<P><B><U><FONT size=+1>論理演算子</FONT></U></B><BR><BR>　論理型で真偽の判定に使います。主にif文で使用します。</P>
+<TABLE cellSpacing=0 width=610 border=1>
+<TBODY>
+<TR>
+<TD align=middle bgColor=#e0e0ef>演算子</TD>
+<TD align=middle bgColor=#e0e0ef>意味</TD></TR>
+<TR>
+<TD>and</TD>
+<TD>左辺と右辺がどちらも真(True)の場合、結果が真(True)になります</TD></TR>
+<TR>
+<TD>or</TD>
+<TD>左辺と右辺のどちらか一方でも真(True)の場合、結果が真(True)になります</TD></TR>
+<TR>
+<TD>not</TD>
+<TD>論理値を逆転する</TD></TR>
+<TR>
+<TD>xor</TD>
+<TD>排他的論理和。片方が真(True)で、もう片方が偽(False)ときだけ、真(True)になります</TD></TR></TBODY></TABLE>
+<P>　論理演算子の演算結果は、次の例のようになります。</P><PRE>  var
+    X, Y, Z: Boolean;
+    Ans: Boolean;
+  begin
+    X := True;
+    Y := True;
+    Z := False;
+
+    Ans := X and Y;    { Ans = True になる }
+    Ans := X and Z;    { Ans = False になる }
+    Ans := X or Z;     { Ans = True になる }
+    Ans := not X;      { Ans = False になる }
+    Ans := X xor Z;    { Ans = True になる }
+  end;</PRE><BR>
+<FONT SIZE="-1">
+TITLE:第5回　Pascalの基礎<BR>
+DATE:2002/12/29 16:54<BR>
+URL:<A HREF="http://wblue.hp.infoseek.co.jp/prog/c2_05.htm" TARGET="_blank">http://wblue.hp.infoseek.co.jp/prog/c2_05.htm</A><BR>
+</FONT>
+</BODY>
+</HTML>

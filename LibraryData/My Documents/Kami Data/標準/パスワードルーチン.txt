@@ -1,0 +1,35 @@
+
+--------------------------------------------------------------------------------
+ 
+簡単なパスワード入力のルーチンです。
+While関数を使って再挑戦できる回数を決めています。
+簡単なものなので、入力している文字はそのまま表示されてしまいます。
+
+procedure TForm1.FormCreate(Sender: TObject);
+const
+  Keyword: String = 'password';
+var
+  Pass: String;
+  PassOK: Boolean;
+  Cnt: Integer;
+begin
+  Cnt := 1;
+  PassOK := False;
+  While (Cnt < 4) do
+  begin
+    InputQuery('パスワードを入力',
+               IntToStr(Cnt) + '回目の挑戦', Pass);
+    if Pass = Keyword then
+    begin
+      PassOK := True;
+      Break
+    end;
+    Inc(Cnt);
+  end;
+
+  if not PassOK then
+  begin
+    ShowMessage('挑戦できる回数をオーバーしました');
+    Application.Terminate;
+  end;
+end; 

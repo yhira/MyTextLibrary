@@ -1,0 +1,60 @@
+<HTML xml:lang="ja" xmlns="http://www.w3.org/1999/xhtml"><HEAD><meta http-equiv="content-type" content="text/html;charset=Shift_JIS">
+<TITLE>TrackBar の基礎</TITLE><LINK 
+href="file://D:\delphi\読み物\Seventh\dirDelphi\index.html" type=text/html rel=Start><LINK href="file://D:\delphi\読み物\Seventh\dirDelphi\mystyle.css" 
+type=text/css rel=stylesheet></HEAD>
+
+<BODY><H3 class=title>TrackBar の基礎</H3>
+<P class=indent>TrackBar を使った簡単な例を見てみましょう。TrackBar 
+は一般にサイズの変更などに利用されることが多いです。それでは、フォームに Win32 ページにある TrackBar ２つと Additional ページにある 
+Image を１つ、Standard ページにある Button を貼り付けて下さい。まず最初に、TrackBar で良く使うプロパティの説明をします。 
+</P>
+<DL>
+<DT><EM>Min、Max プロパティ</EM> 
+<DD>これは、その名の通り TrackBar における最小と最大です。 
+<DT><EM>Position プロパティ</EM> 
+<DD>TrackBar の現在スライダ(「つまみ」ともいいます)が指している位置です。もちろん、この値は Min と Max の間にあります。 
+<DT><EM>PageSize プロパティ</EM> 
+<DD>実行時に TrackBar 
+のスライダの位置を移動させるのには、普通スライダをクリックしたままマウスを移動させることによって変化させますが、別の方法に、ただ単に TrackBar 
+をクリックすることによってもスライダの位置を移動させることが出来ます。その、１クリックでのスライダの「移動量」です。例えば、PageSize 
+を10に設定すると1クリックでスライダが10移動します。 
+<DT><EM>LineSize プロパティ</EM> 
+<DD>これは、PageSize がマウスのクリックに対して、矢印キー（「→」「←」）に変わっただけです 
+<DT><EM>Frequency プロパティ</EM> 
+<DD>TrackBar 上に表示されているメモリ位置の細かさです。例えは、Min が 0, Max が 10 で 
+Frequenceが1の場合、メモリは１刻みで表示されます。Frequenceを2にすると、今度は2刻みで表示されます。<BR>Min が 0、 Max が 
+50、 Frequence を 10 とするとメモリは 10 刻みで振られます。
+<P></P></DD></DL>
+<P>といった所です。 </P>
+<P class=indent>それでは、今回は Image にビットマップを表示して、その大きさを TrackBar 
+で任意サイズに変更するようなプログラムを作って見ましょう。今回は簡単のためにイメージエディタで 10 * 10 
+ぐらいの大きさのビットマップを用意して下さい。(保存もして下さい、場所はどこでも構いません）そして今度は、オブジェクトインスペクタで Image1 を選択して 
+Picture 
+プロパティの右側の「..」をクリックしてください。すると、「画像の設定」というダイアログが出てくると思いますので、そこの「読み込み」ボタンを押して作成したビットマップを読み込んでください。 
+</P>
+<P class=indent>次に、２つの TrackBar の Min プロパティを 10、Max、Position プロパティを 100 
+にして下さい。最後に Button の OnClick イベントを書きます。 </P>
+<DIV class=type1><PRE><CODE>
+  procedure TForm1.Button1Click(Sender: TObject);
+  begin
+    Image1.Stretch := True;
+  
+    Image1.Width := TrackBar1.Position;
+    Image1.Height := TrackBar2.Position;
+  end;    
+        </CODE></PRE></DIV>
+<P class=indent>これで完了です。 Image1.Stretch でビットマップを任意の大きさに出来るように、また Image1.Width、 
+Image1.Height で TrackBar のスライダが現在指している位置を反映させています。早速実行して、2つの TrackBar 
+のスライダを移動させて見てください。ボタンを押すとその設定がビットマップに反映されます。 </P>
+<P><IMG class=imgleft height=197 alt="" src="file://D:\delphi\読み物\Seventh\img/del-072.gif" width=329> </P>
+<P class=newpara>見やすくするためにラベルも張りました。また、最初にビットマップの大きさを指定したのは TrackBar の Min, Max 
+プロパティの値を適切にするためにしました。なので、今度はビットマップの大きさや Min, Max プロパティをいろいろ変えてチャレンジして見て下さい。 </P>
+<HR class=color>
+<BR>
+<FONT SIZE="-1">
+TITLE:TrackBar の基礎<BR>
+DATE:2002/12/08 23:56<BR>
+URL:<A HREF="file://D:\delphi\読み物\Seventh\dirDelphi\d023.html" TARGET="_blank">file://D:\delphi\読み物\Seventh\dirDelphi\d023.html</A><BR>
+</FONT>
+</BODY>
+</HTML>

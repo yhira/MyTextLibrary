@@ -1,0 +1,31 @@
+function GetNum(Line: string):Integer;
+var
+Index, Count: Integer;
+begin
+Index :=AnsiPos('Åi', Line) + 2;
+Count := AnsiPos('â~',Line) - Index;
+
+Line := Copy(Line, Index, Count);
+
+Result := StrToInt(Line);
+end;
+
+function MyCompare(List: TStringList; Index1, Index2: Integer): Integer;
+begin
+Result := GetNum(List[Index1]) - GetNum(List[Index2]);
+end;
+
+procedure TForm1.Button1Click(Sender: TObject);
+var
+StringList : TStringList;
+begin
+StringList := TStringList.Create;
+try
+StringList.Assign(Memo1.Lines);
+StringList.CustomSort(MyCompare);
+
+Memo1.Lines.Assign(StringList);
+finally
+StringList.Free;
+end;
+end;

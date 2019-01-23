@@ -1,0 +1,204 @@
+
+procedure TMainForm.AppShowHint(var HintStr: string; var CanShow: Boolean;
+  var HintInfo: THintInfo);
+var
+  P: TPoint;
+  Node: TTreeNode;
+  R: TRect;
+  strName, strData, strComment, strCount: String;
+  Style: DWORD;
+
+function TitleAbbreviation(PopHintStr: String; CharCount: Integer): String;
+begin
+  Result := PopHintStr;
+  if Length(WideString(PopHintStr)) > CharCount then
+  begin
+    if CharCount = 0 then
+      Result := ''
+    else
+      Result := Copy(Widestring(PopHintStr), 0, CharCount) + '･･･(省略)';
+  end;
+end;
+
+
+function DataAbbreviation(PopHintStr: String; CharCount: Integer): String;
+begin
+  if Length(WideString(PopHintStr)) > CharCount then
+  begin
+    if CharCount = 0 then
+      Result := ''
+    else
+      Result := #13#10#13#10 + Copy(Widestring(PopHintStr), 0, CharCount) + #13#10 +
+       '･･･(これ以降は省略しました)';
+  end
+  else
+    Result := #13#10#13#10 + PopHintStr;
+end;
+function CommentAbbreviation(PopHintStr: String; CharCount: Integer): String;
+begin
+  if Length(WideString(PopHintStr)) > CharCount then
+  begin
+    if CharCount = 0 then
+      Result := ''
+    else
+      Result := #13#10#13#10 + Copy(Widestring(PopHintStr), 0, CharCount) + #13#10 +
+       '･･･(これ以降は省略しました)';
+  end
+  else
+    Result := PopHintStr;
+end;
+
+function ClipAbbreviation(PopHintStr: String; CharCount: Integer): String;
+begin
+  if Length(WideString(PopHintStr)) > CharCount then
+  begin
+
+      Result := Copy(Widestring(PopHintStr), 0, CharCount)  + #13#10 +
+       '･･･(これ以降は省略しました)';
+  end
+  else
+    Result := PopHintStr;
+end;
+
+function HintCount(Cnt: Integer): String;
+begin
+  if Cnt = -1 then
+    Result := ''
+  else
+    Result := #13#10 + '使用回数=' + IntToStr(Cnt);
+end;
+
+begin
+  //MacroTreeViewのヒント
+  if HintInfo.HintControl = MacroTreeView then
+  begin
+    // TTreeViewのコントロール内にTTreeNode.Textが収まりきらないヒントを消す
+    Style := GetWindowLong(MacroTreeView.Handle, GWL_STYLE);
+    Style := Style or TVS_NOTOOLTIPS;
+    SetWindowLong(MacroTreeView.Handle, GWL_STYLE, Style);
+    //CanShow := False;
+    GetCursorPos(P);
+    P := MacroTreeView.ScreenToClient(P);
+    Node := MacroTreeView.GetNodeAt(P.X, P.Y);
+    if Assigned(Node) = False then Exit;
+    strName := PDataItem(Node.Data)^.FName;
+    strData := PDataItem(Node.Data)^.FData;
+    strComment := PDataItem(Node.Data)^.FComment;
+
+   //ヒント出力時、字数が多すぎるのは省略
+    strName := TitleAbbreviation(strName, StrToInt(DisplaySetup.HintTitle));
+    strData := DataAbbreviation(strData, StrToInt(DisplaySetup.HintData));
+    strComment := CommentAbbreviation(strComment, StrToInt(DisplaySetup.HintComment));
+    strCount := HintCount(PDataItem(Node.Data)^.FCount);
+    case PDataItem(Node.Data)^.FKind of
+      MACRO_KIND:
+      begin
+        if strComment = '' then
+        begin
+          HintStr := strName + strCount + strData;
+        end
+        else
+        begin
+          HintStr := strName + strCount + strData + #13#10#13#10 + strComment;
+        end;
+      end;
+    else
+      begin
+        if strComment = '' then
+        begin
+          HintStr := strName;
+        end
+        else
+        begin
+          HintStr := strName  + #13#10#13#10 + strComment;
+        end;
+      end;
+    end;
+
+    r := Node.DisplayRect(True);
+    HintInfo.CursorRect := R;
+    //HintInfo.ReshowTimeout := 5000;
+    HintInfo.HideTimeout := StrToInt(DisplaySetup.HintTime) * 1000;
+    HintInfo.HintMaxWidth := StrToInt(DisplaySetup.HintWidth);
+    //Application.HintHidePause := 5000;
+
+  end;
+
+
+  //PasteTreeViewのヒント
+  if HintInfo.HintControl = PasteTreeView then
+  begin
+    // TTreeViewのコントロール内にTTreeNode.Textが収まりきらないヒントを消す
+    Style := GetWindowLong(PasteTreeView.Handle, GWL_STYLE);
+    Style := Style or TVS_NOTOOLTIPS;
+    SetWindowLong(PasteTreeView.Handle, GWL_STYLE, Style);
+
+
+    GetCursorPos(P);
+    P := PasteTreeView.ScreenToClient(P);
+    Node := PasteTreeView.GetNodeAt(P.X, P.Y);
+    if Assigned(Node) = False then Exit;
+    strName := PDataItem(Node.Data)^.FName;
+    strData := PDataItem(Node.Data)^.FData;
+    strComment := PDataItem(Node.Data)^.FComment;
+   //ヒント出力時、字数が多すぎるのは省略
+    strName := TitleAbbreviation(strName, StrToInt(DisplaySetup.HintTitle));
+    strData := DataAbbreviation(strData, StrToInt(DisplaySetup.HintData));
+    strComment := CommentAbbreviation(strComment, StrToInt(DisplaySetup.HintComment));
+    strCount := HintCount(PDataItem(Node.Data)^.FCount);
+    case PDataItem(Node.Data)^.FKind of
+      DATA_KIND:
+      begin
+        if strComment = '' then
+        begin
+          HintStr := strName + strCount + strData;
+        end
+        else
+        begin
+          HintStr := strName + strCount + strData + #13#10#13#10 + strComment;
+        end;
+      end;
+    else
+        if strComment = '' then
+        begin
+          HintStr := strName;
+        end
+        else
+        begin
+          HintStr := strName + #13#10#13#10 + strComment;
+        end;
+    end;
+
+    r := Node.DisplayRect(True);
+    HintInfo.CursorRect := R;
+    //HintInfo.ReshowTimeout := 5000;
+    HintInfo.HideTimeout := StrToInt(DisplaySetup.HintTime) * 1000;
+    HintInfo.HintMaxWidth := StrToInt(DisplaySetup.HintWidth);
+    //Application.HintHidePause := 5000;
+
+  end;
+
+  //ClipTreeViewのヒント
+  if HintInfo.HintControl = ClipTreeView then
+  begin
+    // TTreeViewのコントロール内にTTreeNode.Textが収まりきらないヒントを消す
+    Style := GetWindowLong(ClipTreeView.Handle, GWL_STYLE);
+    Style := Style or TVS_NOTOOLTIPS;
+    SetWindowLong(ClipTreeView.Handle, GWL_STYLE, Style);
+
+
+    GetCursorPos(P);
+    P := ClipTreeView.ScreenToClient(P);
+    Node := ClipTreeView.GetNodeAt(P.X, P.Y);
+    if Assigned(Node) = False then Exit;
+    strData := PClipItem(Node.Data)^.FData;
+
+    HintStr := ClipAbbreviation(strData, 2000);
+
+
+    r := Node.DisplayRect(True);
+    HintInfo.CursorRect := R;
+    HintInfo.HideTimeout := StrToInt(DisplaySetup.HintTime) * 1000;
+    HintInfo.HintMaxWidth := StrToInt(DisplaySetup.HintWidth);
+  end;
+end;

@@ -1,0 +1,29 @@
+
+procedure TSDIAppForm.MailReadListExecute(Sender: TObject);
+var
+  ListItem : TListItem;
+  MesNumber : Integer;
+begin
+
+  MailList.Items.Clear;
+
+  {メール一覧を更新するために一度切断・再接続}
+
+  if NMPOP31.Connected then NMPOP31.Disconnect;
+  if not NMPOP31.Connected then NMPOP31.Connect;
+
+  {メール一覧の取得}
+
+  for MesNumber := 1 to NMPOP31.MailCount do
+  begin
+    ListItem :=  MailList.Items.Add;
+    ListItem.Data := Pointer(MesNumber);
+
+    NMPOP31.GetSummary(MesNumber);
+
+    ListItem.Caption := NMPOP31.Summary.From;
+    ListItem.SubItems.Add(NMPOP31.Summary.Subject);
+    ListItem.SubItems.Add(IntToStr(NMPOP31.Summary.Bytes) + 'Byte');
+  end;
+
+end;

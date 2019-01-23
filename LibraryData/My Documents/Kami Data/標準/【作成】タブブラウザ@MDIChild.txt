@@ -1,0 +1,119 @@
+unit CHILDWIN;
+
+interface
+
+uses Windows, Classes, Graphics, Forms, Controls, StdCtrls, ComCtrls,
+  OleCtrls, SHDocVw, MAIN;
+
+type
+[[  TEnabled = record
+    FBack: Boolean;
+    FFowerd: Boolean;
+  end;]]
+  TMDIChild = class(TForm)
+    StatusBar1: TStatusBar;
+    WebBrowser1: TWebBrowser;
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure WebBrowser1CommandStateChange(Sender: TObject;
+      Command: Integer; Enable: WordBool);
+    procedure FormActivate(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure WebBrowser1TitleChange(Sender: TObject;
+      const Text: WideString);
+    procedure WebBrowser1NewWindow2(Sender: TObject; var ppDisp: IDispatch;
+      var Cancel: WordBool);
+    procedure WebBrowser1NavigateComplete2(Sender: TObject;
+      const pDisp: IDispatch; var URL: OleVariant);
+    procedure WebBrowser1StatusTextChange(Sender: TObject;
+      const Text: WideString);
+  private
+    { Private êÈåæ }
+    E: TEnabled;
+  public
+    { Public êÈåæ }
+  end;
+
+implementation
+
+{$R *.dfm}
+
+procedure TMDIChild.FormClose(Sender: TObject; var Action: TCloseAction);
+var
+  i: Integer;
+begin
+  i := MainForm.TabControl1.Tabs.IndexOfObject(TObject(Self));
+  MainForm.TabControl1.Tabs.Delete(i);
+  if MDIChildCount = 1 then
+  begin
+    MainForm.BuckButton.Enabled := False;
+    MainForm.FowardButton.Enabled := False;
+  end;
+
+  Action := caFree;
+end;
+
+[[procedure TMDIChild.WebBrowser1CommandStateChange(Sender: TObject;
+  Command: Integer; Enable: WordBool);
+begin
+  case Command of
+    CSC_NAVIGATEBACK:
+    begin
+      E.FBack := Enable;
+      MainForm.FowardButton.Enabled := Enable;
+    end;
+    CSC_NAVIGATEFORWARD:
+    begin
+      E.FFowerd := Enable;
+      MainForm.BuckButton.Enabled := Enable;
+    end;
+  end;
+
+end;]]
+
+procedure TMDIChild.FormActivate(Sender: TObject);
+var
+  i: Integer;
+begin
+  i := MainForm.TabControl1.Tabs.IndexOfObject(TObject(Self));
+  MainForm.TabControl1.TabIndex := i;
+  MainForm.BuckButton.Enabled := E.FBack;
+  MainForm.FowardButton.Enabled := E.FFowerd;
+end;
+
+procedure TMDIChild.FormCreate(Sender: TObject);
+begin
+  MainForm.TabControl1.Tabs.AddObject('', TObject(Self));
+end;
+
+procedure TMDIChild.WebBrowser1TitleChange(Sender: TObject;
+  const Text: WideString);
+var
+  i: Integer;
+begin
+  Self.Caption := Text;
+  i := MainForm.TabControl1.Tabs.IndexOfObject(TObject(Self));
+  MainForm.TabControl1.Tabs.Strings[i] := Text;
+end;
+
+procedure TMDIChild.WebBrowser1NewWindow2(Sender: TObject;
+  var ppDisp: IDispatch; var Cancel: WordBool);
+var
+  Child: TMDIChild;
+begin
+  Child := TMDIChild.Create(Application);
+  ppDisp := Child.WebBrowser1.Application;
+end;
+
+procedure TMDIChild.WebBrowser1NavigateComplete2(Sender: TObject;
+  const pDisp: IDispatch; var URL: OleVariant);
+begin
+  MainForm.Edit2.Text := WebBrowser1.LocationURL;
+end;
+
+procedure TMDIChild.WebBrowser1StatusTextChange(Sender: TObject;
+  const Text: WideString);
+begin
+  StatusBar1.SimpleText := Text;
+end;
+
+end.

@@ -1,0 +1,14 @@
+
+--------------------------------------------------------------------------------
+ 
+フルパスのファイル名が長すぎてダイアログなどに入りきらない場合、MinimizeName関数を使って、(...) と言う感じで省略する方法です
+
+//uses節に Filectrl 追加 
+
+procedure TForm1.FormShow(Sender: Tobject);
+var
+  FullP : String;
+begin
+  FullP := GetCurrentDir;
+  Label2.Caption := GetCurrentDir;
+  Label4.Caption := MinimizeName(Pchar(FullP), Canvas, Label4.Width) 

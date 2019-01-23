@@ -1,0 +1,36 @@
+
+> xorを使って簡易暗号化をしたいのですが、どうもうまくいきません。(と言うか、
+> よく分かってない。)分かる方、教えて下さい。
+> ちなみに、私はこうやってみましたがダメでした。どこがいけないのでしょう。
+
+考え方はokだと思います。ちょっと、PChar型の使い方がマズいのでは
+ないでしょうか？ただし、PChar型を使わず、String型だけでも、
+できちゃうので、以下のコードでどうでしょうか？
+
+フォームにTButton をひとつ張り付けて、
+
+procedure TForm1.Button1Click(Sender: TObject);
+var
+  S: String;
+  x, xor_num: Integer;
+begin
+  xor_num := 143;
+  S := 'Kouji';
+
+  // 暗号化
+  for x := 1 to Length(s) do
+  begin
+    s[x] := Chr(Ord(s[x]) xor xor_num);
+  end;
+
+  Button1.Caption := s;
+
+  // 同じことをして、元に戻す
+  for x := 1 to Length(s) do
+  begin
+    s[x] := Chr(Ord(s[x]) xor xor_num);
+  end;
+  
+  Form1.Caption := s;
+end;
+な感じでしょうか。

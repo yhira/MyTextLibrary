@@ -1,0 +1,34 @@
+> 
+> 前にもこの質問があったみたいなんですが、見逃してしまって・・・
+> １，２通の情報は見たんですが 出来なくて・・・スミマセン
+> 
+
+　サーバー容量オーバーフロー騒ぎに時期が重なりましたからね。(^.^)
+
+　Delphiはクリップボード管理機構はサポートしてないので、WindowsAPIと
+Message Handlerを使う必要があります。
+　WindowsシステムはClipBooardの更新等のメッセージは1個のWindowにしか
+送りません。じゃーClipboardをモニタするタスクが複数あったらどうする
+かと言うと「関係者で回覧しといてね」方式でクリップボードビューアのチェ
+インを作ってその中でメッセージのバケツリレーをします。
+　最低限必要なAPIと処理すべきメッセージは
+
+SetClipboardViewer
+　引数は自分のFormのHandle、戻り値はクリップボードビューアのチェイン
+　上で自分の次のビューアのHandle。
+ChangeClipboardChain
+　上記の後片づけAPI。引数は自分のFormのHandleと次の ビューアのHandle。
+　戻り値はBool。
+WM_DRAWCLIPBOARD
+　ClipBoardが更新された際に送られて来ます。必ず次のビューアにSendMessage
+　する事。
+WM_CHANGECBCHAIN
+　ChangeClipboardChainに対応して送られて来ます。退場するビューアの
+　Handleと、その次のHandleが通知されます。もし、退場するのが自分の次
+　のビューアだったら、保存しておいたHandleの値を更新します。必ず次の
+　有効なHandleのビューアにSendMessageする事。
+
+　注意点としてはSetClipboardViewerの戻り値がNULLでも必ずしもエラーと
+は限らない事です。(他のビューアが存在しない場合もNULLが返される。）
+
+　後は自分でHelpを見てがんばってください。

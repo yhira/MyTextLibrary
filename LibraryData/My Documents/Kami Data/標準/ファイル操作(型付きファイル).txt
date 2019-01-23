@@ -1,0 +1,138 @@
+type
+
+  TSeiseki = record
+    Kokugo, Sugaku, Eigo: Integer;
+  end;
+
+  TSeito = record
+    Name: String;
+    Seoseki: TSeiseki;
+  end;
+
+・・・・・・・
+
+procedure TForm1.Button1Click(Sender: TObject);
+var
+  f: file of Integer;
+  i, v: Integer;
+begin
+  AssignFile(f, FILE_NAME);
+  Rewrite(f);
+  try
+    for i := 0 to 999 do
+    begin
+      Write(f, i);
+    end;
+
+  finally
+    CloseFile(f);
+  end;
+
+  AssignFile(f, FILE_NAME);
+  Reset(f);
+  try
+    for i := 0 to FileSize(f) -1 do
+    begin
+      Read(f, v);
+      ListBox1.Items.Add(IntToStr(v));
+    end;
+
+  finally
+    CloseFile(f);
+  end;
+
+
+end;
+
+procedure TForm1.Button2Click(Sender: TObject);
+var
+  f: file of TSeiseki;
+  i: Integer;
+  v: TSeiseki;
+begin
+  AssignFile(f, FILE_NAME);
+  Rewrite(f);
+  try
+    for i := 0 to 99 do
+    begin
+      v.Kokugo := random(30) + 30;
+      v.Sugaku := Random(50) + 50;
+      v.Eigo := Random(10) + 80;
+      Write(f, v);
+    end;
+
+  finally
+    CloseFile(f);
+  end;
+
+end;
+
+procedure TForm1.Button3Click(Sender: TObject);
+var
+  f: file of TSeiseki;
+  i: Integer;
+  v: TSeiseki;
+begin
+  ListBox1.Clear;
+  if not FileExists(FILE_NAME) then  Exit;
+  AssignFile(f, FILE_NAME);
+  Reset(f);
+  try
+    for i := 0 to FileSize(f) -1 do
+    begin
+      Read(f, v);
+      ListBox1.Items.Add(IntToStr(i) + '君：合計：' + IntToStr(v.Kokugo + v.Sugaku + v.Eigo));
+    end;
+
+  finally
+    CloseFile(f);
+  end;
+
+end;
+
+
+procedure TForm1.Button4Click(Sender: TObject);
+var
+  f: file of TSeiseki;
+  v: TSeiseki;
+begin
+  AssignFile(f, FILE_NAME);
+  Reset(f);
+  try
+    Seek(f, 2);
+    Read(f, v);
+    ShowMessage('３番目は' + Format('%d/%d/%d', [v.Kokugo, v.Sugaku, v.Eigo]));
+    Seek(f, 2);
+    v.Kokugo := 100;
+    v.Sugaku := 100;
+    v.Eigo := 100;
+    Write(f, v);
+  finally
+    CloseFile(f);
+  end;
+
+end;
+
+procedure TForm1.Button5Click(Sender: TObject);
+var
+  f: file of TSeiseki;
+  v: TSeiseki;
+begin
+  AssignFile(f, FILE_NAME);
+  Reset(f);
+  try
+    Seek(f, filesize(f));
+    v.Kokugo := 100;
+    v.Sugaku := 100;
+    v.Eigo := 100;
+    Write(f, v);
+    ShowMessage(IntToStr(filesize(f)));
+  finally
+    CloseFile(f);
+  end;
+
+end;
+
+
+TITLE:D:\delphi\作成\ファイル処理・バイナリ\Unit1.pas - EmEditor
+DATE:2002/06/05 04:20

@@ -1,0 +1,21 @@
+
+--------------------------------------------------------------------------------
+ 
+TreeView内の項目に合わせてポップアップメニューを表示させたい場合、マウスカーソルがどの項目上にあるかどうかを調べるGetNodeAt メソッドを使ってチェックします。
+
+Procedure TForm1.TreeView1MouseDown(Sender: Tobject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+var
+  Pop: Tpoint;
+begin
+  if Button <> mbRight then Exit;
+  with TreeView1 do begin
+    if GetNodeAt(X, Y) <> nil then begin
+      Selected := GetNodeAt(X, Y);
+      Pop.x := X;
+      Pop.y := Y;
+      Pop := ClientToScreen(Pop);
+      PopupMenu1.Popup(Pop.x, Pop.y);
+    end;
+  end;
+end; 

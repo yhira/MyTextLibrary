@@ -1,0 +1,145 @@
+procedure TMainForm.FormCreate(Sender: TObject);
+var
+	WinIni: TIniFile;
+begin
+  //WinListの初期化
+ 		winLists:=TStringList.Create;
+	//CloseListの初期化
+ 		CloseTabs:=TStringList.Create;
+  //StartBoolを初期化
+  	StartBool:=True;
+  //起動パスを取得
+  	MyPath:=Application.Exename;
+  	MyPath:=ExtractFilePath(MyPath);
+  //タブの初期化
+  	intMDICount:=-1;
+  	strsTab:=TStringList.Create;
+  //CoolBarの位置読み込み
+    BandPositionRead();
+  //フォームを表示
+   //	self.Show;
+	//以前の状態を復元をWebListに移動
+  	DeleteFile(PChar(MyPath+'WebList\以前の状態を復元.wlf'));
+    MoveFile(PChar(MyPath+'winlist'),
+											PChar(MyPath+'WebList\以前の状態を復元.wlf'));
+
+  //最後に使用したエンジン
+		WinIni := TIniFile.Create(MyPath+'config.ini');
+    if Winini.ReadString('General','LastEngine','IE')='IE' Then
+    begin
+      IE_Item.Checked:=True;
+  		Moz_Item.Checked:=False;
+      ChangeCtrl.ImageIndex:=15;
+    end else begin
+      Moz_item.Checked:=True;
+  		IE_Item.Checked:=False;
+      ChangeCtrl.ImageIndex:=14;
+    end;
+  //Mozillaを使用するかどうか
+  	if Winini.ReadInteger('Option_Main','Mozilla',0)=0 then
+    begin
+    	Moz_item.Enabled:=False;
+    end;
+  //タブサイズを固定
+		if WinIni.ReadInteger('Option_Tab','fix',0)=1 Then
+    	 	TabControl1.TabWidth:=WinIni.ReadInteger('Option_Tab','MaxSize',75);
+  //ウィンドウサイズの固定
+    case WinIni.ReadInteger('General','WinSize',0) of
+    	0:WindowSize:=wsNormal;
+      1:WindowSize:=wsMaximized;
+      2:WindowSize:=wsMinimized;
+    end;
+  //タブタイプの変更
+  	if WinIni.ReadInteger('Option_Tab','TabType',0)=0 then
+    begin
+      TabControl1.Style:=tsTabs;
+    	TabControl1.TabPosition:=tpBottom;
+    end else begin
+     	TabControl1.TabPosition:=tpTop;
+      TabControl1.Style:=tsButtons;
+    end;
+  //セキュリティ＆マルチメディア
+   	//セキュリティ
+   	mnuJava.Checked:=WinIni.ReadBool('Option_Security','Java',False);
+   	mnuScript.Checked:=WinIni.ReadBool('Option_Security','Script',False);
+   	mnuActiveX.Checked:=WinIni.ReadBool('Option_Security','ActiveX',False);
+   	//マルチメディア
+   	mnuImage.Checked:=WinIni.ReadBool('Option_Multimedia','Image',False);
+   	mnuBGM.Checked:=WinIni.ReadBool('Option_Multimedia','BGM',False);
+   	mnuVideo.Checked:=WinIni.ReadBool('Option_Multimedia','Video',False);
+
+		if Winini.ReadBool('Option_advertisemen','CloseURL',False)=True then
+    begin
+	    ClosePop.ImageIndex:=17;
+    end else begin
+	    ClosePop.ImageIndex:=18;
+    end;
+
+  //IniFileの解放
+    WinIni.Free;
+
+  //検索リストの初期化
+  	initializeSearchList();
+    cmbSearch.ItemIndex:=0;
+
+  //JBarの生成
+		JBarCreate();
+    TreeView1.Align:=alClient;
+    TreeWin.Align:=alClient;
+  //WebListを読み込む
+    EnumFiles(MyPath+'WebList');
+  //ツールバーの表示
+    ViewToolBar();
+    CoolBar1.OnMouseUp(CoolBar1,mbLeft,[ssShift],0,0);
+  //名前を付けて保存をFalseに
+  	mnuFile_SaveAs.Enabled:=False;
+  //セキュリティをTrueに
+  	mnuSC.Enabled:=False;
+	//マルティメディアをTrueに
+  	mnuMC.Enabled:=False;
+  //文字サイズを読み込み
+  	ReadMojiSize();
+  //文字サイズをFalseに
+  	mnuShow_Size.Enabled:=False;
+  //ブックマークを読み込む
+  	ReadBookMark();
+	//keydownイベント
+  	Application.OnMessage := HandleAppMessage;
+end;
+
+procedure TMainForm.FormClose(Sender: TObject; var Action: TCloseAction);
+var
+	WinIni: TIniFile;
+	tmpStr:String;
+  tmpInt:Byte;
+begin
+	if IE_item.Checked=True then begin
+  	tmpStr:='IE';
+  end else begin
+  	tmpStr:='Gecko'
+  end;
+	//IniFileに現在のエンジンを登録
+		WinIni := TIniFile.Create(MyPath+'config.ini');
+  	WinIni.WriteString('General','LastEngine',tmpStr);
+  //現在の文字サイズを書き込む
+  	WinIni.WriteInteger('General','LastMojiSize',intMojiSize);
+  //現在のウィンドウサイズを書き込む
+  	tmpInt:=0;
+    if WindowSize=wsNormal then tmpInt:=0;
+    if WindowSize=wsMaximized then tmpInt:=1;
+    if WindowSize=wsMinimized then tmpInt:=2;
+    WinIni.WriteInteger('General','WinSize',tmpInt);
+
+  //正常に終了した証拠
+  	WinIni.WriteBool('General','shutdown',True);
+  	WinIni.Free;
+	//CoolBarの位置を書き込む
+    BandPositionWrite();
+  //最後に閉じたタブを書き込む
+  	CloseTabs.SaveToFile(MyPath+'Close.txt');
+
+{	for i:= 0 to TreeView1.Items.Count do
+  begin
+		DisposeStr(PString(LongInt(TreeView1.Items[i].Data)));
+  end; }
+end;

@@ -1,0 +1,31 @@
+  ChangeDelay = 50
+  Images = TreeItemImageList
+  Indent = 19
+  ParentFont = False
+  ParentShowHint = False
+  PopupMenu = TreeViewPopup
+  ReadOnly = True
+  RightClickSelect = True
+  ShowHint = True
+  ShowRoot = False
+  TabStop = False
+  ToolTips = False
+end
+
+
+object TreeView1: TTreeView
+  HotTrack = True
+  Images = ImageList1
+  Indent = 19
+  ParentFont = False
+  ReadOnly = True
+  RowSelect = True
+  ShowButtons = False
+  ShowLines = False
+  ShowRoot = False
+  TabOrder = 0
+  OnAddition = TreeView1Addition
+  OnChange = TreeView1Change
+  OnDblClick = TreeView1DblClick
+  OnKeyDown = TreeView1KeyDown
+end

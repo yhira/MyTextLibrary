@@ -1,0 +1,16 @@
+
+--------------------------------------------------------------------------------
+ 
+FileSize関数ではテキストファイルのサイズ取得ができないので、
+テキストのファイルサイズを取得するにはFindFirstを使用します。
+
+begin
+  OpenDialog1.Execute;
+  FullP := OpenDialog1.FileName;
+  if FindFirst(FullP, faAnyFile, Rec) = 0 then
+
+  begin
+    FS := Rec.Size;
+    Label1.Caption := IntToStr(FS div 1024) + 'KB';
+  end;
+  FindClose(Rec); 

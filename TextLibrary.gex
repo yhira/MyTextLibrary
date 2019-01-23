@@ -1,0 +1,12 @@
+[General]
+Name=TextLibrary
+Project=1
+[Classes]
+Count=7
+Class0="TMainForm","TForm","Main","15","C:\Documents and Settings\Administrator\デスクトップ\TextLibrary018\Main.pas"
+Class1="TBugReportForm","TForm","BugReport","0","C:\Documents and Settings\Administrator\デスクトップ\TextLibrary018\BugReport.pas"
+Class2="TFolderItem","TObject","LibraryItem","0","C:\Documents and Settings\Administrator\デスクトップ\TextLibrary018\LibraryItem.pas"
+Class3="TRootFolderItem","TFolderItem","LibraryItem","0","C:\Documents and Settings\Administrator\デスクトップ\TextLibrary018\LibraryItem.pas"
+Class4="TTextItem","TFolderItem","LibraryItem","0","C:\Documents and Settings\Administrator\デスクトップ\TextLibrary018\LibraryItem.pas"
+Class5="TFolderSetDlg","TForm","FolderSet","0","C:\Documents and Settings\Administrator\デスクトップ\TextLibrary018\FolderSet.pas"
+Class6="TTextSetDlg","TForm","TextSet","10","C:\Documents and Settings\Administrator\デスクトップ\TextLibrary018\TextSet.pas"

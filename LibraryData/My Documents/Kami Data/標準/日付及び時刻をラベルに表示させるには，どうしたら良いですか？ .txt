@@ -1,0 +1,19 @@
+
+
+--------------------------------------------------------------------------------
+該当するバージョン:Delphi 1.0,Delphi 2.0,Delphi 3.0/Delphi3.1,Delphi4
+ 日付及び時刻をラベルに表示させたいのですが？ 
+
+ 
+ 下記コードを参考にして下さい。
+現在の日付及び時刻をラベルに表示します。
+
+
+   procedure TForm1.Timer1Timer(Sender: TObject);
+   begin
+     Label1.Caption := DateToStr(Date);
+     Label2.Caption := TimeTostr(time);
+   end;
+
+ 
+

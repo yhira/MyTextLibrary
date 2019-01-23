@@ -1,0 +1,120 @@
+<HTML xml:lang="ja" xmlns="http://www.w3.org/1999/xhtml"><HEAD><meta http-equiv="content-type" content="text/html;charset=Shift_JIS">
+<TITLE>MoveTo と LineTo</TITLE><LINK 
+href="file://D:\delphi\読み物\Seventh\dirDelphi\index.html" type=text/html rel=Start><LINK href="file://D:\delphi\読み物\Seventh\dirDelphi\mystyle.css" 
+type=text/css rel=stylesheet></HEAD>
+
+<BODY><H3 class=title>MoveTo と LineTo</H3>
+<P 
+class=indent>MoveToとLineToの例です。MoveToは、その名の通り「移動」でLineToは「ラインを引く」です。ボタンを一つ置いて以下のコードを書いてください。 
+</P>
+<DIV class=type1><PRE><CODE>
+  procedure TForm1.Button1Click(Sender: TObject);
+  begin
+    Canvas.MoveTo(100, 100);
+    Canvas.LineTo(200, 100);
+
+    Canvas.Pen.Width := Canvas.Pen.Width * 2;
+    Canvas.LineTo(200, 200);
+
+    Canvas.Pen.Width := Canvas.Pen.Width * 2;
+    Canvas.LineTo(100, 200);
+
+    Canvas.Pen.Width := Canvas.Pen.Width * 2;
+    Canvas.LineTo(100, 100);
+  end;
+        </CODE></PRE></DIV>
+<P>また、これは以下のようにも書けます。 </P>
+<DIV class=type1><PRE><CODE>
+  procedure TForm1.Button1Click(Sender: TObject);
+  begin
+    <EM class=source>with</EM> Canvas <EM class=source>do</EM>
+    begin
+      MoveTo(100, 100);
+      LineTo(200, 100);
+
+      Pen.Width := Pen.Width * 2;
+      LineTo(200, 200);
+
+      Pen.Width := Pen.Width * 2;
+      LineTo(100, 200);
+
+      Pen.Width := Pen.Width * 2;
+      LineTo(100, 100);
+    end;
+  end;
+        </CODE></PRE></DIV>
+<P>これだけで、使い方がおよそ分かったと思います。次の例も参考にして下さい。 </P>
+<DIV class=type1><PRE><CODE>
+  procedure TForm1.Button1Click(Sender: TObject);
+  begin
+    with Canvas do
+    begin
+      Pen.Style := psSolid;
+      MoveTo(100, 20);
+      LineTo(300, 20);
+
+      Pen.Style := psDash;
+      MoveTo(100, 40);
+      LineTo(300, 40);
+
+      Pen.Style := psDot;
+      Pen.Color := clBlue;
+      MoveTo(100, 60);
+      LineTo(300, 60);
+
+      Pen.Style := psDashDot;
+      Pen.Color := clRed;
+      MoveTo(100, 80);
+      LineTo(300, 80);
+
+      Pen.Style := psDashDotDot;
+      Pen.Color := clGreen;
+      MoveTo(100, 100);
+      LineTo(300, 100);
+    end;
+
+  end;
+        </CODE></PRE></DIV>
+<P>こんな感じになります。 </P>
+<P><IMG class=imgleft height=164 alt="" src="file://D:\delphi\読み物\Seventh\img/del-056.gif" width=335> </P>
+<P class=newpara>同じように、図形も書くことが出来ます。 </P>
+<DIV class=type1><PRE><CODE>
+  procedure TForm1.Button1Click(Sender: TObject);
+  begin
+    with Canvas do
+    begin
+      Ellipse(10, 10, 100, 100);
+
+      Brush.Color := clBlue;
+      RoundRect(120, 10, 200, 100, 20, 20);
+
+      Pen.Width := 10;
+      Brush.Color := clGreen;
+      Rectangle(250, 20, 350, 100);
+
+      Brush.Style := bsClear;
+      Font.Size := 50;
+      Font.Style := [fsItalic, fsUnderline];
+      TextOut(120, 120, 'Form1');
+
+    end;
+
+  end;
+        </CODE></PRE></DIV>
+<P><IMG class=imgleft height=235 alt="" src="file://D:\delphi\読み物\Seventh\img/del-057.gif" width=410> </P>
+<P class=newpara>このように表示されます。 </P>
+<P class=supp><EM 
+class=sup>supplement</EM><BR>上の状態のように図形を表示させた状態で、一旦フォームを最小化してから再び、フォームを元のサイズに戻してみてください。すると、表示されていたはずの図形が消えてしまいます。この仕組みの簡単な説明は、以下にあります。<BR><A 
+href="file://D:\delphi\読み物\Seventh\dirDelphi\d040.html">グラフィックの描画について</A> </P>
+<HR class=color>
+
+<ADDRESS><A href="file://D:\delphi\読み物\Seventh\dirDelphi\mainmenu.html">Menu</A> <A href="file://D:\delphi\読み物\Seventh\index.html">Home</A> <A 
+href="file://D:\delphi\読み物\Seventh\dirDelphi\d020.html">Prev</A> <A href="file://D:\delphi\読み物\Seventh\dirDelphi\d022.html">Next</A><BR>Last Update 2002/3/12 
+by N.Kobayashi</ADDRESS><BR>
+<FONT SIZE="-1">
+TITLE:MoveTo と LineTo<BR>
+DATE:2002/12/08 01:05<BR>
+URL:<A HREF="file://D:\delphi\読み物\Seventh\dirDelphi\d021.html" TARGET="_blank">file://D:\delphi\読み物\Seventh\dirDelphi\d021.html</A><BR>
+</FONT>
+</BODY>
+</HTML>

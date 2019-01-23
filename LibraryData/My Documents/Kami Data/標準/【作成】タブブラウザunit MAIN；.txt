@@ -1,0 +1,675 @@
+
+interface
+
+uses Windows, SysUtils, Classes, Graphics, Forms, Controls, Menus,
+  StdCtrls, Dialogs, Buttons, Messages, ExtCtrls, ComCtrls, StdActns,
+  ActnList, ToolWin, ImgList, ActiveX, CommCtrl;
+
+type
+  PBookMarkItem = ^TBookMarkItem;
+  TBookMarkItem = record
+    URL:string;           //ブックマークのURLを格納するのに使用。
+  end;
+  TXY = record
+    X:integer;
+    Y:integer;
+  end;
+  TMainForm = class(TForm)
+    MainMenu1: TMainMenu;
+    File1: TMenuItem;
+    FileOpenItem: TMenuItem;
+    FileCloseItem: TMenuItem;
+    Window1: TMenuItem;
+    Help1: TMenuItem;
+    N1: TMenuItem;
+    FileExitItem: TMenuItem;
+    WindowCascadeItem: TMenuItem;
+    WindowTileItem: TMenuItem;
+    HelpAboutItem: TMenuItem;
+    OpenDialog: TOpenDialog;
+    FileSaveAsItem: TMenuItem;
+    WindowMinimizeItem: TMenuItem;
+    ActionList1: TActionList;
+    FileExit1: TAction;
+    FileOpen1: TAction;
+    FileSaveAs1: TAction;
+    WindowCascade1: TWindowCascade;
+    WindowTileHorizontal1: TWindowTileHorizontal;
+    WindowMinimizeAll1: TWindowMinimizeAll;
+    HelpAbout1: TAction;
+    FileClose1: TWindowClose;
+    WindowTileVertical1: TWindowTileVertical;
+    WindowTileItem2: TMenuItem;
+    ImageList1: TImageList;
+    CoolBar1: TCoolBar;
+    ToolBar1: TToolBar;
+    ToolBar2: TToolBar;
+    BackButton: TToolButton;
+    ForwardButton: TToolButton;
+    HomeButton: TToolButton;
+    RefreshButton: TToolButton;
+    StopButton: TToolButton;
+    NavigateButton: TToolButton;
+    Edit1: TEdit;
+    Back1: TAction;
+    Forward1: TAction;
+    Home1: TAction;
+    Refresh1: TAction;
+    Stop1: TAction;
+    Navigate1: TAction;
+    Panel1: TPanel;
+    TabControl1: TTabControl;
+    Panel2: TPanel;
+    TreeView1: TTreeView;
+    Splitter1: TSplitter;
+    BookMarkShowButton: TToolButton;
+    BookMarkShow: TAction;
+    Divider1: TToolButton;
+    AddBookMarkShow: TAction;
+    B1: TMenuItem;
+    A1: TMenuItem;
+    AddFolder: TAction;
+    A2: TMenuItem;
+    D1: TMenuItem;
+    IEImport: TAction;
+    IE1: TMenuItem;
+    Label1: TLabel;
+    DeleteNode: TAction;
+    Timer1: TTimer;
+    Timer2: TTimer;
+    procedure FileOpen1Execute(Sender: TObject);
+    procedure HelpAbout1Execute(Sender: TObject);
+    procedure FileExit1Execute(Sender: TObject);
+    procedure Back1Execute(Sender: TObject);
+    procedure Forward1Execute(Sender: TObject);
+    procedure Home1Execute(Sender: TObject);
+    procedure Refresh1Execute(Sender: TObject);
+    procedure Stop1Execute(Sender: TObject);
+    procedure Navigate1Execute(Sender: TObject);
+    procedure TabControl1MouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure ToolBar2Resize(Sender: TObject);
+    procedure BookMarkShowExecute(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure AddBookMarkShowExecute(Sender: TObject);
+    procedure AddFolderExecute(Sender: TObject);
+    procedure DeleteNodeExecute(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure IEImportExecute(Sender: TObject);
+    procedure TreeView1Addition(Sender: TObject; Node: TTreeNode);
+    procedure TreeView1Collapsed(Sender: TObject; Node: TTreeNode);
+    procedure TreeView1Expanded(Sender: TObject; Node: TTreeNode);
+    procedure TreeView1MouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure FileSaveAs1Execute(Sender: TObject);
+    procedure FileClose1Execute(Sender: TObject);
+    procedure TreeView1MouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure TreeView1MouseMove(Sender: TObject; Shift: TShiftState; X,
+      Y: Integer);
+    procedure TreeView1DragOver(Sender, Source: TObject; X, Y: Integer;
+      State: TDragState; var Accept: Boolean);
+    procedure TreeView1DragDrop(Sender, Source: TObject; X, Y: Integer);
+    procedure TreeView1Expanding(Sender: TObject; Node: TTreeNode;
+      var AllowExpansion: Boolean);
+    procedure TreeView1Collapsing(Sender: TObject; Node: TTreeNode;
+      var AllowCollapse: Boolean);
+    procedure Timer1Timer(Sender: TObject);
+    procedure Timer2Timer(Sender: TObject);
+    procedure TreeView1StartDrag(Sender: TObject;
+      var DragObject: TDragObject);
+  private
+    { Private 宣言 }
+    flag:Boolean;       //TrueならブックマークのMouseUpイベントで処理を実行。
+    XY:TXY;             //ブックマークのMouseDownの位置を格納。
+    EorCTime:TDateTime; //一度目の処理の時間を格納して、ダブルクリックで二度処理するのを防ぐ。
+    procedure CreateMDIChild(const URL: string);
+  public
+    { Public 宣言 }
+  end;
+
+var
+  MainForm: TMainForm;
+
+implementation
+
+{$R *.dfm}
+
+uses CHILDWIN, about, AddBookMark, IEImport;
+
+type
+  TDragObjectPlus = class(TDragObject)
+  public
+    procedure Finished(Target: TObject; X, Y: Integer; Accepted: Boolean); override;
+  end;
+
+{ドラッグが終了する時に、TreeView1のスクロールを止める。}
+procedure TDragObjectPlus.Finished;
+begin
+  MainForm.Timer1.Enabled := False;
+  MainForm.Timer2.Enabled := False;
+  Free;
+end;
+
+procedure TMainForm.CreateMDIChild(const URL: string);
+var
+  Child: TIEWindow;
+begin
+  { MDI 子ウィンドウを作成する }
+  Child := TIEWindow.Create(Application);
+  Child.WebBrowser1.Navigate(URL);
+end;
+
+procedure TMainForm.FileOpen1Execute(Sender: TObject);
+begin
+  if OpenDialog.Execute then
+    CreateMDIChild(OpenDialog.FileName);
+end;
+
+procedure TMainForm.HelpAbout1Execute(Sender: TObject);
+begin
+  AboutBox.ShowModal;
+end;
+
+procedure TMainForm.FileExit1Execute(Sender: TObject);
+begin
+  Close;
+end;
+
+procedure TMainForm.Back1Execute(Sender: TObject);
+begin
+  TIEWindow(ActiveMDIChild).WebBrowser1.GoBack;
+end;
+
+procedure TMainForm.Forward1Execute(Sender: TObject);
+begin
+  TIEWindow(ActiveMDIChild).WebBrowser1.GoForward;
+end;
+
+procedure TMainForm.Home1Execute(Sender: TObject);
+var
+  Child:TIEWindow;
+begin
+    Child := TIEWindow.Create(Application);
+    Child.WebBrowser1.GoHome;
+end;
+
+procedure TMainForm.Refresh1Execute(Sender: TObject);
+begin
+  if (MDIChildCount > 0) and
+    (TIEWindow(ActiveMDIChild).WebBrowser1.Document <> nil) then
+  begin
+    TIEWindow(ActiveMDIChild).WebBrowser1.Refresh;
+  end;
+end;
+
+procedure TMainForm.Stop1Execute(Sender: TObject);
+begin
+  if (MDIChildCount > 0) and
+    (TIEWindow(ActiveMDIChild).WebBrowser1.Busy = True) then
+  begin
+    TIEWindow(ActiveMDIChild).WebBrowser1.Stop;
+  end;
+end;
+
+procedure TMainForm.Navigate1Execute(Sender: TObject);
+var
+  URL:string;
+begin
+  if Edit1.Text = '' then
+  begin
+    Edit1.Text := 'about:blank';
+  end;
+    URL := Edit1.Text;
+    CreateMDIChild(URL);
+end;
+
+{タブをクリックしたら、対応するウインドウを前面に持ってくる。}
+{ダブルクリックなら、対応するウインドウを閉じる。}
+procedure TMainForm.TabControl1MouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  i:integer;
+  Child:TIEWindow;
+begin
+  i := TabControl1.IndexOfTabAt(X,Y);
+  if (i > -1) and (Button = mbLeft) then
+  begin
+    if ssDouble in Shift then
+    begin
+      Child := TIEWindow(TabControl1.Tabs.Objects[i]);
+      Child.Close;
+    end
+    else
+    begin
+      Child := TIEWindow(TabControl1.Tabs.Objects[i]);
+      Child.BringToFront;
+    end;
+  end;
+end;
+
+procedure TMainForm.ToolBar2Resize(Sender: TObject);
+begin
+  Edit1.Width := ToolBar2.Width -25;
+end;
+
+{ブックマークを見えるようにしたり、見えなくしたり。}
+procedure TMainForm.BookMarkShowExecute(Sender: TObject);
+begin
+  if Panel2.Visible = False then
+  begin
+    Panel2.Visible := True;
+    Splitter1.Visible := True;
+    BookMarkShowButton.Down := True;
+  end
+  else
+  begin
+    Splitter1.Visible := False;
+    Panel2.Visible := False;
+    BookMarkShowButton.Down := False;
+  end;
+end;
+
+{アプリケーションを起動した際にブックマークを読み込む。}
+procedure TMainForm.FormCreate(Sender: TObject);
+var
+  P:PBookMarkItem;
+  Node:TTreeNode;
+  SL1:TStringList;
+  strTitle,strLine:string;
+  i,n,intLevelA,intLevelB,intA,intB:integer;
+begin
+  if FileExists('BookMark.txt') = True then
+  begin
+    SL1 := TStringList.Create;
+    try
+      SL1.LoadFromFile('BookMark.txt');   //ブックマークは、
+      intLevelB := 0;                     //ノードの階層レベル，タイトル，URL
+      Node := nil;                        //の形式で格納してある。
+      for i := 0 to SL1.Count -1 do
+      begin
+        strLine := SL1.Strings[i];
+        intA := Pos(',',strLine);
+        for n := Length(strLine) downto 1 do
+        begin
+          if strLine[n] = ',' then
+          begin
+            intB := n;
+            Break;
+          end;
+        end;
+        try
+          intLevelA := StrToInt(Copy(strLine,1,intA-1));
+        except
+          on EConvertError do
+          begin
+            ShowMessage('ブックマークの読み込みに失敗しました。');
+            Exit;
+          end;
+        end;
+        strTitle := Copy(strLine,intA+1,intB-intA-1);
+        New(P);
+        P^.URL := Copy(strLine,intB+1,Length(strLine)-intB);
+        Node := TreeView1.Items.AddObject(Node,strTitle,P);
+        if intLevelB > intLevelA then
+        begin
+          intLevelB := intLevelA;
+          while Node.Level > intLevelA do
+          begin
+            Node.MoveTo(Node.Parent,naAdd);
+          end;
+        end
+        else if intLevelB < intLevelA then
+        begin
+          Node.MoveTo(Node.GetPrev,naAddChild);
+          intLevelB := intLevelA;
+        end;
+      end;
+      TreeView1.FullCollapse;
+    finally
+      SL1.Free;
+    end;
+  end;
+end;
+
+{ブックマークを追加する為のフォームを表示する。}
+procedure TMainForm.AddBookMarkShowExecute(Sender: TObject);
+begin
+  AddBookMarkForm.Show;
+end;
+
+[[{ブックマークのフォルダを作る。}
+procedure TMainForm.AddFolderExecute(Sender: TObject);
+var
+  Node:TTreeNode;
+  P:PBookMarkItem;
+begin
+  New(P);                 //フォルダならURLを格納する場所に'Folder'を格納して、
+  P^.URL := 'Folder';     //フォルダかどうかの判別に使う。
+  Node := TreeView1.Items.AddObject(nil,'Folder',P);
+  Node.EditText;
+end;]]
+
+{ブックマークのノードを削除}
+{URLを格納するためにNewで確保したメモリをDisposeで１つ１つ解放する。}
+procedure TMainForm.DeleteNodeExecute(Sender: TObject);
+var
+  Node1,Node2:TTreeNode;
+begin
+  Node1 := TreeView1.Selected;
+  if Node1 <> nil then
+  begin
+    Node2 := Node1;
+    while Node2.HasChildren = True do
+    begin
+      Node2 := Node2.GetLastChild;
+    end;
+    while Node2 <> Node1 do
+    begin
+      Dispose(Node2.Data);
+      Node2 := Node2.GetPrev;
+    end;
+    Dispose(Node1.Data);
+    Node1.Delete;
+  end;
+end;
+
+{アプリケーションを終了する際に、ブックマークを保存する。}
+procedure TMainForm.FormClose(Sender: TObject; var Action: TCloseAction);
+var
+  Node:TTreeNode;
+  strTitle,strURL:string;
+  SL1:TStringList;
+begin
+  SL1 := TStringList.Create;
+  try
+    Node := TreeView1.Items.GetFirstNode;
+    while Node <> nil do
+    begin
+      strTitle := Node.Text;
+      strURL := PBookMarkItem(Node.Data)^.URL;
+      Dispose(Node.Data);
+      SL1.Append(IntToStr(Node.Level)+','+strTitle+','+strURL);
+      Node := Node.GetNext;
+    end;
+    SL1.SaveToFile('BookMark.txt');
+  finally
+    SL1.Free;
+  end;
+  Action := caFree;
+end;
+
+{メニューのIEのお気に入りを取り込むを選択したら、それ用のフォームを表示。}
+procedure TMainForm.IEImportExecute(Sender: TObject);
+begin
+  IEImportForm.Show;
+end;
+
+[[procedure TMainForm.TreeView1Addition(Sender: TObject; Node: TTreeNode);
+begin
+  if (Node.Data <> nil) and (PBookMarkItem(Node.Data)^.URL = 'Folder') then
+  begin
+    Node.ImageIndex := 7;
+    Node.SelectedIndex := 7;
+  end
+  else
+  begin
+    Node.ImageIndex := 9;
+    Node.SelectedIndex := 9;
+  end;
+end;]]
+
+procedure TMainForm.TreeView1Collapsed(Sender: TObject; Node: TTreeNode);
+begin
+  Node.ImageIndex := 7;
+  Node.SelectedIndex := 7;
+  EorCTime := Time;
+end;
+
+procedure TMainForm.TreeView1Expanded(Sender: TObject; Node: TTreeNode);
+begin
+  Node.ImageIndex := 8;
+  Node.SelectedIndex := 8;
+  EorCTime := Time;
+end;
+
+procedure TMainForm.TreeView1MouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  Node:TTreeNode;
+begin
+  flag := True;    //MouseUpイベントでTrueのままなら処理を実行。
+  XY.X := X;       //MoeseMoveイベントでX,Yが大きく違ったら、ドラッグ開始して、
+  XY.Y := Y;       //URLに移動などのMouseUpイベントの処理を実行しない。
+  Node := TreeView1.GetNodeAt(X,Y);
+  if (Button = mbRight) and (Node <> nil) then
+  begin
+    Node.Selected := True;
+  end;
+  if Node = nil then
+  begin
+    TreeView1.Selected := nil;
+  end;
+end;
+
+{Webページを保存。IEの保存ダイアログを使用。}
+procedure TMainForm.FileSaveAs1Execute(Sender: TObject);
+var
+  a,b:OleVariant;
+begin
+  if MDIChildCount > 0 then
+  begin
+    TIEWindow(ActiveMDIChild).WebBrowser1.ExecWB(OLECMDID_SAVEAS,
+      OLECMDEXECOPT_DODEFAULT,a,b);
+  end;
+end;
+
+procedure TMainForm.FileClose1Execute(Sender: TObject);
+begin
+  if MDIChildCount > 0 then
+  begin
+    ActiveMDIChild.Close;
+  end;
+end;
+
+{ブックマークのフォルダなら展開したり閉じたりする。}
+{または、ウインドウを作ってURLを開く。}
+{ダブルクリックした時にウインドウを２つ作ってしまわない為の処理もしてある。}
+{400とか150とかの単位はミリ秒。この値は試した時の感覚で決めたので適当。}
+procedure TMainForm.TreeView1MouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+var
+  Node,SelNode:TTreeNode;
+  strURL:string;
+begin
+  Node := TreeView1.GetNodeAt(X,Y);
+  if flag = True then
+  begin
+    if (Node <> nil) and (Button = mbLeft) then
+    begin
+      strURL := PBookMarkItem(Node.Data)^.URL;
+      if strURL <> 'Folder' then
+      begin
+        if (Time - EorCTime)*24*60*60*1000 > 400 then
+        begin
+          CreateMDIChild(strURL);
+          EorCTime := (Time*24*60*60*1000 -150) / (24*60*60*1000);
+        end;
+      end
+      else
+      begin
+        if Node.Expanded = True then
+        begin
+          Node.Collapse(False);
+        end
+        else
+        begin
+          Node.Expand(False);
+        end;
+      end;
+    end;
+  end;
+end;
+
+{MouseDownしたポイントから10より動いたらドラッグ開始}
+{10の値は試した時の感覚で決めたので適当。}
+procedure TMainForm.TreeView1MouseMove(Sender: TObject; Shift: TShiftState;
+  X, Y: Integer);
+begin
+  if (ssLeft in Shift) and (TreeView1.Selected <> nil) then
+  begin
+    if (Abs(XY.X - X) > 10) or (Abs(XY.Y -Y) > 10) then
+    begin
+      flag := False;
+      TreeView1.BeginDrag(True);
+    end;
+  end;
+end;
+
+{ドラッグ＆ドロップを受け入れる                                              }
+{ドラッグ中に、マウスポインタがTreeView1の上端または下端に来たら、           }
+{TreeView1の中をスクロールする。                                             }
+procedure TMainForm.TreeView1DragOver(Sender, Source: TObject; X,
+  Y: Integer; State: TDragState; var Accept: Boolean);
+begin
+  if Source = TreeView1.Selected then
+  begin
+    Accept := True;
+  end;
+  if Y < 20 then
+  begin
+    Timer2.Enabled := False;
+    Timer1.Enabled := True;
+  end
+  else if Y > TreeView1.Height - 20 then
+  begin
+    Timer1.Enabled := False;
+    Timer2.Enabled := True;
+  end
+  else
+  begin
+    Timer1.Enabled := False;
+    Timer2.Enabled := False;
+  end;
+end;
+
+{ブックマークのノードの移動                                                   }
+{マウスポインタがノードの真ん中辺りか、上辺りか、下辺りかで操作を振り分ける。 }
+{それと、DropTargetがnilかどうか、                                            }
+{DropTargetがフォルダかどうかでも操作を振り分ける。                           }
+{その他、細かいことも少し気にする。                                           }
+{Y-3とかの値は試した時の感覚で決めたので適当。                                }
+procedure TMainForm.TreeView1DragDrop(Sender, Source: TObject; X,
+  Y: Integer);
+var
+  Node,Node2,SelNode:TTreeNode;
+begin
+  Node := TreeView1.GetNodeAt(X,Y);
+  SelNode := TreeView1.Selected;
+  if Node = nil then
+  begin
+    Node2 := TreeView1.GetNodeAt(X,Y-10);
+    if Node2 <> nil then
+    begin
+      if Node2.Level = 0 then
+      begin
+        SelNode.MoveTo(nil,naAdd);
+      end
+      else
+      begin
+        SelNode.MoveTo(Node2.Parent,naAddChild);
+      end;
+    end;
+  end
+  else
+  begin
+    if TreeView1.GetNodeAt(X,Y-3) = TreeView1.GetNodeAt(X,Y+3) then
+    begin
+      if PBookMarkItem(Node.Data)^.URL = 'Folder' then
+      begin
+        SelNode.MoveTo(Node,naAddChild);
+      end
+      else
+      begin
+        SelNode.MoveTo(Node,naInsert);
+      end;
+    end
+    else if Node = TreeView1.GetNodeAt(X,Y+3) then
+    begin
+      SelNode.MoveTo(Node,naInsert);
+    end
+    else if Node = TreeView1.GetNodeAt(X,Y-3) then
+    begin
+      Node2 := TreeView1.GetNodeAt(X,Y+3);
+      if Node2 <> nil then
+      begin
+        if Node.Level <= Node2.Level then
+        begin
+          SelNode.MoveTo(Node2,naInsert);
+        end
+        else
+        begin
+          SelNode.MoveTo(Node.Parent,naAddChild);
+        end;
+      end
+      else
+      begin
+        if Node.Level > 0 then
+        begin
+          SelNode.MoveTo(Node.Parent,naAddChild);
+        end
+        else
+        begin
+          SelNode.MoveTo(nil,naAdd);
+        end;
+      end;
+    end;
+  end;      
+end;
+
+{ブックマークのフォルダをダブルクリックした時に、}
+{一瞬閉じてまたすぐ開いて…とならないための処理。}
+{前に閉じてから0.25秒より経ってたら開く。}
+{250の値は試した時の感覚で決めたので適当。}
+procedure TMainForm.TreeView1Expanding(Sender: TObject; Node: TTreeNode;
+  var AllowExpansion: Boolean);
+begin
+  if (Time - EorCTime)*24*60*60*1000 < 250 then
+  begin
+    AllowExpansion := False;
+  end;
+end;
+
+{同様に、前に開いてから0.25秒より経ってたら閉じる。}
+procedure TMainForm.TreeView1Collapsing(Sender: TObject; Node: TTreeNode;
+  var AllowCollapse: Boolean);
+begin
+  if (Time - EorCTime)*24*60*60*1000 < 250 then
+  begin
+    AllowCollapse := False;
+  end;
+end;
+
+{１つ上のノードが表示されるようにTreeView1の中をスクロール}
+procedure TMainForm.Timer1Timer(Sender: TObject);
+begin
+  TreeView1.Perform(WM_VSCROLL,SB_LINEUP,0);
+  TreeView1.Invalidate;
+end;
+
+{１つ下のノードが表示されるようにTreeView1の中をスクロール}
+procedure TMainForm.Timer2Timer(Sender: TObject);
+begin
+  TreeView1.Perform(WM_VSCROLL,SB_LINEDOWN,0);
+  TreeView1.Invalidate;
+end;
+
+{ドラッグしてるノードと、ドラッグされてるイメージが違ったので、}
+{とりあえず、イメージを出なくした。}
+procedure TMainForm.TreeView1StartDrag(Sender: TObject;
+  var DragObject: TDragObject);
+begin
+   DragObject := TDragObjectPlus.Create;
+end;
+
+end.

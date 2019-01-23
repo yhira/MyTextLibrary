@@ -1,0 +1,93 @@
+
+--------------------------------------------------------------------------------
+ 
+ファイルの属性を設定するにはSetFileAttributesを、作成日時などを設定するにはSetFileTimeを使います。
+SetFileAttributesは引き数としてファイル名と属性を指定します。属性は「通常のファイル」とする場合はFILE_ATTRIBUTE_NORMALを単独で指定します。そのほかの属性は以下の例のように組み合わせて使うことができます。
+SetFileTimeは引き数としてファイル名、作成日時、最終アクセス日、修正日時を順に指定します。
+※uses節でFileCtrlを追加しておきます。
+
+////////// 
+procedure TForm038.Button1Click(Sender: TObject);
+var
+  attrib: DWORD;
+  ft1,ft2,ft3: FILETIME;
+  st: SYSTEMTIME;
+  fh: HDC;
+begin
+  if FileExists(Edit1.Text) = True then
+  begin
+    attrib:=0;
+    if CheckBox3.Checked = True then
+      attrib:=FILE_ATTRIBUTE_NORMAL
+    else
+    begin
+      if CheckBox1.Checked = True then
+        attrib:=attrib or FILE_ATTRIBUTE_ARCHIVE;
+      if CheckBox2.Checked = True then
+        attrib:=attrib or FILE_ATTRIBUTE_HIDDEN;
+      if CheckBox4.Checked = True then
+        attrib:=attrib or FILE_ATTRIBUTE_OFFLINE;
+      if CheckBox5.Checked = True then
+        attrib:=attrib or FILE_ATTRIBUTE_READONLY;
+      if CheckBox6.Checked = True then
+        attrib:=attrib or FILE_ATTRIBUTE_SYSTEM;
+      if CheckBox7.Checked = True then
+        attrib:=attrib or FILE_ATTRIBUTE_TEMPORARY;
+    end;
+    SetFileAttributes(PChar(Edit1.Text), attrib);
+
+    DateTimetoSystemTime(StrToDateTime(Edit2.Text),st);
+    SystemTimeToFileTime(st,ft1);
+    LocalFileTimeToFileTime(ft1,ft1);
+
+    DateTimetoSystemTime(StrToDateTime(Edit3.Text),st);
+    SystemTimeToFileTime(st,ft2);
+    LocalFileTimeToFileTime(ft2,ft2);
+
+    DateTimetoSystemTime(StrToDateTime(Edit4.Text),st);
+    SystemTimeToFileTime(st,ft3);
+    LocalFileTimeToFileTime(ft3,ft3);
+
+    fh:=CreateFile(
+          PChar(Edit1.Text),
+          GENERIC_WRITE,
+          0,
+          nil,
+          OPEN_EXISTING,
+          0,
+          0);
+    SetFileTime(fh,@ft1,@ft2,@ft3);
+    Closehandle(fh);
+  end;
+end;
+
+procedure TForm038.CheckBox3Click(Sender: TObject);
+begin
+  if CheckBox3.Checked = True then
+  begin
+    CheckBox1.Enabled:=False;
+    CheckBox2.Enabled:=False;
+    CheckBox4.Enabled:=False;
+    CheckBox5.Enabled:=False;
+    CheckBox6.Enabled:=False;
+    CheckBox7.Enabled:=False;
+  end
+  else
+  begin
+    CheckBox1.Enabled:=True;
+    CheckBox2.Enabled:=True;
+    CheckBox4.Enabled:=True;
+    CheckBox5.Enabled:=True;
+    CheckBox6.Enabled:=True;
+    CheckBox7.Enabled:=True;
+  end;
+end;
+
+procedure TForm038.FormCreate(Sender: TObject);
+begin
+  Edit1.Text:='Sample.txt';
+  Edit2.Text:='2000/4/21 23:59:59';
+  Edit3.Text:='2000/9/26';
+  Edit4.Text:='2000/7/28 00:00:02';
+end;
+///////// 

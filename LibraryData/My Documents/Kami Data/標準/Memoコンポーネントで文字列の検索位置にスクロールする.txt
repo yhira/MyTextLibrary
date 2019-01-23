@@ -1,0 +1,19 @@
+
+--------------------------------------------------------------------------------
+ 
+以下の例では、文字列を検索してカーソルをその先頭に移動し、MemoコンポーネントにEM_Scrollcaretメッセージを送ることで、スクロールさせています。
+
+procedure TForm1.Button1Click(Sender: TObject);
+begin
+  SearchString(Edit1.Text);  //検索する文字列を代入する 
+end;
+
+procedure TForm1.SearchString(SubString : String);
+var
+  iStrPos : Integer;
+begin
+   iStrPos := Pos(SubString,Memo1.Text);
+   Memo1.SelStart:=iStrPos;
+   SendMessage(Memo1.handle,EM_Scrollcaret,0,0);
+   Memo1.SetFocus;
+end; 

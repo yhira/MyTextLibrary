@@ -1,0 +1,451 @@
+unit Unit1;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  ImgList, ComCtrls, ToolWin, ExtCtrls, Menus, ActnList, ExtDlgs, StdCtrls,
+  Unit2, Registry;
+
+type
+  TForm1 = class(TForm)
+    MainMenu1: TMainMenu;
+    File1: TMenuItem;
+    New1: TMenuItem;
+    Open1: TMenuItem;
+    Close1: TMenuItem;
+    Save1: TMenuItem;
+    SaveAs1: TMenuItem;
+    Print1: TMenuItem;
+    PrintSetup1: TMenuItem;
+    Exit1: TMenuItem;
+    N1: TMenuItem;
+    N2: TMenuItem;
+    N3: TMenuItem;
+    Edit1: TMenuItem;
+    Cut1: TMenuItem;
+    Copy1: TMenuItem;
+    Paste1: TMenuItem;
+    Find1: TMenuItem;
+    Replace1: TMenuItem;
+    N5: TMenuItem;
+    Help1: TMenuItem;
+    HowtoUseHelp1: TMenuItem;
+    About1: TMenuItem;
+    O1: TMenuItem;
+    Font1: TMenuItem;
+    BackColor1: TMenuItem;
+    ControlBar1: TControlBar;
+    ToolBar1: TToolBar;
+    ToolButton1: TToolButton;
+    ToolButton2: TToolButton;
+    ToolButton3: TToolButton;
+    ToolButton4: TToolButton;
+    ToolButton5: TToolButton;
+    ToolButton6: TToolButton;
+    ImageList1: TImageList;
+    ToolButton12: TToolButton;
+    StatusBar1: TStatusBar;
+    ActionList1: TActionList;
+    RichEdit1: TRichEdit;
+    FontDialog1: TFontDialog;
+    ColorDialog1: TColorDialog;
+    PrintDialog1: TPrintDialog;
+    PrinterSetupDialog1: TPrinterSetupDialog;
+    FindDialog1: TFindDialog;
+    ReplaceDialog1: TReplaceDialog;
+    ToolButton16: TToolButton;
+    ToolButton17: TToolButton;
+    ToolButton7: TToolButton;
+    ToolButton8: TToolButton;
+    ToolButton9: TToolButton;
+    ToolButton10: TToolButton;
+    ToolButton11: TToolButton;
+    ToolButton13: TToolButton;
+    ToolButton14: TToolButton;
+    ToolButton15: TToolButton;
+    ToolButton18: TToolButton;
+    ToolButton19: TToolButton;
+    actNew: TAction;
+    actOpen: TAction;
+    actSave: TAction;
+    actExit: TAction;
+    actPrint: TAction;
+    actPrinter: TAction;
+    actAbout: TAction;
+    actCopy: TAction;
+    actCut: TAction;
+    actPaste: TAction;
+    actFind: TAction;
+    actReplace: TAction;
+    actFont: TAction;
+    actBackColor: TAction;
+    actShowCation: TAction;
+    ShowCaption1: TMenuItem;
+    V1: TMenuItem;
+    ToolButton20: TToolButton;
+    actWordWrap: TAction;
+    ToolButton21: TToolButton;
+    WordWrap1: TMenuItem;
+    OpenDialog1: TOpenDialog;
+    SaveDialog1: TSaveDialog;
+    actSaveAs: TAction;
+    procedure actExitExecute(Sender: TObject);
+    procedure actAboutExecute(Sender: TObject);
+    procedure actFindExecute(Sender: TObject);
+    procedure actFontExecute(Sender: TObject);
+    procedure actOpenExecute(Sender: TObject);
+    procedure actPrintExecute(Sender: TObject);
+    procedure actPrinterExecute(Sender: TObject);
+    procedure actReplaceExecute(Sender: TObject);
+    procedure actSaveExecute(Sender: TObject);
+    procedure actBackColorExecute(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure actShowCationExecute(Sender: TObject);
+    procedure actCopyExecute(Sender: TObject);
+    procedure actCutExecute(Sender: TObject);
+    procedure actPasteExecute(Sender: TObject);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+    procedure FormPaint(Sender: TObject);
+    procedure FormResize(Sender: TObject);
+    procedure actWordWrapExecute(Sender: TObject);
+    procedure FindDialog1Find(Sender: TObject);
+    procedure ReplaceDialog1Replace(Sender: TObject);
+    procedure RichEdit1Change(Sender: TObject);
+    procedure actNewExecute(Sender: TObject);
+    procedure actSaveAsExecute(Sender: TObject);
+  private
+    { Private 宣言 }
+    FFileName : String;
+    inifile : TRegIniFile;
+    procedure ShowHint(Sender: TObject);
+    function CurrText : TTextAttributes;
+    procedure SetEditRect;
+  public
+    { Public 宣言 }
+  end;
+
+var
+  Form1: TForm1;
+
+const
+  RelerAdj = 4/3;
+  GetterWid = 6;
+  sUntitled = 0;
+
+implementation
+
+{$R *.DFM}
+
+procedure TForm1.SetEditRect;
+var
+ R : TRect;
+begin
+  with RichEdit1 do
+  begin
+    R := Rect(GetterWid, 0, ClientWidth - GetterWid, ClientHeight);
+    SendMessage(Handle, EM_SETRECT,0,LongInt(@R));
+  end;
+end;
+
+procedure TForm1.ShowHint(Sender: TObject);
+begin
+  StatusBar1.Panels[0].Text := Application.Hint;
+end;
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  Application.OnHint := ShowHint;
+  Form1.Caption := '新規文書';
+  FFileName := Form1.Caption;
+  ToolBar1.ButtonWidth := 35;
+  ToolBar1.ButtonHeight := 35;
+  FFileName := LoadStr(sUntitled);
+  inifile := TRegIniFile.Create('SoftWare\TW');
+  with inifile do
+  begin
+    Form1.Top := ReadInteger('Locate','Top',10);
+    Form1.Left := ReadInteger('Locate','Left',10);
+    Form1.Height := ReadInteger('Locate','Height',400);
+    Form1.Width := ReadInteger('Locate','Width',600);
+    OpenDialog1.InitialDir := ReadString('File','IniDir', ExtractFilePath(Application.ExeName));
+    RichEdit1.Font.Name := ReadString('Option','Font','System');
+    RichEdit1.Font.Color := StringToColor(ReadString('Option','FontColor','clBlack'));
+    RichEdit1.Font.Size := ReadInteger('Option','FontSize',10);
+    RichEdit1.Color := StringToColor(ReadString('Option','Color','clWhite'));
+    RichEdit1.WordWrap := ReadBool('Option','WordWarp',True);
+  end;
+  inifile.Free;
+  SaveDialog1.Filter := OpenDialog1.Filter;
+  actWordWrap.Checked := RichEdit1.WordWrap;
+  ToolButton21.Down := RichEdit1.WordWrap;
+end;
+
+
+procedure TForm1.actExitExecute(Sender: TObject);
+begin
+  close;
+end;
+
+procedure TForm1.actAboutExecute(Sender: TObject);
+begin
+  AboutBox.ShowModal;
+end;
+
+procedure TForm1.actFindExecute(Sender: TObject);
+begin
+  FindDialog1.Position := Point(RichEdit1.Left + RichEdit1.Width, RichEdit1.Top);
+  FindDialog1.Execute;
+end;
+
+procedure TForm1.actFontExecute(Sender: TObject);
+begin
+  with FontDialog1.Font do
+  begin
+    Name := CurrText.Name;
+    Size := CurrText.Size;
+    Color := CurrText.Color;
+    Pitch := CurrText.Pitch;
+    Height := CurrText.Height;
+    Style := CurrText.Style;
+    FontDialog1.Options := [fdEffects];
+    if FontDialog1.Execute then
+    begin
+      CurrText.Name := Name;
+      CurrText.Size := Size;
+      CurrText.Color := Color;
+      CurrText.Pitch := Pitch;
+      CurrText.Height := Height;
+      CurrText.Style := Style;
+    end;
+  end;
+end;
+
+procedure TForm1.actOpenExecute(Sender: TObject);
+begin
+  if OpenDialog1.Execute then
+  begin
+    RichEdit1.Lines.LoadFromFile(OpenDialog1.FileName);
+    Form1.Caption := ExtractFileName(OpenDialog1.FileName);
+    FFileName := Form1.Caption;
+    SaveDialog1.FileName := OpenDialog1.FileName;
+    RichEdit1.Modified := False;
+  end;
+end;
+
+procedure TForm1.actPrintExecute(Sender: TObject);
+begin
+  if PrintDialog1.Execute then
+  begin
+    RichEdit1.Print(Form1.Caption);
+  end;
+end;
+
+procedure TForm1.actPrinterExecute(Sender: TObject);
+begin
+  PrinterSetupDialog1.Execute;
+end;
+
+procedure TForm1.actReplaceExecute(Sender: TObject);
+begin
+  ReplaceDialog1.Position := Point(RichEdit1.Left + RichEdit1.Width, RichEdit1.Top);
+  ReplaceDialog1.Execute;
+end;
+
+procedure TForm1.actSaveExecute(Sender: TObject);
+begin
+  if SaveDialog1.FileName = '' Then
+    actSaveAsExecute(Sender)
+  else
+  begin
+    RichEdit1.Lines.SaveToFile(SaveDialog1.FileName);
+    Form1.Caption := ExtractFileName(SaveDialog1.FileName);
+    RichEdit1.Modified := False;
+  end;
+end;
+
+procedure TForm1.actSaveAsExecute(Sender: TObject);
+begin
+  if SaveDialog1.Execute then
+  begin
+    RichEdit1.Lines.SaveToFile(SaveDialog1.FileName);
+    Form1.Caption := ExtractFileName(SaveDialog1.FileName);
+    RichEdit1.Modified := False;
+  end;
+end;
+
+procedure TForm1.actBackColorExecute(Sender: TObject);
+begin
+  ColorDialog1.Color := RichEdit1.Color;
+  if ColorDialog1.Execute then
+  begin
+    RichEdit1.Color := ColorDialog1.Color;
+  end;
+end;
+
+procedure TForm1.actShowCationExecute(Sender: TObject);
+begin
+  ToolBar1.ShowCaptions := not ToolBar1.ShowCaptions;
+  ShowCaption1.Checked := not ShowCaption1.Checked;
+  if ToolBar1.ShowCaptions then
+  begin
+    ToolButton20.Down := ToolBar1.ShowCaptions;
+  end
+  else
+  begin
+    ToolBar1.ButtonWidth := 35;
+    ToolButton20.Down := ToolBar1.ShowCaptions;
+  end;
+end;
+
+function TForm1.CurrText : TTextAttributes;
+begin
+
+  if RichEdit1.SelLength > 0 then
+    Result := RichEdit1.SelAttributes
+  else
+    Result := RichEdit1.DefAttributes;
+
+end;
+
+procedure TForm1.actCopyExecute(Sender: TObject);
+begin
+  RichEdit1.CopyToClipboard;
+end;
+
+procedure TForm1.actCutExecute(Sender: TObject);
+begin
+  with RichEdit1 do
+  begin
+    CopyToClipboard;
+    ClearSelection;
+  end;
+end;
+
+procedure TForm1.actPasteExecute(Sender: TObject);
+begin
+  RichEdit1.PasteFromClipboard;
+end;
+
+procedure TForm1.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+var
+  FileMes : String;
+  MesResult : LongInt;
+begin
+  if RichEdit1.Modified then
+  begin
+    FileMes := ExtractFileName(FFileName);
+    if FileMes = '' then FileMes := '新規文書';
+    MesResult := MessageDlg(FileMes + ' が保存されていません。' + #10#13 + '保存しますか？', mtWarning, mbYesNoCancel, 0);
+    if MesResult = mrYes then
+      actSaveExecute(Sender);
+    if MesResult = mrCancel then
+    begin
+      CanClose := False;
+      Exit;
+    end;
+  end;
+
+  // レジストリへの保存
+  inifile := TRegIniFile.Create('SoftWare\TW');
+  with inifile do
+  begin
+    WriteInteger('Locate','Top',Form1.Top);
+    WriteInteger('Locate','Left',Form1.Left);
+    WriteInteger('Locate','Height',Form1.Height);
+    WriteInteger('Locate','Width',Form1.Width);
+    WriteString('File','IniDir', OpenDialog1.InitialDir);
+    WriteString('Option','Font',RichEdit1.Font.Name);
+    WriteString('Option','FontColor',ColorToString(RichEdit1.Font.Color));
+    WriteInteger('Option','FontSize',RichEdit1.Font.Size);
+    WriteString('Option','Color',ColorToString(RichEdit1.Color));
+    WriteBool('Option','WordWarp',RichEdit1.WordWrap);
+  end;
+  inifile.Free;
+
+
+end;
+
+procedure TForm1.FormPaint(Sender: TObject);
+begin
+  SetEditRect;
+end;
+
+procedure TForm1.FormResize(Sender: TObject);
+begin
+  SetEditRect;
+end;
+
+procedure TForm1.actWordWrapExecute(Sender: TObject);
+begin
+  RichEdit1.WordWrap := not RichEdit1.WordWrap;
+  actWordWrap.Checked := RichEdit1.WordWrap;
+  ToolButton21.Down := actWordWrap.Checked;
+end;
+
+procedure TForm1.FindDialog1Find(Sender: TObject);
+var
+  FoundAt: LongInt;
+  StartPos, ToEnd: integer;
+begin
+  with RichEdit1 do
+  begin
+    if SelLength <> 0 then
+      StartPos := SelStart + SelLength
+    else
+      StartPos := 0;
+
+    ToEnd := Length(Text) - StartPos;
+
+    FoundAt := FindText(FindDialog1.FindText, StartPos, ToEnd, [stMatchCase]);
+
+    if FoundAt <> -1 then
+    begin
+      SetFocus;
+      SelStart := FoundAt;
+      SelLength := Length(FindDialog1.FindText);
+    end;
+
+  end;
+
+end;
+
+procedure TForm1.ReplaceDialog1Replace(Sender: TObject);
+var
+  SelPos: Integer;
+begin
+  with ReplaceDialog1 do
+  begin
+
+    SelPos := Pos(FindText, RichEdit1.Lines.Text);
+    if SelPos > 0 then
+    begin
+      RichEdit1.SelStart := SelPos - 1;
+      RichEdit1.SelLength := Length(FindText);
+      RichEdit1.SelText := ReplaceText;
+    end
+    else MessageDlg(Concat(FindText, '" は見つかりませんでした。'), mtError, [mbOk], 0);
+  end;
+end;
+
+procedure TForm1.RichEdit1Change(Sender: TObject);
+begin
+
+  with Form1 do
+  begin
+    if LastDelimiter(' *',Caption) = 0 then
+      Caption := Caption + ' *';
+
+  end;
+
+end;
+
+procedure TForm1.actNewExecute(Sender: TObject);
+begin
+  RichEdit1.Lines.Clear;
+  SaveDialog1.FileName := '';
+  RichEdit1.Modified := True;
+end;
+
+
+end.

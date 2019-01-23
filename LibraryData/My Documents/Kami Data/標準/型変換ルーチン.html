@@ -1,0 +1,47 @@
+<HTML><HEAD><meta http-equiv="content-type" content="text/html;charset=Shift_JIS">
+<TITLE>第7回　イベントハンドラのコーディング</TITLE></HEAD>
+
+<BODY>
+<P><B><U><FONT 
+size=+1>型変換ルーチン</FONT></U></B><BR><BR>　整数型と実数型のように、異なるデータ型で代入するときは、型変換ルーチンを使います。型変換ルーチンはほとんどが関数です。型変換ルーチンには主に以下のものがあります。<BR>　これらのルーチンはDelphiに標準で組み込まれており、宣言などしなくても使えることがほとんどです。</P>
+<TABLE cellSpacing=0 width=610 border=1>
+<TBODY>
+<TR>
+<TD bgColor=#bcbcde colSpan=2>数値変換ルーチン</TD></TR>
+<TR>
+<TD align=middle bgColor=#e4e4f1>ルーチン</TD>
+<TD align=middle bgColor=#e4e4f1>内容</TD></TR>
+<TR>
+<TD>Trunc 関数</TD>
+<TD>実数型を整数型に変換する。小数以下は切り捨てる。</TD></TR>
+<TR>
+<TD>Round 関数</TD>
+<TD>実数型を整数型に変換する。小数以下を丸める。四捨五入とは違うので注意が必要。<BR>例：<BR>　0.4 → 0　　1.4 → 1　　2.4 → 
+2<BR>　0.5 → 0　　1.5 → 2　　2.5 → 2<BR>　0.6 → 1　　1.6 → 2　　2.6 → 3</TD></TR>
+<TR>
+<TD>IntToStr 関数</TD>
+<TD>整数型を文字列型に変換する。</TD></TR>
+<TR>
+<TD>FloatToStr 関数</TD>
+<TD>実数型を文字列型に変換する。</TD></TR>
+<TR>
+<TD bgColor=#bcbcde colSpan=2>文字列変換ルーチン</TD></TR>
+<TR>
+<TD align=middle bgColor=#e4e4f1>ルーチン</TD>
+<TD align=middle bgColor=#e4e4f1>内容</TD></TR>
+<TR>
+<TD>StrToInt 関数</TD>
+<TD>文字列型を整数型に変換する。変換に失敗したらエラーになる。</TD></TR>
+<TR>
+<TD>StrToIntDef 関数</TD>
+<TD>文字列型を整数型に変換する。変換に失敗したら、デフォルトの値を返す(エラーにならない)。</TD></TR>
+<TR>
+<TD>StrToFloat 関数</TD>
+<TD>文字列型を実数型に変換する。</TD></TR></TBODY></TABLE><BR>
+<FONT SIZE="-1">
+TITLE:第7回　イベントハンドラのコーディング<BR>
+DATE:2002/12/29 17:29<BR>
+URL:<A HREF="http://wblue.hp.infoseek.co.jp/prog/c2_07.htm" TARGET="_blank">http://wblue.hp.infoseek.co.jp/prog/c2_07.htm</A><BR>
+</FONT>
+</BODY>
+</HTML>

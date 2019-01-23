@@ -1,0 +1,85 @@
+121 名前：デフォルトの名無しさん 投稿日：02/04/22 23:23
+関数や手続きの呼び出しにかかる時間を測定したいときなどは
+どのコンポーネントを使えばよいのでしょうか？
+
+
+122 名前：デフォルトの名無しさん 投稿日：02/04/22 23:25
+Turbo Profiler
+
+...ってのは嘘でQueryPerformanceCounter/Frequency Win32API
+
+
+123 名前：デフォルトの名無しさん 投稿日：02/04/22 23:25
+ストップウォッチ！
+
+
+124 名前：デフォルトの名無しさん 投稿日：02/04/22 23:32
+function TForm1.Button1Click(Sender:TObject);
+var
+　　Time:Cardinal;
+　　Count:Cardinal;
+begin
+　　Count:=0;
+　　Time:=GetTickCount+1000;
+
+　　while GetTickCount < Time do
+　　begin
+　　　　TestFunction;//テスト対象関数
+　　　　Inc(Count);
+　　end;
+
+　　ShowMessage(IntToStr(Count));
+end;
+
+多少問題がある方法だが、厳密な測定が不要な場合はこれでいいでしょう。
+
+
+125 名前：中日ファン＠地方巡業中モード ◆DRAG8zBg 投稿日：02/04/22 23:39
+>>118
+やっぱり突っ込まれたか・・・それでもちゃんと動くから気にしてなかったんだけど
+
+
+126 名前：デフォルトの名無しさん 投稿日：02/04/22 23:43
+>>123
+なるほど！て・・
+>>124
+ありがとうございます。
+
+いろいろ検索してこういののはありましたがエラーが出てしまいました。
+http://www.nifty.ne.jp/forum/fdelphi/faq/00020.htm
+
+
+
+127 名前：デフォルトの名無しさん 投稿日：02/04/22 23:43
+IndyのTIdHTTP使ってるんだけどGetするとメインスレッドが止まっちゃう。
+小さいデータならいいんだけど、5秒以上かかると「ん？」と思っちゃうので
+別スレッドで処理したんだけど効果なし。
+OnWorkにApplication.ProcessMessages入れても処理が重く感じる。
+
+なんか軽く見せかけるいい方法ないですかね？
+
+
+128 名前：中日ファン＠地方巡業中モード ◆DRAG8zBg 投稿日：02/04/22 23:53
+>>127
+TIDAntiFreezeはどうでしょ？（まだ自分で使ったことはないのですが）
+
+
+129 名前：124 投稿日：02/04/23 00:03
+>>126
+漏れの方法は一秒間に何度関数が実行できるかのテストだが、
+その方法は関数実行に何msecかかるかのテスト。
+つまりその関数の実行に1msecかからないのなら、結果は0になる。
+しかもGetTickCountは精度が悪い。（MMSystem.TimeGetTimeは精度こそ高いがGetTickCountと同じ機能。）
+
+そのアプローチで逝くなら122方法がよいと思われ。
+procedure TForm1.Button1Click(Sender: TObject);
+var
+Freq,TimeS,TimeE:Int64;
+begin
+QueryPerformanceFrequency(Freq);
+QueryPerformanceCounter(TimeS);
+TestProcedure;//テスト対象関数
+QueryPerformanceCounter(TimeE);
+ShowMessage( FloatToStr( (TimeE-TimeS)/Freq ) + 'sec' );
+end;
+

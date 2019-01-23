@@ -1,0 +1,68 @@
+unit Unit1;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, ShellAPI;
+
+type
+  TForm1 = class(TForm)
+    procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+  private
+    { Private 宣言 }
+  protected
+    procedure FileDlopped(var Message: TWMDropFiles); message WM_DROPFILES;
+                                             //ファイルがドロップされたとき送られるメッセージ
+  public
+    { Public 宣言 }
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+{$R *.dfm}
+
+{ TForm1 }
+
+procedure TForm1.FileDlopped(var Message: TWMDropFiles); //--6
+var
+  i, Count: UINT;                //--------------------------7
+  FileName: array[0..259] of Char;  //-----------------------8
+  sl: TStringList;
+begin
+  try
+    Count := DragQueryFile(Message.Drop, $FFFFFFFF, nil, 0);//--9
+    sl := TStringList.Create;
+    try
+      for i := 0 to Count -1 do   //-------------------------10
+      begin
+        DragQueryFile(Message.Drop, i, FileName, Length(FileName));//11
+        sl.Add(FileName); //---------------------------------12
+      end;
+      ShowMessage(sl.Text);  //------------------------------13
+    finally
+      sl.Free;
+    end;
+
+  finally
+    DragFinish(Message.Drop);  //---------------------------15
+  end;
+
+
+end;
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  DragAcceptFiles(Handle, True);     //----------------------4
+end;
+
+procedure TForm1.FormDestroy(Sender: TObject);
+begin
+  DragAcceptFiles(Handle, False);   //-----------------------5
+end;
+
+end.

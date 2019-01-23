@@ -1,0 +1,39 @@
+、SizeなどはWriteIntegerとWriteStringで INIファイルに保存、読み込みが出来ますがColorやPitchはどうしたら良いのでしょう 
+
+[Ａ] 
+Colorは文字列に変換します。
+StyleやPitchはbyte型にキャストしてWriteInteger/ReadInteger を用いるか、
+例のように absolute 指令で同じ位置に Byte 型の変数をわりあてます。[例] 
+{Uses節にIniFiles を追加するのを忘れずに}
+
+{フォント情報をIniFileに書き込む場合}
+var
+  FStyle:TFontStyles;         {TFontStyles型変数}
+  Fs    :Byte absolute FStyle;{TFontStyles Byte型の共用変数}
+  FPitch:TFontPitch;
+  Fp    :Byte absolute FPitch;
+  FontIni: TIniFile;
+begin
+  FStyle:=Memo1.Font.Style;
+  FPitch:=Memo1.Font.Pitch;
+
+  FontIni:= TIniFile.Create('FONTINI.INI');
+  try
+    FontIni.WriteInteger('Font','Style',Fs);
+    FontIni.WriteInteger('Font','Pitch',Fp);
+    FontIni.WriteString('Font','Color',colortostring(Memo1.Font.Color));
+  finally FontIni.Free;
+  end;
+end;
+
+{IniFileからフォント情報を読み取る場合}
+
+  FontIni:= TIniFile.Create('FONTINI.INI');
+  try
+    Fs:= FontIni.ReadInteger('Font','Style',0);
+    Fp:= FontIni.ReadInteger('Font','Pitch',0);
+    Memo1.Font.Color:= StringToColor(FontIni.ReadString('Font','Color',0));
+  finally FontIni.Free;
+  end;
+  Memo1.Font.Style:= FStyle;
+  Memo1.Font.Pitch:= FPitch;

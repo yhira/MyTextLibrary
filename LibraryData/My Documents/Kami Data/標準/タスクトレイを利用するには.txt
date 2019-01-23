@@ -1,0 +1,49 @@
+
+--------------------------------------------------------------------------------
+ 
+常駐アプリケーションなどでタスクトレイを利用する場合は、Shell_NotifyIconを使います。アイコンのクリックを検出するには、メッセージハンドラを設定します。
+
+/////// 
+//uses に ShellApiを追加 
+//public節に以下を追加 
+//  FTrayIcon : TNotifyIconData; 
+//  procedure IconEvent(var Msg : TMsg); message WM_USER + 1; 
+
+//タスクトレイにアイコンを追加 
+procedure TForm1.BitBtn1Click(Sender: TObject);
+begin
+  with FTrayIcon do begin
+    cbSize  :=  SizeOf(TNotifyIconData);
+    hIcon   :=  Application.Icon.Handle; //アイコンを指定 
+    szTip   :=  'Test Tray Icon'; //ヒント表示 
+    uCallbackMessage  :=  WM_USER + 1;
+    uFlags  :=  NIF_MESSAGE or NIF_ICON or NIF_TIP;
+    uID     :=  1;
+    Wnd     :=  Handle;
+  end;
+  Shell_NotifyIcon(NIM_ADD, @FTrayIcon);
+end;
+
+//タスクトレイからアイコンを削除 
+procedure TForm1.BitBtn2Click(Sender: TObject);
+begin
+  Shell_NotifyIcon(NIM_DELETE, @FTrayIcon);
+end;
+
+//アイコンのクリックを検出 
+procedure TForm1.IconEvent(var Msg: TMsg);
+var
+  MousePoint : TPoint;
+begin
+  //左クリック 
+  if  (Msg.wParam = WM_LBUTTONDOWN) then  begin
+    ShowMessage('左ボタンをクリックしました。');
+  end else
+  //右クリック 
+  if  (Msg.wParam = WM_RBUTTONDOWN) then  begin
+    GetCursorPos(MousePoint);
+    PopupMenu1.Popup(MousePoint.x, MousePoint.y); {ポップアップを表示} 
+  end;
+end;
+end.
+///// 

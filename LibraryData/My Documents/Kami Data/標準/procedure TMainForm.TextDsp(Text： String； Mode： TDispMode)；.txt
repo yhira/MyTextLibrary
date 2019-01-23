@@ -1,0 +1,26 @@
+var
+  str: String;
+  xx, yy: integer;
+begin
+  with MainForm.Canvas do
+  begin
+    Brush.Style := bsClear;
+    Brush.Color := clRed;
+    str := Text;
+    Font.Height := TextHeight(str) * Width div TextWidth(str);
+    if Font.Height > TextWidth(str) * Height div TextHeight(str) then
+      Font.Height := TextWidth(str) * Height div TextHeight(str);
+
+    case DispMode of
+      dmCenter:
+      begin
+        xx := (Self.Width - TextWidth(str)) div 2;
+        yy := (Self.Height - TextHeight(str)) div 2;
+      end;
+      
+    end;
+
+    TextOut(xx, yy, str);
+  end;
+
+end;

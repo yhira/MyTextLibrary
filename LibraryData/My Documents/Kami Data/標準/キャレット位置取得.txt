@@ -1,0 +1,53 @@
+unit Unit1;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls;
+
+type
+  TForm1 = class(TForm)
+    Button1: TButton;
+    Memo1: TMemo;
+    procedure Button1Click(Sender: TObject);
+  private
+    { Private 宣言 }
+  public
+    { Public 宣言 }
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+{$R *.dfm}
+procedure TForm1.Button1Click(Sender: TObject);
+var
+ Caret:TPoint;
+ TitleHeight:integer;
+ FrameX,FrameY:integer;
+ DC:THandle;
+ TM:TTextMetric;
+ FontHeight:integer;
+ XPos,YPos:integer;
+begin
+ GetCaretPos(Caret); {キャレット位置取得}
+
+ TitleHeight:=GetSystemMetrics(SM_CYCAPTION); {ウィンドウタイトルの高さ}
+ FrameX:=GetSystemMetrics(SM_CXFRAME); {ウィンドウ枠の幅}
+ FrameY:=GetSystemMetrics(SM_CYFRAME); {ウィンドウ枠の高さ}
+
+ DC:=GetDc(Memo1.Handle);   {デバイスコンテキスト取得}
+ GetTextMetrics(DC,TM);         {フォント情報取得}
+ FontHeight:=TM.tmHeight;       {フォントの高さ}
+
+ //ダイアログの位置を計算 **
+ XPos:=Caret.X+Left+Memo1.Left+FrameX;
+ YPos:=Caret.Y+Top+Memo1.Top+FrameY+TitleHeight+FontHeight;
+
+ MessageDlgPos('置換しますか？',mtConfirmation,mbYesNoCancel,0,XPos,YPos);
+end;
+
+end.

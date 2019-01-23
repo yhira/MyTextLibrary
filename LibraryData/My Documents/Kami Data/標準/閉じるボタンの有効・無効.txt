@@ -1,0 +1,9 @@
+
+var SysMenu: HMENU;
+begin
+  SysMenu := GetSystemMenu(Handle, False);
+  if Enabled then
+    EnableMenuItem(SysMenu, SC_CLOSE, MF_BYCOMMAND or MF_ENABLED)//—LŒø
+  else
+    EnableMenuItem(SysMenu, SC_CLOSE, MF_BYCOMMAND or MF_GRAYED);//–³Œø
+  end;

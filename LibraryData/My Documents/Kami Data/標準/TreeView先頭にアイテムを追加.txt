@@ -1,0 +1,4 @@
+procedure TForm1.btnAddFirstClick(Sender: TObject);
+begin
+  tv1.Items.AddFirst(nil, Edit1.Text);
+end;

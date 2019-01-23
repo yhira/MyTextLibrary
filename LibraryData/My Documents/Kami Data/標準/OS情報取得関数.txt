@@ -1,0 +1,36 @@
+
+function TBugReportForm.OSPlatformInfo: String;
+var
+  OSver : TOSVERSIONINFO;
+begin
+  OSver.dwOSVersionInfoSize  :=  SizeOf(OSver);
+  GetVersionEx(OSver);
+  case OSver.dwPlatformId of
+    VER_PLATFORM_WIN32s: Result := 'Windows 3.1';  //VER_PLATFORM_WIN32s 		Win32s on Windows 3.1.
+    VER_PLATFORM_WIN32_WINDOWS: //VER_PLATFORM_WIN32_WINDOWS 	Windows 95, Windows 98, or Windows Me.
+    begin
+      case OSver.dwMinorVersion of
+        0{95}: Result := 'Windows 95';
+        10{98}: Result := 'Windows 98';
+        90{Me}: Result := 'Windows Me';
+      end;
+    end;
+    VER_PLATFORM_WIN32_NT://VER_PLATFORM_WIN32_NT Windows NT 3.51, Windows NT 4.0, Windows 2000, Windows XP, or Windows .NET Server.
+    begin
+      case OSver.dwMajorVersion of
+        3{3.51}: Result := 'Windows NT 3.51';
+        4{4.0}: Result := 'Windows NT 4.0';
+        5{2000, XP, .NET Server}:
+        begin
+          case OSver.dwMinorVersion of
+            0{2000}: Result := 'Windows 2000';
+            1{XP or .NET Server}: Result := 'Windows XP';
+          end;
+
+        end;
+      end;
+
+    end;
+  else Result := 'Windows??';
+  end;
+end;

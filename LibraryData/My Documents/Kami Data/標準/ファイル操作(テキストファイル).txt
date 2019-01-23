@@ -1,0 +1,62 @@
+
+type
+  TSeiseki = record
+    Kokugo, Sugaku, Eigo: Integer;
+  end;
+
+  TSeito = record
+    Name: String;
+    Seoseki: TSeiseki;
+  end;
+
+--------------------------
+
+procedure TForm1.Button6Click(Sender: TObject);
+var
+[[  f: TextFile;
+  Seito: array of TSeito;]]
+  v: TSeito;
+  i: Integer;
+begin
+[[  SetLength(Seito, Memo1.Lines.Count);]]
+  for i := Low(Seito) to High(Seito) do
+  begin
+    Seito[i].Name := Memo1.Lines[i];
+    Seito[i].Seoseki.Kokugo := Random(100);
+    Seito[i].Seoseki.Sugaku := Random(100);
+    Seito[i].Seoseki.Eigo := Random(100);
+  end;
+
+  AssignFile(f, FILE_NAME);
+  Rewrite(f);
+  try
+    for i := Low(Seito) to High(Seito) do
+    begin
+      Writeln(f, Seito[i].Name);
+      Writeln(f, Seito[i].Seoseki.Kokugo);
+      Writeln(f, Seito[i].Seoseki.Sugaku);
+      Writeln(f, Seito[i].Seoseki.Eigo);
+    end;
+
+  finally
+    CloseFile(f);
+  end;
+
+  ListBox1.Clear;
+  AssignFile(f, FILE_NAME);
+  Reset(f);
+  try
+[[    while not Eof(f) do]]
+    begin
+      Readln(f, v.Name);
+      Readln(f, v.Seoseki.Kokugo);
+      Readln(f, v.Seoseki.Sugaku);
+      Readln(f, v.Seoseki.Eigo);
+      ListBox1.Items.Add(v.Name + 'ÇÃçáåvÇÕ' + IntToStr(v.Seoseki.Kokugo + v.Seoseki.Sugaku + v.Seoseki.Eigo));
+    end;
+
+  finally
+    CloseFile(f);
+  end;
+
+end;

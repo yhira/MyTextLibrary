@@ -1,0 +1,21 @@
+
+
+--------------------------------------------------------------------------------
+該当するバージョン:Delphi 1.0,Delphi 2.0,Delphi 3.0/Delphi3.1,Delphi4
+ 印刷処理を行いたいのですが，プリンタへ出力するときに印刷方向を指定したいのですが，どのようにすればよいのでしょうか？ 
+
+ 
+ 下記コードを参考にして下さい。
+ラジオグループを使用して，印刷方向を指定する方法です。
+
+
+   procedure TForm1.RadioGroup1Click(Sender: TObject);
+   begin
+     if RadioGroup1.ItemIndex = 0 then
+        Printer.Orientation := poPortrait    {縦方向}
+     else
+        Printer.Orientation := poLandscape;  {横方向}
+   end;
+
+ 
+

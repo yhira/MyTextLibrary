@@ -1,0 +1,10 @@
+procedure TMainForm.AddFolderExecute(Sender: TObject);
+var
+  Node:TTreeNode;
+  P:PBookMarkItem;
+begin
+  New(P);                 //フォルダならURLを格納する場所に'Folder'を格納して、
+  P^.URL := 'Folder';     //フォルダかどうかの判別に使う。
+  Node := TreeView1.Items.AddObject(nil,'Folder',P);
+  Node.EditText;
+end;

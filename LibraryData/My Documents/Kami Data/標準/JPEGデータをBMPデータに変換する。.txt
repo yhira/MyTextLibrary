@@ -1,0 +1,35 @@
+
+--------------------------------------------------------------------------------
+ 
+DelphiのユニットにはJPEGユニットという便利なユニットがあります。これを利用すると、簡単にJPEGデータを扱うことができます。
+また、ファイル拡張子を変更するには、ChangeFileExt関数を使うと簡単に変換できます。
+
+uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  StdCtrls, JPEG;
+
+(中略)
+
+procedure TForm1.Button1Click(Sender: TObject);
+var
+  Str: string;
+  JPEGFile: TJPEGImage;
+  BMPFile: TBitmap;
+begin
+  {空欄だったら処理しない} 
+  if Edit1.Text = '' then Exit;
+  Str := Edit1.Text;
+  JPEGFile := TJPEGImage.Create;
+  try
+    JPEGFile.LoadFromFile(Str);
+    BMPFile := TBitmap.Create;
+    try
+      BMPFile.Assign(JPEGFile);
+      BMPFile.SaveToFile(ChangeFileExt(Str, '.BMP'));
+    finally
+      BMPFile.Free;
+    end;
+  finally
+    JPEGFile.Free;
+  end;
+end; 

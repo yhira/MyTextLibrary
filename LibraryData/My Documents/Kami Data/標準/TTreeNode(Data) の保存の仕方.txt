@@ -1,0 +1,54 @@
+
+山岡さんは書きました。
+[Delphi-ml:36474] TTreeNode(Data) の保存の仕方
+>TTreeNodeのDataプロパティに関連付けされたデータを
+>保存するにはどうしたらいいのかわからずに困っています。
+> 
+>TreeViewの状態を保存するまではわかったのですが、
+>Dataを保存する方法が判りません。やっぱり読み込む時に
+>TreeViewにうまく絡めれるように保存しなければいけない
+>ような気がするのですが・・・・。
+
+
+基本的に Dataの内容は、自前で管理する必要があります。
+
+TTreeView.SaveToStreamを使い、かつ同じストリームに
+Dataを保存する場合は、ストリームの先頭に Dataを追加します。
+これは LoadFromStream がストリームの現在位置から
+末尾までを TreeView の内容として読み出すからです。
+
+別々のストリームに保存する場合は、こうした配慮は不要です。
+
+また ReadComponentと WriteComponentを使うと TreeViewの位置や
+大きさ等も保存される一方、読み込み処理は少し簡潔にできます。
+
+
+次の例は Dataに PCharが格納されている場合の書き込み処理です。
+ご参考となれば幸いです。
+
+procedure TForm1.SaveTreeView(Stream: TStream;
+  TreeView: TTreeView);
+var
+  Node: TTreeNode;
+  Len: Integer;
+begin
+  Stream.Clear;
+
+  Node:= TreeView.Items.GetFirstNode;
+  while Node<>nil do
+  begin
+    Len:= StrLen(PChar(Node.Data));
+    Stream.Write(Len, SizeOf(Len));
+    Stream.Write(PChar(Node.Data)^, Len);
+    Node:= Node.GetNext;
+  end;
+// 次の２行は同一ストリームに保存する場合のみ必要
+  Len:=-1;
+  Stream.Write(Len, SizeOf(Len));// Dataの終端マーク
+
+  TreeView.SaveToStream(Stream);
+end;
+
+-----------------------
+（株）富士電機総合研究所
+榎並義晶   enami-yoshiaki@fujielectric.co.jp

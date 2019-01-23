@@ -1,0 +1,134 @@
+{ドラッグ中に、マウスポインタがTreeView1の上端または下端に来たら、           }
+{TreeView1の中をスクロールする。                                             }
+procedure TMainForm.TreeView1DragOver(Sender, Source: TObject; X,
+  Y: Integer; State: TDragState; var Accept: Boolean);
+begin
+  if Source = TreeView1.Selected then
+  begin
+    Accept := True;
+  end;
+  if Y < 20 then
+  begin
+    Timer2.Enabled := False;
+    Timer1.Enabled := True;
+  end
+  else if Y > TreeView1.Height - 20 then
+  begin
+    Timer1.Enabled := False;
+    Timer2.Enabled := True;
+  end
+  else
+  begin
+    Timer1.Enabled := False;
+    Timer2.Enabled := False;
+  end;
+end;
+
+{ブックマークのノードの移動                                                   }
+{マウスポインタがノードの真ん中辺りか、上辺りか、下辺りかで操作を振り分ける。 }
+{それと、DropTargetがnilかどうか、                                            }
+{DropTargetがフォルダかどうかでも操作を振り分ける。                           }
+{その他、細かいことも少し気にする。                                           }
+{Y-3とかの値は試した時の感覚で決めたので適当。                                }
+procedure TMainForm.TreeView1DragDrop(Sender, Source: TObject; X,
+  Y: Integer);
+var
+  Node,Node2,SelNode:TTreeNode;
+begin
+  Node := TreeView1.GetNodeAt(X,Y);
+  SelNode := TreeView1.Selected;
+  if Node = nil then
+  begin
+    Node2 := TreeView1.GetNodeAt(X,Y-10);
+    if Node2 <> nil then
+    begin
+      if Node2.Level = 0 then
+      begin
+        SelNode.MoveTo(nil,naAdd);
+      end
+      else
+      begin
+        SelNode.MoveTo(Node2.Parent,naAddChild);
+      end;
+    end;
+  end
+  else
+  begin
+    if TreeView1.GetNodeAt(X,Y-3) = TreeView1.GetNodeAt(X,Y+3) then
+    begin
+      if PBookMarkItem(Node.Data)^.URL = 'Folder' then
+      begin
+        SelNode.MoveTo(Node,naAddChild);
+      end
+      else
+      begin
+        SelNode.MoveTo(Node,naInsert);
+      end;
+    end
+    else if Node = TreeView1.GetNodeAt(X,Y+3) then
+    begin
+      SelNode.MoveTo(Node,naInsert);
+    end
+    else if Node = TreeView1.GetNodeAt(X,Y-3) then
+    begin
+      Node2 := TreeView1.GetNodeAt(X,Y+3);
+      if Node2 <> nil then
+      begin
+        if Node.Level <= Node2.Level then
+        begin
+          SelNode.MoveTo(Node2,naInsert);
+        end
+        else
+        begin
+          SelNode.MoveTo(Node.Parent,naAddChild);
+        end;
+      end
+      else
+      begin
+        if Node.Level > 0 then
+        begin
+          SelNode.MoveTo(Node.Parent,naAddChild);
+        end
+        else
+        begin
+          SelNode.MoveTo(nil,naAdd);
+        end;
+      end;
+    end;
+  end;      
+end;
+{１つ上のノードが表示されるようにTreeView1の中をスクロール}
+procedure TMainForm.Timer1Timer(Sender: TObject);
+begin
+  TreeView1.Perform(WM_VSCROLL,SB_LINEUP,0);
+  TreeView1.Invalidate;
+end;
+
+{１つ下のノードが表示されるようにTreeView1の中をスクロール}
+procedure TMainForm.Timer2Timer(Sender: TObject);
+begin
+  TreeView1.Perform(WM_VSCROLL,SB_LINEDOWN,0);
+  TreeView1.Invalidate;
+end;
+
+{ドラッグしてるノードと、ドラッグされてるイメージが違ったので、}
+{とりあえず、イメージを出なくした。}
+procedure TMainForm.TreeView1StartDrag(Sender: TObject;
+  var DragObject: TDragObject);
+begin
+   DragObject := TDragObjectPlus.Create;
+end;
+{MouseDownしたポイントから10より動いたらドラッグ開始}
+{10の値は試した時の感覚で決めたので適当。}
+procedure TMainForm.TreeView1MouseMove(Sender: TObject; Shift: TShiftState;
+  X, Y: Integer);
+begin
+  if (ssLeft in Shift) and (TreeView1.Selected <> nil) then
+  begin
+    if (Abs(XY.X - X) > 10) or (Abs(XY.Y -Y) > 10) then
+    begin
+      flag := False;
+      TreeView1.BeginDrag(True);
+    end;
+  end;
+end;

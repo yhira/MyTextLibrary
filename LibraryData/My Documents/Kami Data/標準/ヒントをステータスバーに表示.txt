@@ -1,0 +1,17 @@
+  private
+    { Private êÈåæ }
+    procedure ShowHint(Sender: TObject);
+    
+
+procedure TMainForm.FormCreate(Sender: TObject);
+begin
+  Application.OnHint := ShowHint;
+end;
+
+
+procedure TMainForm.ShowHint(Sender: TObject);
+begin
+  StatusBar.Panels[0].Text := Application.Hint;
+end;
+
+

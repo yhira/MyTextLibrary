@@ -1,0 +1,18 @@
+procedure TMainForm.LoadSecurity();
+var
+	WinIni:TIniFile;
+begin
+	WinIni := TIniFile.Create(MyPath+'config.ini');
+	//セキュリティ＆マルチメディアの設定
+		//セキュリティ
+		JavaBool:=WinIni.ReadBool('Option_Security','Java',False);
+		ScriptBool:=WinIni.ReadBool('Option_Security','Script',False);
+		ActiveXBool:=WinIni.ReadBool('Option_Security','ActiveX',False);
+		//マルチメディア
+		ImageBool:=WinIni.ReadBool('Option_Multimedia','Image',False);
+		BGMBool:=WinIni.ReadBool('Option_Multimedia','BGM',False);
+		VideoBool:=WinIni.ReadBool('Option_Multimedia','Video',False);
+
+  //IniFileの解放
+		WinIni.Free;
+end;

@@ -1,0 +1,41 @@
+<HTML><HEAD><meta http-equiv="content-type" content="text/html;charset=Shift_JIS">
+<TITLE>第5回　Pascalの基礎</TITLE></HEAD>
+
+<BODY>
+<P><B><U><FONT size=+1>ビット演算子</FONT></U></B><BR><BR>　数値を2進数で表して、各ビットを演算します。</P>
+<TABLE cellSpacing=0 width=610 border=1>
+<TBODY>
+<TR>
+<TD align=middle bgColor=#e0e0ef>演算子</TD>
+<TD align=middle bgColor=#e0e0ef>意味</TD></TR>
+<TR>
+<TD>and</TD>
+<TD>各ビットをand演算します。両方のビットが1のときだけ、結果が1になります。</TD></TR>
+<TR>
+<TD>or</TD>
+<TD>各ビットをor演算します。左辺、右辺どちらか一方でも1のときは、結果が1になります。</TD></TR>
+<TR>
+<TD>not</TD>
+<TD>各ビットを逆転します。0は1に、1は0になります。</TD></TR>
+<TR>
+<TD>xor</TD>
+<TD>ビットごとの排他的論理和。片方が0で、もう片方が1のときだけ、結果が1になります</TD></TR></TBODY></TABLE>
+<P>　パソコン内部では、数値はすべて2進数で表現されています。ビットとは、2進数にしたときの各桁を表します。例えば、10進数で100を2進数で表すと、1100100になります。<BR>　次がビット演算の例です。</P><PRE>  var
+    X, Y, Ans: Integer;
+  begin
+    X := 100;  { 2進数では、1100100 }
+    Y := 78;   { 2進数では、1001110 }
+
+    Ans := X and Y;    { Ans = 68  (1000100) }
+    Ans := X or Y;     { Ans = 110 (1101110) }
+    Ans := not X;      { Ans = -2147483547 (11111111111111111111111110011011) }
+    Ans := X xor Y;    { Ans = 42  (0101010) }
+  end;</PRE>
+<P>　※not Xの桁が大きいのは、実際のInteger型は4バイト(32ビット)であり、そのすべてのビットが反転するため。<BR><BR></P><BR>
+<FONT SIZE="-1">
+TITLE:第5回　Pascalの基礎<BR>
+DATE:2002/12/29 16:58<BR>
+URL:<A HREF="http://wblue.hp.infoseek.co.jp/prog/c2_05.htm" TARGET="_blank">http://wblue.hp.infoseek.co.jp/prog/c2_05.htm</A><BR>
+</FONT>
+</BODY>
+</HTML>

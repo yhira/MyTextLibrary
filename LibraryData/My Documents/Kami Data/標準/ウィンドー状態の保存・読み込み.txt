@@ -1,0 +1,60 @@
+
+procedure SaveWindowMetrics(Form: TForm;
+  Section: string = ''; Path: string = '');
+var
+  ini: TInifile;
+begin
+  if Section = '' then Section := Form.Name;
+  if Path = '' then Path :=
+    ChangeFileExt(ParamStr(0), '.ini');
+  ini := TInifile.Create(Path);
+  try
+    ini.WriteInteger(Section, 'Top',
+      Form.Top);
+    ini.WriteInteger(Section, 'Left',
+      Form.Left);
+    ini.WriteInteger(Section, 'Width',
+      Form.Width);
+    ini.WriteInteger(Section, 'Height',
+      Form.Height);
+    ini.UpdateFile;
+  finally
+    ini.free;
+  end;
+end;
+
+procedure RecoverWindowMetrics(Form: TForm;
+  Section: string = ''; Path: string = '');
+var
+   ini: TIniFile;
+   WRect: TRect;
+begin
+  if Section = '' then Section := Form.Name;
+  SystemParametersInfo(SPI_GETWORKAREA, 0,
+    @WRect, 0);
+  if Path = '' then Path :=
+    ChangeFileExt(ParamStr(0), '.ini');
+  ini := TInifile.create(Path);
+  try
+    with Form do
+    begin
+      Top := ini.ReadInteger(Section, 'Top',
+        WRect.Top);
+      Left := ini.ReadInteger(Section,
+       'Left', WRect.Left);
+      Width := ini.ReadInteger(Section,
+        'Width', Width);
+      Height := ini.ReadInteger(Section,
+        'Height', Height);
+     if Left > WRect.Right - 10 then
+       Left := WRect.Left;
+     if Left < WRect.Left then
+       Left := WRect.Left;
+     if Top < WRect.Top then Top := WRect.Top;
+     if Top > WRect.Bottom - 10 then
+       Top:=WRect.Top;
+    end;
+  finally
+     ini.free;
+  end;
+end;

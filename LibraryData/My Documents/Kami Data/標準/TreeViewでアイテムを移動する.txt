@@ -1,0 +1,9 @@
+
+TreeView でノードを移動するには TreeNodeの MoveToメソッドを使います。引数に移動先のノードとオプションを指定できます。以下のサンプルは選択されているノードを、同じ階層で下に移動します。実際は一番下なら移動させない処理が必要になります。引数には naInsert を指定しています。これは指定ノードの下に対象ノードを移動するとヘルプにはあるのですが、実際は逆のようです (??)。選択しているノードを下に移動する場合、選択ノードの下のノードを、現在選択しているノードの上に移動するように記述します。
+
+■ 選択されているノードを下へ移動 
+procedure TForm1.Button1Click(Sender: TObject);
+begin
+  TreeView1.Selected.GetNext.MoveTo(TreeView1.Selected,naInsert);  
+end; 
+

@@ -1,0 +1,59 @@
+//ノードの削除
+procedure TMainForm.DeleteActionExecute(Sender: TObject);
+var
+  Node: TTreeNode;
+  Msg :String;
+begin
+  if BasicSetup.DeleteCheck then
+  begin
+
+    case PageControl1.TabIndex of
+      MACRO_TAB_SHEET://MacroTabSheetを選択しているとき
+      begin
+        Node := MacroTreeView.Selected;
+        Msg := '"' + Node.Text + '"を削除してもいいですか？';
+        if Application.MessageBox(PChar(Msg), PChar(Application.Title),
+           MB_YESNO or MB_ICONQUESTION or MB_DEFBUTTON2) = IDYES then
+        begin
+          if Node.Level > 0 then
+            Node.Parent.Expand(True);
+          Node.Delete;
+        end
+        else
+          Exit;
+      end;
+      PASTE_TAB_SHEET://PasteTabSheetを選択しているとき
+      begin
+        Node := PasteTreeView.Selected;
+        Msg := '"' + Node.Text + '"を削除してもいいですか？';
+        if Application.MessageBox(PChar(Msg), PChar(Application.Title),
+           MB_YESNO or MB_ICONQUESTION or MB_DEFBUTTON2) = IDYES then
+        begin
+          if Node.Level > 0 then
+            Node.Parent.Expand(True);
+          Node.Delete;
+        end
+        else
+          Exit;
+      end;
+    end;
+
+  end
+  else
+  begin
+
+    case PageControl1.TabIndex of
+      MACRO_TAB_SHEET://MacroTabSheetを選択しているとき
+      begin
+        Node := MacroTreeView.Selected;
+        Node.Delete;
+      end;
+      PASTE_TAB_SHEET://PasteTabSheetを選択しているとき
+      begin
+        Node := PasteTreeView.Selected;
+        Node.Delete;
+      end;
+    end;
+
+  end;
+end;

@@ -1,0 +1,51 @@
+
+
+procedure TLunchIcon.OpenFiles(Files: TStringList; AddToList: Boolean);
+var
+  Cmdin: String;
+  STARTUPINFO: TStartupInfo;
+  PROCESSINFO: TProcessInformation;
+  i: Integer;
+
+  function ShortPathOf(AFileName: String): String;
+  begin
+    SetLength(Result, MAX_PATH);
+    SetLength(Result, GetShortPathName(PChar(AFileName), PChar(Result), MAX_PATH);
+  end;
+
+begin
+  Cmdin := FFileName;
+  if Files <> nil then
+    for i := 0 to Files.Count -1 do
+      Cmdin := Cmdin + ' ' + ShortPathOf(Files[i]);
+
+  GetStartupInfo(STARTUPINFO);
+  if CreateProcess(nil,
+  PChar(Cmdin),//コマンドライン
+  nil,         //プロセスのセキュリティ属性
+  nil          //スレッドのセキュリティ属性
+  False,       //ハンドルを継承するかどうか
+  CREATE_DEFAULT_ERROR_MODE, //作成モード
+  nil,         //環境変数ブロックへのポインタ
+  nil,         //カレントディレクトリ名へのポインタ
+  STARTUPINFO, PROCESSINFO)  then
+  begin
+    if AddToList then
+    begin
+      for i := Files.Count -1 downto 0 do
+      begin
+        if FFileList.IndexOf(Files[i]) >= 0 then
+          FFileList.Delete(FFileList.IndexOf(Files[i]));
+        FFileList.Insert(0, Files[i]);
+      end;
+      for i := FFileList.Count -1 downto MAX_COUNT do
+        FFileList.Delete(FFileList.Count -1);
+    end;
+
+  end
+  else
+  begin
+    raise Exception.Create('開けませんでした');
+  end;
+
+end;

@@ -1,0 +1,34 @@
+
+1.memoコンポーネントで、現在のキャレットの位置に、文字列を挿入す
+  るには
+2.上記1.でファイルから読み込んだ時（ReadLnを使った時）など、改行
+  コードは読み込まれませんが、改行させたい時はどうすれば
+3.指定の行番号にキャレットを移動させるには
+4.
+5.特定の行の色を変えるには
+
+[A]
+1.Memo1.SelText := Edit1.Text;
+                   ^^^^^^^^^^要するに挿入したい文字列(255文字以内)
+  Memo1.SetSelTextBuf(PChar型変数)　(それ以上の文字数の場合)
+  とすれば出来ます。
+
+2.Memo1.SelText := Edit1.Text+#13+#10;
+                             ^^^^^^^^この部分を追加します。
+                             Chr(13)+chr(10)でも良いです。
+
+3.Memo1.SelStart:=SendMessage(Memo1.Handle,EM_LineIndex,行番号,0);
+  としてやればＯＫ
+
+4.Memo1.SelStart:=SendMessage(Memo1.Handle,EM_LineFormChar,SelStart,0);
+  としてやればＯＫ
+
+5.MemoはWindowsの標準コントロールを使っているので、TMemoを使う限
+  り出来ません。delphi2.0ではTRichEditコントロールが有るので、こ
+  れを使えば出来ます。
+
+
+[補足]
+
+
+[help]

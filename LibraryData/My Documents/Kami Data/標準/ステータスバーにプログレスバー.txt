@@ -1,0 +1,53 @@
+
+StatusBar に ProgressBar を入れる例です。ProgressBar を動的に生成し、Parentプロパティに StatusBar を設定するだけです。ProgressBar 以外でもオッケーです。
+
+■ ステータスバーにプログレスバーを入れる例 
+type
+  TForm1 = class(TForm)
+    StatusBar1: TStatusBar;
+    Button1: TButton;
+    procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
+  private
+    { Private 宣言 }
+    FProgressBar: TProgressBar; //プログレスバー
+  public
+    { Public 宣言 }
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+{$R *.DFM}
+
+//初期処理
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  //プログレスバーの生成
+  FProgressBar  :=  TProgressBar.Create(Self);
+  //プログレスバーの初期化
+  with  FProgressBar  do  begin
+    Parent  :=  StatusBar1;
+    Top     :=  2;  
+    Height  :=  StatusBar1.Height - 2;
+    Visible :=  True;
+  end;
+end;
+
+//プログレスバーの更新例
+procedure TForm1.Button1Click(Sender: TObject);
+var
+  ix  : integer;
+begin
+  FProgressBar.Min        :=  0;      //最小値
+  FProgressBar.Max        :=  100;    //最大値
+  FProgressBar.Position   :=  0;      //現在の値
+  FProgressBar.Step       :=  1;      //増分値
+  for ix  :=  FProgressBar.Min to  FProgressBar.Max - 1 do  begin 
+    FProgressBar.StepIt;
+  end;
+end; 
+

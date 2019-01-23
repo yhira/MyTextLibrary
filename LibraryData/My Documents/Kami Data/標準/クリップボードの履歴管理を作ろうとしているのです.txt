@@ -1,0 +1,155 @@
+けれどもクリップボードの中身が変わったときというのは、
+どのようにすればわかるのでしょうか？
+
+DelphiだけでなくWindowsプログラミングも初心者なので
+参考になる本や、ホームページなどありましたら加えて
+教えていただければありがたいのですけれども、
+よろしくお願いします。
+
+
+　ちょっと試していませんが、次のような流れになると思います。
+　つまり、WM_DRAWCLIPBOARD メッセージを捕まえればよいわけです。
+
+　フォームが TForm1 として話を進めます。次のメンバを加えます。
+
+  type
+    TForm1 = class(TForm)
+      ...
+    private
+      __NextHandle: HWND; { クリップ・ボード・ビューア・チェインの次の }
+                          { ウィンドウ・ハンドル                       }
+      ...
+      procedure WMDrawClipboard(var Msg: TWMDrawClipboard);
+        message WM_DRAWCLIPBOARD; { WM_DRAWCLIPBOARD メッセージ・ハンドラ }
+      ...
+    public
+      ...
+    end;
+
+のように加えておきます。
+
+　SetClipboardViewer() API を使って自分のフォームのハンドルをクリップ・
+ボード・ビューアのウィンドウに登録します。
+　たとえば、フォームの名前が Form1 だとすると、
+
+    procedure Form1Create(Sender: TObject);
+    { onCreate イベント・ハンドラ }
+    begin
+        __NextHandle := SetClipboardViewer(Handle);
+        { __NextHandle は TForm1 の private メンバとして宣言しておく }
+
+        if __NextHandle = 0 then
+            ShowMessage('SetClipboardViewer() に失敗しました');
+    end;
+
+　次に、WM_DRAWCLIPBOARD メッセージを捕まえるハンドラを作ります。
+implementation 節で、
+
+    procedure TForm1.WMDrawClipboard(var Msg: TWMDrawClipboard);
+    begin
+        inherited; { もともとのハンドラを呼び出す }
+
+        ここにクリップボードの内容をどこかメモリに保存する処理を書く;
+
+        SendMessage(__NextHandle, WM_DRAWCLIPBOARD, 0, 0);
+        { 次のウィンド・ハンドルにメッセージを送る }
+    end;
+
+とします。
+
+
+　ちょっと追加します。
+　プログラムを終了させるときに次のようにする必要がありました。
+
+    procedure Form1Close(Sender: TObject; var Action: TCloseAction);
+    { onClose イベント・ハンドラ }
+    begin
+        ChangeClipboardChain(Handle, __NextHandle);
+        { フォームのハンドルをクリップボード・ビューアのチェインから除去する }
+    end;
+
+
+　登録されたクリップ・ ボード・ビューアが他に無かった場合(この場合は
+__NextHandleが存在しない)もSetClipboardViewerはNULLを返しますので上
+記のルーチンは以下の様にすると思います。
+
+     procedure Form1Create(Sender: TObject);
+	begin
+	  __NextHandle := SetClipboardViewer(Handle);
+	  if __NextHandle = 0 then
+	    if GetLastError <> 0 then {本当にエラーだったら}
+	     ShowMessage('SetClipboardViewer() に失敗しました');
+	end;
+
+> 　次に、WM_DRAWCLIPBOARD メッセージを捕まえるハンドラを作ります。
+> implementation 節で、
+> 
+>     procedure TForm1.WMDrawClipboard(var Msg: TWMDrawClipboard);
+>     begin
+>         inherited; { もともとのハンドラを呼び出す }
+> 
+>         ここにクリップボードの内容をどこかメモリに保存する処理を書く;
+> 
+>         SendMessage(__NextHandle, WM_DRAWCLIPBOARD, 0, 0);
+>         { 次のウィンド・ハンドルにメッセージを送る }
+>     end;
+> 
+
+　ここも__NextHandleがNULLの場合もあるので
+
+	if __NextHandle <> 0 then
+	   SendMessage(__NextHandle, WM_DRAWCLIPBOARD, 0, 0);
+	   
+となりますね。それから、WM_CHANGECBCHAINのハンドラは宣言が
+   procedure WMChangeCBChain(var Msg: TWMChangeCBChain);
+        message WM_CHANGECBCHAIN; 
+
+implementation が
+
+  procedure TForm1.WMChangeCBChain(var Msg: TWMChangeCBChain);
+    begin
+     if Msg.Remove = __NextHandle then
+      __NextHandle := Msg.Next;
+     if __NextHandle <> 0 then
+	   SendMessage(__NextHandle, WM_CHANGECBCHAIN, Msg.Remove,
+			Long(Msg.Next));
+    end;
+
+ という感じでしょうか。以上に島田さんの追加分
+ Subject: [Delphi-ML:5276] RE: RE: クリップボードの更新
+
+で必要最低限の処理がそろいます。
+
+
+
+>> はじめまして、田口＠葛西です。
+>> 今、クリップボードの履歴管理を作ろうとしているのです
+>> けれどもクリップボードの中身が変わったときというのは、
+>> どのようにすればわかるのでしょうか？
+
+あまり詳しくないんですが、WinAPIにSetClipboardViewerと
+いうのがあって、このヘルプからたどっていくとやり方が
+分かるようです。
+
+>> DelphiだけでなくWindowsプログラミングも初心者なので
+>> 参考になる本や、ホームページなどありましたら加えて
+>> 教えていただければありがたいのですけれども、
+>> よろしくお願いします。
+
+FormのOnShowで、SetClipboardViewerの引数にFormのHandle
+プロパティの値を渡します。
+FormにはWM_DRAWCLIPBOARDとWM_CHANGECBCHAINを的確に処理する
+メッセージハンドラが実装されていなければなりません。
+APIヘルプの両メッセージに関する記述と、Delphiのメッセージ
+ハンドラについての記述を参照してください。
+また、FormのOnHideでChangeClipboardChain関数を呼び出して、
+クリップボードビューアのチェインからFormを除去します。
+
+中途半端なアドバイスになってしまったかもしれませんが
+ご健闘をお祈りします。
+-------------------------------------------
+
+
+
+
+

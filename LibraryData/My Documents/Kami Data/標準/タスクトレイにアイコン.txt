@@ -1,0 +1,81 @@
+
+
+常駐型のツールがよく使用するタスクトレイアイコンを Delphi でも実現することが出来ます。
+使用するAPIは Shell_NotifyIconです。
+
+■ Shell_NotifyIconの例 
+  public
+    { Public 宣言 }
+    { ※uses に ShellApi を追加 }
+
+    {タスクトレイアイコン}
+    FIconData : TNotifyIconData;  
+    {アイコンクリック時のイベント}
+    procedure ICONMessage(var Msg : TMsg); message WM_USER + 100;  
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+{$R *.DFM}
+
+procedure TForm1.Button1Click(Sender: TObject);
+begin
+  //
+  //  タスクトレイにアイコンを追加する
+  //
+  FIconData.cbSize  :=  SizeOf(TNotifyIconData);
+  FIconData.uID     :=  1;
+  FIconData.Wnd     :=  Handle;
+  FIconData.uFlags  :=  NIF_MESSAGE or NIF_ICON or NIF_TIP;
+  FIconData.uCallbackMessage  :=  WM_USER + 100;
+  FIconData.hIcon   :=  Application.Icon.Handle;  {アイコン指定}
+  FIconData.szTip   :=  'Delphi Acid Floor';      {ヒント文字列}
+  Shell_NotifyIcon(NIM_ADD, @FIconData);
+end;
+
+procedure TForm1.Button2Click(Sender: TObject);
+var
+  Icon : TIcon;
+begin
+  //
+  //  タスクトレイのアイコンを変更する
+  //
+  if  OpenPictureDialog1.Execute  then  begin
+    Icon  :=  TIcon.Create;
+    Icon.LoadFromFile(OpenPictureDialog1.FileName);
+    FIconData.hIcon   :=  Icon.Handle;  {アイコン変更}
+    Shell_NotifyIcon(NIM_MODIFY, @FIconData);
+    Icon.Free;
+  end;
+end;
+
+procedure TForm1.Button3Click(Sender: TObject);
+begin
+  //
+  //  タスクトレイのアイコンを削除する
+  //
+  Shell_NotifyIcon(NIM_DELETE, @FIconData);
+end;
+
+procedure TForm1.ICONMessage(var Msg: TMsg);
+var
+  Point : TPoint; {マウス位置}
+begin
+  //
+  //  アイコンのイベント処理
+  //
+  GetCursorPos(Point);
+  if  (Msg.wParam = WM_LBUTTONDOWN) then  begin
+    //左クリック時
+    ListBox1.Items.Add('CLICK');
+  end else
+  if  (Msg.wParam = WM_RBUTTONDOWN) then  begin
+    //右クリック時
+    PopupMenu1.Popup(Point.x, Point.y); {ポップアップを表示} 
+  end;
+end;
+ 
+

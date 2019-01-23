@@ -1,0 +1,11 @@
+procedure TForm1.btnTree2MemoClick(Sender: TObject);
+var
+  strm: TStream;
+begin
+  strm := TStringStream.Create('');
+  tv1.SaveToStream(strm);
+  //SaveToStreamでストリームのポジションが一番後ろに移動しているので、先頭に戻す。
+  strm.Position := 0;
+  Memo1.Lines.LoadFromStream(strm);
+  strm.Free;
+end;

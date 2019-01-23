@@ -1,0 +1,21 @@
+
+
+--------------------------------------------------------------------------------
+該当するバージョン:Delphi 1.0,Delphi 2.0,Delphi 3.0/Delphi3.1,Delphi4
+ Edit コンポーネントに表示された文字列を印刷したいのですが，どのようにするとよいのでしょうか？ 
+
+ 
+ 下記コードを参考にして下さい。
+Edit1 内の文字列が印刷されます。
+
+
+   procedure TForm1.Button1Click(Sender: TObject);
+   begin
+     Edit1.Text := 'プリンタへ出力';
+     Printer.BeginDoc;
+     Printer.Canvas.TextOut(0, 0, Edit1.Text);
+     Printer.EndDoc;
+   end;
+
+ 
+

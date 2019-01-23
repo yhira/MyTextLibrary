@@ -1,0 +1,37 @@
+procedure TForm1.Button1Click(Sender: TObject);
+var
+  NewMoji:TMoji;
+begin
+  case Mode of
+    MODE_WAIT_MOJI:
+    begin
+      NewMoji := TMoji.Create;
+      with NewMoji do
+      begin
+        x := MojiX;
+        y := MojiY;
+        Text := Edit1.Text;
+        Font.Assign(Edit1.Font);
+        BgdColor := Edit1.Color;
+        if MojiTransparent.Checked then
+          BgdColor := clNone;
+      end;
+      MojiList.Add(NewMoji);
+      Mode := MODE_ADD_MOJI;
+      DrawAll;
+    end;
+    MODE_SELECT:
+      if SelectedMoji <> nil then
+      begin
+        with SelectedMoji do
+        begin
+          Text := Edit1.Text;
+          Font.Assign(Edit1.Font);
+          BgdColor := Edit1.Color;
+          if MojiTransparent.Checked then
+            BgdColor := clNone;
+        end;
+        DrawAll;
+      end;
+  end;
+end;

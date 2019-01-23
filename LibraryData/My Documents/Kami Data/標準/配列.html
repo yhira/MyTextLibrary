@@ -1,0 +1,45 @@
+<HTML><HEAD><meta http-equiv="content-type" content="text/html;charset=Shift_JIS">
+<TITLE>第3回　変数とデータ型</TITLE></HEAD>
+
+<BODY>
+<P><B><U><FONT 
+size=+1>配列</FONT></U></B><BR><BR>　配列は、同じデータ型の変数がたくさん必要なときに使います。例えば、1月から12月の携帯電話料金を、月ごとに記憶することを考えてみます。普通に変数を用意すると、12個必要になります。<BR>　これでは管理も大変です。そこで配列を使うと、1つの変数で済みます。<BR>　配列の宣言は次のようになります。</P><PRE>  var
+    変数名: array[添え字の範囲] of データ型;</PRE>
+<P>　例えば1月から12月の携帯電話料金を記憶する変数は、次のように宣言します。</P><PRE>  var
+    Charge: array[1..12] of Integer;</PRE>
+<P>　配列変数にデータを代入するには、次のように行います。</P><PRE>  Charge[1] := 5980;
+  Charge[2] := 6000;
+  Charge[3] := 4500;</PRE>
+<P>このように、変数に[ 
+]を付け、添え字の範囲で指定した数値を指定します。Charge[1]とCharge[2]は別々の変数として使えます。添え字の範囲は、順序型であれば次のような指定も可能です。</P><PRE>  type
+    TMyColor = (mcRed, mcGreen, mcBlue, mcYellow);
+
+  var
+    Color: array[TMyColor] of Integer;
+    Check: array[Boolean] of Integer;
+    Price: array[-150..120] of Integer;
+
+  Color[mcRed] := 100;
+  Color[mcBlue] := -200;
+  Check[True] := 500;
+  Check[False] := 1000;
+  Price[-100] := 50;</PRE>
+<P>　配列にできるデータ型は、制限ありません。例えば、レコード型の変数を配列にすると便利になります。</P><PRE>  type
+    TParson = record
+      Name : string;
+      Old  : Integer;
+      Blood: (blA, blB, blO, blAB);
+    end;
+
+  var
+    Parson: array[0..1000] of TParson;
+
+  Parson[0].Name := '山田';
+  Parson[1].Name := '佐藤';</PRE><BR>
+<FONT SIZE="-1">
+TITLE:第3回　変数とデータ型<BR>
+DATE:2002/12/29 16:43<BR>
+URL:<A HREF="http://wblue.hp.infoseek.co.jp/prog/c2_03.htm" TARGET="_blank">http://wblue.hp.infoseek.co.jp/prog/c2_03.htm</A><BR>
+</FONT>
+</BODY>
+</HTML>

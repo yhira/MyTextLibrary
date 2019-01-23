@@ -1,0 +1,16 @@
+
+
+--------------------------------------------------------------------------------
+該当するバージョン:Delphi 1.0
+ Delphi のヘルプヒント表示に使われているフォントを変更するには，どうすればよいでしょうか？ 
+
+ 
+ THintWindow から新しいクラスを派生し，フォームの OnCreate イベントハンドラや initialization 部で HintWindowClass にクラスを指定します。このとき，
+Application.ShowHint := False; Application.ShowHint := True; 
+として代入したクラスを有効にする必要があります。
+
+※Delphi(CD-ROM版) では \EXTRAS\EXAMPLES\HINTWIN ディレクトリに，ヒント文字列のフォントを変更するプログラム例が含まれています。
+
+ 
+
+
